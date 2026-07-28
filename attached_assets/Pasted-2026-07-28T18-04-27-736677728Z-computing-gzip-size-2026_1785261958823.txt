@@ -1,0 +1,50 @@
+2026-07-28T18:04:27.736677728Z computing gzip size...
+2026-07-28T18:04:27.754267794Z dist/public/index.html                   1.35 kB │ gzip:   0.54 kB
+2026-07-28T18:04:27.7542781Z dist/public/assets/index-CCPrQNoL.css  152.55 kB │ gzip:  22.60 kB
+2026-07-28T18:04:27.754282434Z dist/public/assets/index-Cxq3QYCy.js   677.45 kB │ gzip: 202.03 kB
+2026-07-28T18:04:27.754344064Z 
+2026-07-28T18:04:27.754354539Z (!) Some chunks are larger than 500 kB after minification. Consider:
+2026-07-28T18:04:27.754355856Z - Using dynamic import() to code-split the application
+2026-07-28T18:04:27.754356865Z - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+2026-07-28T18:04:27.754357842Z - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+2026-07-28T18:04:27.754508903Z ✓ built in 2.77s
+2026-07-28T18:04:28.11296568Z 
+2026-07-28T18:04:28.112994817Z > @workspace/api-server@0.0.0 build /opt/render/project/src/artifacts/api-server
+2026-07-28T18:04:28.11299721Z > node ./build.mjs
+2026-07-28T18:04:28.112998296Z 
+2026-07-28T18:04:28.800763683Z 
+2026-07-28T18:04:28.800782762Z   dist/index.mjs                       3.7mb ⚠️
+2026-07-28T18:04:28.800784335Z   dist/pino-worker.mjs               153.4kb
+2026-07-28T18:04:28.800785192Z   dist/pino-file.mjs                 142.1kb
+2026-07-28T18:04:28.800785934Z   dist/pino-pretty.mjs               114.4kb
+2026-07-28T18:04:28.80078665Z   dist/thread-stream-worker.mjs        7.3kb
+2026-07-28T18:04:28.800787701Z   dist/index.mjs.map                   6.6mb
+2026-07-28T18:04:28.800788546Z   dist/pino-worker.mjs.map           256.9kb
+2026-07-28T18:04:28.800789409Z   dist/pino-file.mjs.map             229.0kb
+2026-07-28T18:04:28.800790127Z   dist/pino-pretty.mjs.map           203.6kb
+2026-07-28T18:04:28.800790922Z   dist/thread-stream-worker.mjs.map   12.0kb
+2026-07-28T18:04:28.800791678Z 
+2026-07-28T18:04:28.800793073Z ⚡ Done in 645ms
+2026-07-28T18:04:29.905077743Z ==> Uploading build...
+2026-07-28T18:04:36.091100284Z ==> Uploaded in 4.1s. Compression took 2.1s
+2026-07-28T18:04:36.093594318Z ==> Build successful 🎉
+2026-07-28T18:04:40.13917242Z ==> Deploying...
+2026-07-28T18:04:40.214112965Z ==> Setting WEB_CONCURRENCY=1 by default, based on available CPUs in the instance
+2026-07-28T18:05:00.279335982Z ==> Running 'node --enable-source-maps artifacts/api-server/dist/index.mjs'
+2026-07-28T18:05:03.22485287Z {"level":30,"time":1785261903224,"pid":70,"hostname":"srv-d9j3ddrtqb8s739n75b0-hibernate-6dc6988f69-rjsvd","msg":"initDb: commission_distributions table ready"}
+2026-07-28T18:05:03.549068147Z {"level":30,"time":1785261903548,"pid":70,"hostname":"srv-d9j3ddrtqb8s739n75b0-hibernate-6dc6988f69-rjsvd","msg":"initDb: blockchain tables and columns ready"}
+2026-07-28T18:05:03.675338029Z {"level":30,"time":1785261903675,"pid":70,"hostname":"srv-d9j3ddrtqb8s739n75b0-hibernate-6dc6988f69-rjsvd","msg":"initDb: commission_events table ready"}
+2026-07-28T18:05:03.800554898Z {"level":30,"time":1785261903800,"pid":70,"hostname":"srv-d9j3ddrtqb8s739n75b0-hibernate-6dc6988f69-rjsvd","msg":"initDb: notifications table ready"}
+2026-07-28T18:05:03.81423212Z {"level":30,"time":1785261903803,"pid":70,"hostname":"srv-d9j3ddrtqb8s739n75b0-hibernate-6dc6988f69-rjsvd","port":10000,"msg":"Server listening"}
+2026-07-28T18:05:03.814255162Z {"level":30,"time":1785261903803,"pid":70,"hostname":"srv-d9j3ddrtqb8s739n75b0-hibernate-6dc6988f69-rjsvd","msg":"Iniciando poller de blockchain BSC (USDT BEP20, cada 30 segundos)"}
+2026-07-28T18:05:04.056205693Z {"level":30,"time":1785261904055,"pid":70,"hostname":"srv-d9j3ddrtqb8s739n75b0-hibernate-6dc6988f69-rjsvd","req":{"id":1,"method":"HEAD","url":"/"},"res":{"statusCode":200},"responseTime":6,"msg":"request completed"}
+2026-07-28T18:05:05.874555368Z {"level":50,"time":1785261904247,"pid":70,"hostname":"srv-d9j3ddrtqb8s739n75b0-hibernate-6dc6988f69-rjsvd","err":{"type":"Error","message":"could not coalesce error (error={ \"code\": -32005, \"message\": \"limit exceeded\" }, payload={ \"id\": 3, \"jsonrpc\": \"2.0\", \"method\": \"eth_getLogs\", \"params\": [ { \"address\": \"0x55d398326f99059ff775485246999027b3197955\", \"fromBlock\": \"0x6b67581\", \"toBlock\": \"0x6b67d50\", \"topics\": [ \"0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef\", null, \"0x000000000000000000000000d9fafa7af1b691638315931235858745ce6b2f73\" ] } ] }, code=UNKNOWN_ERROR, version=6.17.0)","stack":"Error: could not coalesce error (error={ \"code\": -32005, \"message\": \"limit exceeded\" }, payload={ \"id\": 3, \"jsonrpc\": \"2.0\", \"method\": \"eth_getLogs\", \"params\": [ { \"address\": \"0x55d398326f99059ff775485246999027b3197955\", \"fromBlock\": \"0x6b67581\", \"toBlock\": \"0x6b67d50\", \"topics\": [ \"0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef\", null, \"0x000000000000000000000000d9fafa7af1b691638315931235858745ce6b2f73\" ] } ] }, code=UNKNOWN_ERROR, version=6.17.0)\n    at makeError (/opt/render/project/src/node_modules/.pnpm/ethers@6.17.0/node_modules/ethers/src.ts/utils/errors.ts:698:21)\n    at JsonRpcProvider.getRpcError (/opt/render/project/src/node_modules/.pnpm/ethers@6.17.0/node_modules/ethers/src.ts/providers/provider-jsonrpc.ts:1086:16)\n    at <anonymous> (/opt/render/project/src/node_modules/.pnpm/ethers@6.17.0/node_modules/ethers/src.ts/providers/provider-jsonrpc.ts:571:45)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)","code":"UNKNOWN_ERROR","error":{"type":"Object","message":"limit exceeded","stack":"","code":-32005},"payload":{"method":"eth_getLogs","params":[{"address":"0x55d398326f99059ff775485246999027b3197955","topics":["0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",null,"0x000000000000000000000000d9fafa7af1b691638315931235858745ce6b2f73"],"fromBlock":"0x6b67581","toBlock":"0x6b67d50"}],"id":3,"jsonrpc":"2.0"},"shortMessage":"could not coalesce error"},"start":112620929,"end":112622928,"msg":"Poller: error consultando chunk de bloques — se reintentará en el próximo ciclo"}
+2026-07-28T18:05:12.080742459Z ==> Your service is live 🎉
+2026-07-28T18:05:12.230632307Z {"level":30,"time":1785261912230,"pid":70,"hostname":"srv-d9j3ddrtqb8s739n75b0-hibernate-6dc6988f69-rjsvd","req":{"id":2,"method":"GET","url":"/"},"res":{"statusCode":200},"responseTime":5,"msg":"request completed"}
+2026-07-28T18:05:12.245216778Z ==> 
+2026-07-28T18:05:12.247695522Z ==> ///////////////////////////////////////////////////////////
+2026-07-28T18:05:12.250086594Z ==> 
+2026-07-28T18:05:12.252756553Z ==> Available at your primary URL https://redgain-suite.onrender.com
+2026-07-28T18:05:12.254639402Z ==> 
+2026-07-28T18:05:12.256783228Z ==> ///////////////////////////////////////////////////////////
+2026-07-28T18:05:34.371016119Z {"level":50,"time":1785261934370,"pid":70,"hostname":"srv-d9j3ddrtqb8s739n75b0-hibernate-6dc6988f69-rjsvd","err":{"type":"Error","message":"could not coalesce error (error={ \"code\": -32005, \"message\": \"limit exceeded\" }, payload={ \"id\": 4, \"jsonrpc\": \"2.0\", \"method\": \"eth_getLogs\", \"params\": [ { \"address\": \"0x55d398326f99059ff775485246999027b3197955\", \"fromBlock\": \"0x6b675c4\", \"toBlock\": \"0x6b67d93\", \"topics\": [ \"0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef\", null, \"0x000000000000000000000000d9fafa7af1b691638315931235858745ce6b2f73\" ] } ] }, code=UNKNOWN_ERROR, version=6.17.0)","stack":"Error: could not coalesce error (error={ \"code\": -32005, \"message\": \"limit exceeded\" }, payload={ \"id\": 4, \"jsonrpc\": \"2.0\", \"method\": \"eth_getLogs\", \"params\": [ { \"address\": \"0x55d398326f99059ff775485246999027b3197955\", \"fromBlock\": \"0x6b675c4\", \"toBlock\": \"0x6b67d93\", \"topics\": [ \"0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef\", null, \"0x000000000000000000000000d9fafa7af1b691638315931235858745ce6b2f73\" ] } ] }, code=UNKNOWN_ERROR, version=6.17.0)\n    at makeError (/opt/render/project/src/node_modules/.pnpm/ethers@6.17.0/node_modules/ethers/src.ts/utils/errors.ts:698:21)\n    at JsonRpcProvider.getRpcError (/opt/render/project/src/node_modules/.pnpm/ethers@6.17.0/node_modules/ethers/src.ts/providers/provider-jsonrpc.ts:1086:16)\n    at <anonymous> (/opt/render/project/src/node_modules/.pnpm/ethers@6.17.0/node_modules/ethers/src.ts/providers/provider-jsonrpc.ts:571:45)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)","code":"UNKNOWN_ERROR","error":{"type":"Object","message":"limit exceeded","stack":"","code":-32005},"payload":{"method":"eth_getLogs","params":[{"address":"0x55d398326f99059ff775485246999027b3197955","topics":["0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",null,"0x000000000000000000000000d9fafa7af1b691638315931235858745ce6b2f73"],"fromBlock":"0x6b675c4","toBlock":"0x6b67d93"}],"id":4,"jsonrpc":"2.0"},"shortMessage":"could not coalesce error"},"start":112620996,"end":112622995,"msg":"Poller: error consultando chunk de bloques — se reintentará en el próximo ciclo"}
