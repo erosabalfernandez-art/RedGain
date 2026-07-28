@@ -1,11 +1,127 @@
-import React, { useState } from 'react';
-import { Menu, LayoutDashboard, LogOut, Users, CreditCard, Clock, BookOpen, Flame } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Menu, LayoutDashboard, LogOut, Users, CreditCard, Clock, BookOpen, Bell } from 'lucide-react';
 import { Logo } from '@/components/ui/logo';
 import { useAuth } from '@/lib/auth';
 import { Link, useLocation } from 'wouter';
+import { useGetMyNotifications, useMarkNotificationsRead, getGetMyNotificationsQueryKey } from '@workspace/api-client-react';
+import { useQueryClient } from '@tanstack/react-query';
+import { formatDistanceToNow } from 'date-fns';
+import { es } from 'date-fns/locale';
 
 const STOIC_SIDEBAR_QUOTE = '"Concentra tus pensamientos en lo que haces ahora."';
 const STOIC_SIDEBAR_AUTHOR = '— Marco Aurelio';
+
+// ── Notification bell ────────────────────────────────────────────────────────
+function NotificationBell() {
+  const [open, setOpen] = useState(false);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const queryClient = useQueryClient();
+
+  const { data } = useGetMyNotifications({
+    query: { refetchInterval: 10_000, queryKey: getGetMyNotificationsQueryKey() },
+  });
+  const markRead = useMarkNotificationsRead();
+
+  const notifications = data?.notifications ?? [];
+  const unread = data?.unreadCount ?? 0;
+
+  // Close on outside click
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e: MouseEvent) => {
+      if (panelRef.current && !panelRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [open]);
+
+  const handleOpen = () => {
+    setOpen((v) => !v);
+    if (!open && unread > 0) {
+      markRead.mutate(undefined, {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: getGetMyNotificationsQueryKey() });
+        },
+      });
+    }
+  };
+
+  const iconColor: Record<string, string> = {
+    commission_sent:    'text-emerald-400',
+    commission_failed:  'text-red-400',
+    new_referral:       'text-[#C9A227]',
+    payment_confirmed:  'text-emerald-400',
+  };
+
+  return (
+    <div className="relative" ref={panelRef}>
+      <button
+        onClick={handleOpen}
+        className="relative p-2 rounded-xl hover:bg-muted/60 transition-colors text-muted-foreground hover:text-foreground"
+        aria-label="Notificaciones"
+      >
+        <Bell className="w-5 h-5" />
+        {unread > 0 && (
+          <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 flex items-center justify-center rounded-full text-[10px] font-extrabold text-black"
+            style={{ background: 'linear-gradient(135deg, #E8C547, #C9A227)' }}>
+            {unread > 99 ? '99+' : unread}
+          </span>
+        )}
+      </button>
+
+      {open && (
+        <div
+          className="absolute right-0 top-12 w-80 max-h-[420px] overflow-y-auto rounded-2xl shadow-2xl z-[200] flex flex-col"
+          style={{ background: 'rgba(13,9,3,0.98)', border: '1px solid rgba(201,162,39,0.2)', backdropFilter: 'blur(16px)' }}
+        >
+          <div className="sticky top-0 flex items-center justify-between px-4 py-3 border-b"
+            style={{ borderColor: 'rgba(201,162,39,0.15)', background: 'rgba(13,9,3,0.98)' }}>
+            <p className="text-sm font-bold" style={{ color: '#E8C547' }}>Notificaciones</p>
+            {unread > 0 && (
+              <span className="text-[10px] px-2 py-0.5 rounded-full font-semibold"
+                style={{ background: 'rgba(201,162,39,0.12)', color: '#C9A227', border: '1px solid rgba(201,162,39,0.25)' }}>
+                {unread} sin leer
+              </span>
+            )}
+          </div>
+
+          {notifications.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-10 text-center px-4">
+              <Bell className="w-8 h-8 text-muted-foreground mb-2 opacity-40" />
+              <p className="text-sm text-muted-foreground">Sin notificaciones aún</p>
+              <p className="text-xs text-muted-foreground/60 mt-1">Te avisaremos cuando lleguen tus comisiones.</p>
+            </div>
+          ) : (
+            <div className="divide-y" style={{ borderColor: 'rgba(201,162,39,0.08)' }}>
+              {notifications.map((n: any) => (
+                <div key={n.id} className={`px-4 py-3 transition-colors ${n.read ? 'opacity-60' : ''}`}
+                  style={!n.read ? { background: 'rgba(201,162,39,0.04)' } : {}}>
+                  <div className="flex items-start gap-3">
+                    <span className={`text-base mt-0.5 shrink-0 ${iconColor[n.type] ?? 'text-muted-foreground'}`}>
+                      {n.title.charAt(0)}
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-semibold text-foreground leading-snug">{n.title}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">{n.body}</p>
+                      <p className="text-[10px] text-muted-foreground/50 mt-1">
+                        {formatDistanceToNow(new Date(n.createdAt), { addSuffix: true, locale: es })}
+                      </p>
+                    </div>
+                    {!n.read && (
+                      <span className="w-2 h-2 rounded-full shrink-0 mt-1.5" style={{ background: '#C9A227' }} />
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export function DashboardLayout({ children, topbar }: { children: React.ReactNode; topbar?: React.ReactNode }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -78,44 +194,39 @@ export function DashboardLayout({ children, topbar }: { children: React.ReactNod
                 style={active ? {
                   background: 'linear-gradient(90deg, rgba(201,162,39,0.15), rgba(201,162,39,0.05))',
                   border: '1px solid rgba(201,162,39,0.2)',
-                  boxShadow: '0 0 12px -4px rgba(201,162,39,0.2)',
-                } : {
-                  background: 'transparent',
-                  border: '1px solid transparent',
-                }}
+                } : {}}
               >
-                <item.icon className={`w-4 h-4 shrink-0 ${active ? 'text-[#C9A227]' : 'text-muted-foreground'}`} />
+                <item.icon className={`w-4 h-4 shrink-0 ${active ? 'text-[#C9A227]' : ''}`} />
                 {item.label}
               </Link>
             );
           })}
         </nav>
 
-        {/* Logout */}
-        <div className="relative p-3" style={{ borderTop: '1px solid rgba(201,162,39,0.1)' }}>
+        {/* Footer */}
+        <div className="relative p-4 border-t" style={{ borderColor: 'rgba(201,162,39,0.12)' }}>
           <button
             onClick={() => logout()}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-            style={{ border: '1px solid transparent' }}
+            className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground transition-colors hover:bg-muted/50"
           >
-            <LogOut className="w-4 h-4" />
-            Cerrar Sesión
+            <LogOut className="w-4 h-4 shrink-0" />
+            Cerrar sesión
           </button>
         </div>
       </aside>
 
-      {/* ── Main area ── */}
-      <main className="flex-1 flex flex-col min-w-0 relative">
+      {/* ── Main ── */}
+      <main className="flex-1 flex flex-col min-w-0 relative overflow-hidden">
 
-        {/* ── Full-page stoic background ── */}
-        <div className="pointer-events-none select-none" aria-hidden="true">
-          {/* Marcus Aurelius — top-right */}
-          <div className="fixed top-0 right-0 w-[60vw] h-[75vh] z-0 overflow-hidden">
+        {/* Atmospheric backgrounds */}
+        <div className="pointer-events-none">
+          {/* Aurelius bust — top-right */}
+          <div className="fixed top-0 right-0 w-[45vw] h-[55vh] z-0 overflow-hidden">
             <img
               src="/dash-aurelius.jpg"
               alt=""
-              className="w-full h-full object-cover object-center"
-              style={{ opacity: 0.1, filter: 'saturate(0.5) brightness(1.1)' }}
+              className="w-full h-full object-cover object-top"
+              style={{ opacity: 0.07, filter: 'saturate(0.3) brightness(1.3)' }}
             />
             <div className="absolute inset-0" style={{ background: 'linear-gradient(to left, transparent 0%, rgba(14,10,5,0.5) 50%, rgba(14,10,5,1) 100%)' }} />
             <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(14,10,5,1) 0%, transparent 60%)' }} />
@@ -153,9 +264,11 @@ export function DashboardLayout({ children, topbar }: { children: React.ReactNod
             </div>
           </div>
 
-          {/* Stoic flame icon for header center on mobile */}
           <div className="hidden md:flex flex-1" />
-          <div className="flex items-center gap-4 ml-auto">{topbar}</div>
+          <div className="flex items-center gap-3 ml-auto">
+            <NotificationBell />
+            {topbar}
+          </div>
         </header>
 
         {/* ── Content ── */}

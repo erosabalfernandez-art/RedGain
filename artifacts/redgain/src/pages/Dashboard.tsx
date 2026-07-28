@@ -18,6 +18,7 @@ import {
   useGetMyTree,
   useGetMyMembership,
   useGetMyPayments,
+  useGetMyCommissionHistory,
   getGetMyPaymentsQueryKey,
 } from '@workspace/api-client-react';
 
@@ -561,6 +562,95 @@ function PagosSection() {
           </div>
         )}
       </div>
+
+      {/* Block 6: Commission history */}
+      <CommissionHistoryBlock />
+    </div>
+  );
+}
+
+// ── Commission History Block ──────────────────────────────────────────────────
+function CommissionHistoryBlock() {
+  const { data, isLoading } = useGetMyCommissionHistory();
+  const events = data?.events ?? [];
+  const totalReceived = data?.totalReceived ?? 0;
+
+  const statusIcon: Record<string, { icon: typeof CheckCircle2; color: string }> = {
+    sent:    { icon: CheckCircle2, color: 'text-emerald-400' },
+    failed:  { icon: XCircle,     color: 'text-red-400' },
+    skipped: { icon: Clock,       color: 'text-yellow-400' },
+  };
+
+  const SUPPORT_WA = 'https://wa.me/5491112345678'; // fallback; real number is in distributor env
+
+  return (
+    <div className="rounded-2xl p-5 space-y-4" style={{ background: 'rgba(14,10,5,0.85)', border: '1px solid rgba(201,162,39,0.15)' }}>
+      <div className="flex items-center justify-between">
+        <p className="text-sm font-bold text-foreground">Comisiones recibidas</p>
+        {totalReceived > 0 && (
+          <span className="text-sm font-extrabold text-emerald-400">${totalReceived.toFixed(2)} USDT total</span>
+        )}
+      </div>
+
+      {isLoading ? (
+        <div className="flex justify-center py-8"><Loader2 className="w-5 h-5 animate-spin text-primary" /></div>
+      ) : events.length === 0 ? (
+        <div className="text-center py-8 space-y-1">
+          <DollarSign className="w-8 h-8 text-muted-foreground/30 mx-auto" />
+          <p className="text-sm text-muted-foreground">Aún no has recibido comisiones.</p>
+          <p className="text-xs text-muted-foreground/60">Cuando uno de tus referidos pague, aparecerá aquí.</p>
+        </div>
+      ) : (
+        <div className="space-y-2">
+          {events.map((e: any) => {
+            const cfg = statusIcon[e.status] ?? statusIcon.skipped;
+            const Icon = cfg.icon;
+            return (
+              <div key={e.id} className="flex items-start gap-3 p-3 rounded-xl border border-border hover:bg-muted/20 transition-colors">
+                <Icon className={`w-4 h-4 shrink-0 mt-0.5 ${cfg.color}`} />
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="text-xs font-semibold text-foreground">
+                      Nivel {e.level} · {e.sourceName ?? 'Usuario'}
+                    </p>
+                    <span className={`text-sm font-extrabold ${e.status === 'sent' ? 'text-emerald-400' : 'text-muted-foreground'}`}>
+                      {e.status === 'sent' ? `+$${e.amountUsdt}` : `$${e.amountUsdt}`}
+                    </span>
+                  </div>
+                  {e.status === 'sent' && e.txHash && (
+                    <a
+                      href={`https://bscscan.com/tx/${e.txHash}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-[10px] text-primary hover:text-primary/80 font-mono mt-0.5"
+                    >
+                      <ExternalLink className="w-3 h-3" />
+                      {e.txHash.slice(0, 12)}…{e.txHash.slice(-6)}
+                    </a>
+                  )}
+                  {e.status === 'failed' && (
+                    <a
+                      href={SUPPORT_WA}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-[10px] text-red-400 hover:text-red-300 mt-0.5 font-medium"
+                    >
+                      <MessageCircle className="w-3 h-3" />
+                      Contactar soporte por WhatsApp
+                    </a>
+                  )}
+                  {e.status === 'skipped' && (
+                    <p className="text-[10px] text-yellow-400/80 mt-0.5">Sin billetera BSC registrada</p>
+                  )}
+                  <p className="text-[10px] text-muted-foreground/50 mt-1">
+                    {format(new Date(e.createdAt), "d MMM yyyy HH:mm", { locale: es })}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
