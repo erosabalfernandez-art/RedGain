@@ -1,14 +1,16 @@
 /**
  * blockchain-poller.ts
  * Revisa la blockchain de BSC cada 30 segundos buscando transferencias USDT
- * a la billetera receptora. Cuando detecta un pago de $10 de un usuario registrado:
+ * a la billetera receptora. Usa la API HTTP de BSCScan en vez de eth_getLogs
+ * (los nodos RPC públicos de BSC rechazan eth_getLogs con rate limit).
+ *
+ * Cuando detecta un pago de $10 de un usuario registrado:
  *   1. Registra el pago en la DB (aprobado automáticamente)
  *   2. Activa/renueva la membresía del usuario
  *   3. Inicia el temporizador del referidor si aplica
  *   4. Distribuye comisiones a la cadena de referidos
  *   5. Notifica al usuario que su pago fue confirmado
  */
-import { ethers } from "ethers";
 import { db, usersTable, paymentsTable, notificationsTable, pool } from "@workspace/db";
 import { eq, and, sql } from "drizzle-orm";
 import { logger } from "./logger";
@@ -16,26 +18,80 @@ import { distributeCommissions } from "./distributor";
 
 const USDT_ADDRESS = "0x55d398326f99059fF775485246999027B3197955";
 const RECEIVING_WALLET = (process.env.RECEIVING_WALLET ?? "").toLowerCase();
-const REQUIRED_AMOUNT = ethers.parseUnits("10", 18); // $10 USDT — 18 decimales en BSC
+const BSCSCAN_API_KEY = process.env.BSCSCAN_API_KEY ?? "YourApiKeyToken";
 
-// RPCs públicos de BSC con soporte de eth_getLogs, en orden de preferencia.
-// El poller intenta cada uno hasta que uno funciona.
-const BSC_RPC_URLS: string[] = [
+// 10 USDT en wei (18 decimales)
+const REQUIRED_AMOUNT_WEI = BigInt("10000000000000000000");
+
+// RPCs de BSC — solo se usan para eth_blockNumber (no para getLogs)
+const BSC_RPC_URLS = [
   process.env.BSC_RPC_URL ?? "",
-  "https://bsc-dataseed4.ninicoin.io/",
   "https://bsc-dataseed1.defibit.io/",
-  "https://bsc-dataseed2.defibit.io/",
+  "https://bsc-dataseed4.ninicoin.io/",
   "https://bsc.drpc.org",
 ].filter(Boolean);
 
-// Rango máximo de bloques por consulta para no superar límites del RPC
-const MAX_BLOCK_RANGE = 2_000;
-
-const USDT_ABI = [
-  "event Transfer(address indexed from, address indexed to, uint256 value)",
-];
-
 let lastCheckedBlock = 0;
+
+// ── BSCScan token-transfer API ────────────────────────────────────────────────
+interface BscscanTokenTx {
+  hash: string;
+  from: string;
+  to: string;
+  value: string;          // en wei, como string
+  tokenDecimal: string;
+  confirmations: string;
+  blockNumber: string;
+}
+
+async function fetchUsdtTransfers(fromBlock: number, toBlock: number): Promise<BscscanTokenTx[]> {
+  const url =
+    `https://api.bscscan.com/api` +
+    `?module=account&action=tokentx` +
+    `&contractaddress=${USDT_ADDRESS}` +
+    `&address=${RECEIVING_WALLET}` +
+    `&startblock=${fromBlock}` +
+    `&endblock=${toBlock}` +
+    `&sort=asc` +
+    `&apikey=${BSCSCAN_API_KEY}`;
+
+  const res = await fetch(url, { signal: AbortSignal.timeout(15_000) });
+  if (!res.ok) throw new Error(`BSCScan HTTP ${res.status}`);
+
+  const data = await res.json() as { status: string; message: string; result: BscscanTokenTx[] | string };
+
+  // status "0" con message "No transactions found" es un resultado vacío válido
+  if (data.status === "0" && data.message === "No transactions found") return [];
+
+  if (data.status !== "1") {
+    throw new Error(`BSCScan error: ${data.message} — ${JSON.stringify(data.result)}`);
+  }
+
+  // Filtrar solo transfers que llegaron A la billetera receptora
+  return (data.result as BscscanTokenTx[]).filter(
+    (tx) => tx.to.toLowerCase() === RECEIVING_WALLET,
+  );
+}
+
+// ── Obtener bloque actual via JSON-RPC ────────────────────────────────────────
+async function getCurrentBlock(): Promise<number | null> {
+  for (const url of BSC_RPC_URLS) {
+    try {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ jsonrpc: "2.0", method: "eth_blockNumber", params: [], id: 1 }),
+        signal: AbortSignal.timeout(8_000),
+      });
+      const data = await res.json() as { result?: string };
+      if (data.result) return parseInt(data.result, 16);
+    } catch {
+      // probar el siguiente RPC
+    }
+  }
+  logger.error("Poller: no se pudo obtener el bloque actual de ningún RPC");
+  return null;
+}
 
 // ── Helpers para processed_transactions ──────────────────────────────────────
 async function isProcessed(txHash: string): Promise<boolean> {
@@ -84,47 +140,6 @@ async function createNotification(
   }
 }
 
-// ── Obtener provider funcionando (prueba RPCs en orden) ───────────────────────
-// IMPORTANTE: batchMaxCount:1 deshabilita el batching de ethers v6.
-// Los nodos públicos de BSC rechazan eth_getLogs cuando llega en un batch
-// ("method eth_getLogs in batch triggered rate limit").
-async function getWorkingProvider(): Promise<{ provider: ethers.JsonRpcProvider; currentBlock: number } | null> {
-  for (const url of BSC_RPC_URLS) {
-    try {
-      const provider = new ethers.JsonRpcProvider(url, undefined, { batchMaxCount: 1 });
-      const currentBlock = await provider.getBlockNumber();
-      return { provider, currentBlock };
-    } catch {
-      logger.warn({ url }, "Poller: RPC no disponible, probando el siguiente");
-    }
-  }
-  logger.error("Poller: ningún RPC de BSC disponible en este ciclo");
-  return null;
-}
-
-// ── Consultar eventos en chunks para no superar límites del RPC ───────────────
-async function queryEventsInChunks(
-  usdt: ethers.Contract,
-  fromBlock: number,
-  toBlock: number,
-): Promise<ethers.Log[]> {
-  const allEvents: ethers.Log[] = [];
-  const filter = usdt.filters.Transfer(null, RECEIVING_WALLET);
-
-  for (let start = fromBlock; start <= toBlock; start += MAX_BLOCK_RANGE) {
-    const end = Math.min(start + MAX_BLOCK_RANGE - 1, toBlock);
-    try {
-      const chunk = await usdt.queryFilter(filter, start, end);
-      allEvents.push(...chunk);
-    } catch (err) {
-      logger.error({ err, start, end }, "Poller: error consultando chunk de bloques — se reintentará en el próximo ciclo");
-      // Lanzar para que poll() no actualice lastCheckedBlock con este rango
-      throw err;
-    }
-  }
-  return allEvents;
-}
-
 // ── Lógica principal del polling ──────────────────────────────────────────────
 async function poll(): Promise<void> {
   if (!RECEIVING_WALLET) {
@@ -132,11 +147,10 @@ async function poll(): Promise<void> {
     return;
   }
 
-  const result = await getWorkingProvider();
-  if (!result) return;
-  const { provider, currentBlock } = result;
+  const currentBlock = await getCurrentBlock();
+  if (currentBlock === null) return;
 
-  // En el primer arranque, revisar los últimos ~50 000 bloques (~42 horas en BSC)
+  // En el primer arranque revisar los últimos 50 000 bloques (~42 h en BSC)
   const fromBlock =
     lastCheckedBlock === 0
       ? Math.max(0, currentBlock - 50_000)
@@ -144,42 +158,38 @@ async function poll(): Promise<void> {
 
   if (fromBlock > currentBlock) return;
 
-  const usdt = new ethers.Contract(USDT_ADDRESS, USDT_ABI, provider);
+  logger.info({ fromBlock, currentBlock }, "Poller: consultando BSCScan por transferencias USDT");
 
-  let events: ethers.Log[];
+  let transfers: BscscanTokenTx[];
   try {
-    events = await queryEventsInChunks(usdt, fromBlock, currentBlock);
-  } catch {
-    // Error ya logueado en queryEventsInChunks.
-    // NO actualizamos lastCheckedBlock para que se reintente en el próximo ciclo.
+    transfers = await fetchUsdtTransfers(fromBlock, currentBlock);
+  } catch (err) {
+    // No actualizar lastCheckedBlock — se reintentará en el próximo ciclo
+    logger.error({ err, fromBlock, currentBlock }, "Poller: error al consultar BSCScan — reintentando en 30 s");
     return;
   }
 
-  // Solo actualizamos lastCheckedBlock cuando la consulta fue exitosa
+  // Solo actualizar el puntero si la consulta fue exitosa
   lastCheckedBlock = currentBlock;
 
-  if (events.length > 0) {
-    logger.info(
-      { count: events.length, fromBlock, currentBlock },
-      "Poller blockchain: transferencias USDT entrantes detectadas",
-    );
+  if (transfers.length > 0) {
+    logger.info({ count: transfers.length, fromBlock, currentBlock }, "Poller: transferencias USDT entrantes detectadas");
   }
 
-  for (const event of events) {
-    const log = event as ethers.EventLog;
-    const txHash = log.transactionHash.toLowerCase();
-    const from = (log.args[0] as string).toLowerCase();
-    const value = log.args[2] as bigint;
+  for (const tx of transfers) {
+    const txHash = tx.hash.toLowerCase();
+    const from = tx.from.toLowerCase();
+    const value = BigInt(tx.value);
 
     if (await isProcessed(txHash)) continue;
 
-    if (value < REQUIRED_AMOUNT) {
-      logger.info({ txHash, from, value: value.toString() }, "Poller: transferencia menor a $10 — omitiendo");
+    if (value < REQUIRED_AMOUNT_WEI) {
+      logger.info({ txHash, from, value: tx.value }, "Poller: transferencia menor a $10 — omitiendo");
       await markProcessed(txHash);
       continue;
     }
 
-    // Buscar usuario por billetera BSC (guardada en lowercase)
+    // Buscar usuario por billetera BSC
     const [user] = await db
       .select()
       .from(usersTable)
@@ -210,7 +220,6 @@ async function processPayment(
   user: typeof usersTable.$inferSelect,
   txHash: string,
 ): Promise<void> {
-  // Determinar si es pago inicial o renovación
   const existingApproved = await db
     .select({ id: paymentsTable.id })
     .from(paymentsTable)
@@ -220,7 +229,6 @@ async function processPayment(
   const paymentType: "initial" | "renewal" =
     existingApproved.length > 0 ? "renewal" : "initial";
 
-  // Registrar el pago (auto-aprobado)
   await db.insert(paymentsTable).values({
     userId: user.id,
     amount: "10",
@@ -230,7 +238,6 @@ async function processPayment(
     status: "approved",
   });
 
-  // Activar / renovar membresía
   const now = new Date();
   const isFirstPayment = !user.membershipStartedAt;
   const updates: Record<string, unknown> = {
@@ -239,17 +246,14 @@ async function processPayment(
   };
 
   if (isFirstPayment) {
-    // Primer pago: registrar inicio. El temporizador de 30 días empieza cuando llegue su primer referido
     updates.membershipStartedAt = now;
   } else {
-    // Renovación: reiniciar el contador de 30 días
     updates.membershipTimerStartedAt = now;
     updates.membershipExpiresAt = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
   }
 
   await db.update(usersTable).set(updates as any).where(eq(usersTable.id, user.id));
 
-  // Si es el primer pago del usuario y tiene referidor, iniciar el temporizador del referidor si aún no había empezado
   if (isFirstPayment && user.referrerId) {
     const [referrer] = await db
       .select()
@@ -268,7 +272,6 @@ async function processPayment(
     }
   }
 
-  // ── Notificar al usuario que su pago fue confirmado ───────────────────────
   const paymentLabel = paymentType === "initial" ? "inicial" : "de renovación";
   await createNotification(
     user.id,
@@ -278,8 +281,6 @@ async function processPayment(
     { txHash, paymentType },
   );
 
-  // Distribuir comisiones a N1 ($6), N2 ($2), N3 ($1)
-  // Pasamos el txHash del pago original para trazabilidad
   await distributeCommissions(user, txHash);
 }
 
@@ -291,10 +292,9 @@ export function startBlockchainPoller(): void {
   }
   if (!process.env.OPERATOR_PRIVATE_KEY) {
     logger.warn("OPERATOR_PRIVATE_KEY no configurado — las comisiones NO se distribuirán automáticamente");
-    // El poller sigue corriendo para activar membresías, solo no distribuye comisiones
   }
 
-  logger.info("Iniciando poller de blockchain BSC (USDT BEP20, cada 30 segundos)");
+  logger.info("Iniciando poller de blockchain BSC via BSCScan API (cada 30 segundos)");
   poll().catch((err) => logger.error({ err }, "Poller: error en el ciclo inicial"));
   setInterval(() => {
     poll().catch((err) => logger.error({ err }, "Poller: error en ciclo periódico"));
