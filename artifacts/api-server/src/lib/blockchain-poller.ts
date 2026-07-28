@@ -85,10 +85,13 @@ async function createNotification(
 }
 
 // ── Obtener provider funcionando (prueba RPCs en orden) ───────────────────────
+// IMPORTANTE: batchMaxCount:1 deshabilita el batching de ethers v6.
+// Los nodos públicos de BSC rechazan eth_getLogs cuando llega en un batch
+// ("method eth_getLogs in batch triggered rate limit").
 async function getWorkingProvider(): Promise<{ provider: ethers.JsonRpcProvider; currentBlock: number } | null> {
   for (const url of BSC_RPC_URLS) {
     try {
-      const provider = new ethers.JsonRpcProvider(url);
+      const provider = new ethers.JsonRpcProvider(url, undefined, { batchMaxCount: 1 });
       const currentBlock = await provider.getBlockNumber();
       return { provider, currentBlock };
     } catch {
