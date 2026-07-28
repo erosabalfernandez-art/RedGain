@@ -47,12 +47,11 @@ interface BscscanTokenTx {
 }
 
 async function fetchUsdtTransfers(fromBlock: number, toBlock: number): Promise<BscscanTokenTx[]> {
-  // BSCScan V2 (dominio propio, no etherscan.io que requiere plan de pago para BSC).
+  // BSCScan API estándar (api.bscscan.com/api — el endpoint /v2/ no existe en BSCScan).
   // La clave gratuita de bscscan.com funciona aquí.
   const url =
-    `https://api.bscscan.com/v2/api` +
-    `?chainid=56` +
-    `&module=account&action=tokentx` +
+    `https://api.bscscan.com/api` +
+    `?module=account&action=tokentx` +
     `&contractaddress=${USDT_ADDRESS}` +
     `&address=${RECEIVING_WALLET}` +
     `&startblock=${fromBlock}` +
@@ -303,7 +302,7 @@ export function startBlockchainPoller(): void {
     return;
   }
 
-  logger.info("Iniciando poller de blockchain BSC via Etherscan V2 API (cada 30 segundos)");
+  logger.info("Iniciando poller de blockchain BSC via BSCScan API (cada 30 segundos)");
   poll().catch((err) => logger.error({ err }, "Poller: error en el ciclo inicial"));
   setInterval(() => {
     poll().catch((err) => logger.error({ err }, "Poller: error en ciclo periódico"));
