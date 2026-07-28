@@ -47,9 +47,10 @@ interface BscscanTokenTx {
 }
 
 async function fetchUsdtTransfers(fromBlock: number, toBlock: number): Promise<BscscanTokenTx[]> {
-  // Etherscan V2 con chainid=56 (BSC). Requiere API key gratuita de bscscan.com.
+  // BSCScan V2 (dominio propio, no etherscan.io que requiere plan de pago para BSC).
+  // La clave gratuita de bscscan.com funciona aquí.
   const url =
-    `https://api.etherscan.io/v2/api` +
+    `https://api.bscscan.com/v2/api` +
     `?chainid=56` +
     `&module=account&action=tokentx` +
     `&contractaddress=${USDT_ADDRESS}` +
