@@ -6,9 +6,10 @@
  *   2. Activa/renueva la membresía del usuario
  *   3. Inicia el temporizador del referidor si aplica
  *   4. Distribuye comisiones a la cadena de referidos
+ *   5. Notifica al usuario que su pago fue confirmado
  */
 import { ethers } from "ethers";
-import { db, usersTable, paymentsTable, pool } from "@workspace/db";
+import { db, usersTable, paymentsTable, notificationsTable, pool } from "@workspace/db";
 import { eq, and, sql } from "drizzle-orm";
 import { logger } from "./logger";
 import { distributeCommissions } from "./distributor";
@@ -47,6 +48,27 @@ async function markProcessed(txHash: string): Promise<void> {
     );
   } finally {
     client.release();
+  }
+}
+
+async function createNotification(
+  userId: number,
+  type: string,
+  title: string,
+  body: string,
+  metadata?: Record<string, unknown>,
+): Promise<void> {
+  try {
+    await db.insert(notificationsTable).values({
+      userId,
+      type,
+      title,
+      body,
+      read: false,
+      metadata: metadata ? JSON.stringify(metadata) : null,
+    });
+  } catch (err) {
+    logger.warn({ err, userId, type }, "Poller: no se pudo crear notificación");
   }
 }
 
@@ -203,8 +225,19 @@ async function processPayment(
     }
   }
 
+  // ── Notificar al usuario que su pago fue confirmado ───────────────────────
+  const paymentLabel = paymentType === "initial" ? "inicial" : "de renovación";
+  await createNotification(
+    user.id,
+    "payment_confirmed",
+    "✅ Pago confirmado — cuenta activa",
+    `Tu pago ${paymentLabel} de $10 USDT fue detectado en la blockchain y tu cuenta está activa. Tx: ${txHash.slice(0, 10)}…`,
+    { txHash, paymentType },
+  );
+
   // Distribuir comisiones a N1 ($6), N2 ($2), N3 ($1)
-  await distributeCommissions(user);
+  // Pasamos el txHash del pago original para trazabilidad
+  await distributeCommissions(user, txHash);
 }
 
 // ── Función pública para arrancar el poller ───────────────────────────────────

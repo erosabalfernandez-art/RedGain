@@ -8,7 +8,7 @@
  *   $1 queda en la SafePal  → fee de plataforma
  */
 import { ethers } from "ethers";
-import { db, usersTable } from "@workspace/db";
+import { db, usersTable, commissionEventsTable, notificationsTable } from "@workspace/db";
 import { eq } from "drizzle-orm";
 import { logger } from "./logger";
 
@@ -21,13 +21,45 @@ const COMMISSIONS: Record<number, bigint> = {
   3: ethers.parseUnits("1", 18),
 };
 
+const COMMISSION_LABELS: Record<number, string> = { 1: "$6", 2: "$2", 3: "$1" };
+const COMMISSION_AMOUNTS: Record<number, string> = { 1: "6", 2: "2", 3: "1" };
+
 const USDT_ABI = [
   "function transfer(address to, uint256 amount) returns (bool)",
   "function balanceOf(address account) view returns (uint256)",
 ];
 
+function supportMessage(): string {
+  const wa = process.env.SUPPORT_WHATSAPP;
+  return wa
+    ? `Contáctanos por WhatsApp: ${wa}`
+    : "Contáctanos por el WhatsApp de soporte que aparece en la web.";
+}
+
+async function createNotification(
+  userId: number,
+  type: string,
+  title: string,
+  body: string,
+  metadata?: Record<string, unknown>,
+): Promise<void> {
+  try {
+    await db.insert(notificationsTable).values({
+      userId,
+      type,
+      title,
+      body,
+      read: false,
+      metadata: metadata ? JSON.stringify(metadata) : null,
+    });
+  } catch (err) {
+    logger.warn({ err, userId, type }, "Distribuidor: no se pudo crear notificación");
+  }
+}
+
 export async function distributeCommissions(
   user: typeof usersTable.$inferSelect,
+  sourceTxHash?: string,
 ): Promise<void> {
   const operatorKey = process.env.OPERATOR_PRIVATE_KEY;
   if (!operatorKey) {
@@ -73,30 +105,96 @@ export async function distributeCommissions(
         { level, referrerId: referrer.id },
         "Distribuidor: referidor sin billetera BSC — omitiendo comisión",
       );
+      // Registrar evento como skipped
+      await db.insert(commissionEventsTable).values({
+        recipientId: referrer.id,
+        sourceUserId: user.id,
+        level,
+        amountUsdt: COMMISSION_AMOUNTS[level] ?? "0",
+        sourceTxHash: sourceTxHash ?? null,
+        status: "skipped",
+        errorMessage: "Sin billetera BSC registrada",
+      }).catch(() => {});
+
     } else if (referrer.accountStatus !== "active") {
       logger.info(
         { level, referrerId: referrer.id, status: referrer.accountStatus },
         "Distribuidor: referidor no activo — omitiendo comisión",
       );
+      // Registrar evento como skipped
+      await db.insert(commissionEventsTable).values({
+        recipientId: referrer.id,
+        sourceUserId: user.id,
+        level,
+        amountUsdt: COMMISSION_AMOUNTS[level] ?? "0",
+        sourceTxHash: sourceTxHash ?? null,
+        status: "skipped",
+        errorMessage: `Cuenta en estado: ${referrer.accountStatus}`,
+      }).catch(() => {});
+
     } else {
       try {
         const tx = await (usdt.transfer as any)(referrer.bscWallet, commission);
         const receipt = await tx.wait(1);
+        const txHash: string = receipt?.hash ?? tx.hash;
+
         logger.info(
           {
             level,
             referrerId: referrer.id,
             wallet: referrer.bscWallet,
             amountUSDT: ethers.formatUnits(commission, 18),
-            txHash: receipt?.hash ?? tx.hash,
+            txHash,
           },
           "Distribuidor: comisión enviada exitosamente",
         );
+
+        // Registrar evento en commission_events
+        await db.insert(commissionEventsTable).values({
+          recipientId: referrer.id,
+          sourceUserId: user.id,
+          level,
+          amountUsdt: COMMISSION_AMOUNTS[level] ?? "0",
+          txHash,
+          sourceTxHash: sourceTxHash ?? null,
+          status: "sent",
+        }).catch((err) => logger.warn({ err }, "Distribuidor: no se pudo guardar commission_event"));
+
+        // Notificar al referidor que recibió su comisión
+        await createNotification(
+          referrer.id,
+          "commission_sent",
+          `✅ Recibiste ${COMMISSION_LABELS[level]} USDT`,
+          `${user.name} realizó su pago y recibiste una comisión de nivel ${level} de ${COMMISSION_LABELS[level]} USDT en tu billetera.`,
+          { level, amountUsdt: COMMISSION_AMOUNTS[level], txHash, sourceTxHash },
+        );
+
       } catch (err) {
         // Un fallo en un nivel NO cancela los otros niveles
+        const errMsg = err instanceof Error ? err.message : String(err);
         logger.error(
           { err, level, referrerId: referrer.id },
           "Distribuidor: error al enviar comisión — continuando con el siguiente nivel",
+        );
+
+        // Registrar evento fallido
+        await db.insert(commissionEventsTable).values({
+          recipientId: referrer.id,
+          sourceUserId: user.id,
+          level,
+          amountUsdt: COMMISSION_AMOUNTS[level] ?? "0",
+          sourceTxHash: sourceTxHash ?? null,
+          status: "failed",
+          errorMessage: errMsg.slice(0, 500),
+        }).catch(() => {});
+
+        // Notificar al referidor del error y que contacte soporte
+        await createNotification(
+          referrer.id,
+          "commission_failed",
+          `⚠️ Problema con tu comisión de nivel ${level}`,
+          `Hubo un error al enviarte la comisión de ${COMMISSION_LABELS[level]} USDT. ${supportMessage()}`,
+          { level, amountUsdt: COMMISSION_AMOUNTS[level], error: errMsg.slice(0, 200) },
         );
       }
     }

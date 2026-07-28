@@ -51,6 +51,49 @@ export async function initDb(): Promise<void> {
         ALTER COLUMN proof_text SET DEFAULT '';
     `);
     logger.info("initDb: blockchain tables and columns ready");
+
+    // ── Historial de comisiones individuales ─────────────────────────────────
+    await client.query(`
+      DO $$
+      BEGIN
+        IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'commission_event_status') THEN
+          CREATE TYPE commission_event_status AS ENUM ('sent', 'failed', 'skipped');
+        END IF;
+      END$$;
+    `);
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS commission_events (
+        id              SERIAL PRIMARY KEY,
+        recipient_id    INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        source_user_id  INTEGER REFERENCES users(id) ON DELETE SET NULL,
+        level           INTEGER NOT NULL,
+        amount_usdt     TEXT NOT NULL,
+        tx_hash         TEXT,
+        source_tx_hash  TEXT,
+        status          commission_event_status NOT NULL DEFAULT 'sent',
+        error_message   TEXT,
+        created_at      TIMESTAMP NOT NULL DEFAULT NOW()
+      );
+    `);
+    logger.info("initDb: commission_events table ready");
+
+    // ── Notificaciones in-app ────────────────────────────────────────────────
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS notifications (
+        id          SERIAL PRIMARY KEY,
+        user_id     INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        type        TEXT NOT NULL,
+        title       TEXT NOT NULL,
+        body        TEXT NOT NULL,
+        read        BOOLEAN NOT NULL DEFAULT FALSE,
+        metadata    TEXT,
+        created_at  TIMESTAMP NOT NULL DEFAULT NOW()
+      );
+    `);
+    await client.query(`
+      CREATE INDEX IF NOT EXISTS notifications_user_id_idx ON notifications (user_id);
+    `);
+    logger.info("initDb: notifications table ready");
   } catch (err) {
     logger.error({ err }, "initDb: failed to ensure tables");
     throw err;

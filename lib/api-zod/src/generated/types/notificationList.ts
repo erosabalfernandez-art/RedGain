@@ -5,8 +5,9 @@
  * RedGain membership referral platform API
  * OpenAPI spec version: 0.1.0
  */
+import type { Notification } from './notification';
 
-export interface LoginInput {
-  email: string;
-  password: string;
+export interface NotificationList {
+  notifications: Notification[];
+  unreadCount: number;
 }

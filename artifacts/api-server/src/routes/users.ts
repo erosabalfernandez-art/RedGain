@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { db, usersTable, paymentsTable } from "@workspace/db";
-import { eq, and, sql } from "drizzle-orm";
+import { db, usersTable, paymentsTable, notificationsTable, commissionEventsTable } from "@workspace/db";
+import { eq, and, sql, desc } from "drizzle-orm";
 
 const router = Router();
 
@@ -228,6 +228,87 @@ router.patch("/me/bsc-wallet", requireAuth, async (req: any, res) => {
     .where(eq(usersTable.id, req.currentUser.id))
     .returning();
   return res.json({ success: true, bscWallet: updated.bscWallet });
+});
+
+// ── Notificaciones ────────────────────────────────────────────────────────────
+
+// GET /api/users/me/notifications — lista de notificaciones + unreadCount
+router.get("/me/notifications", requireAuth, async (req: any, res) => {
+  const user = req.currentUser;
+  const rows = await db
+    .select()
+    .from(notificationsTable)
+    .where(eq(notificationsTable.userId, user.id))
+    .orderBy(desc(notificationsTable.createdAt))
+    .limit(50);
+
+  const unreadCount = rows.filter((n) => !n.read).length;
+
+  const notifications = rows.map((n) => ({
+    id: n.id,
+    type: n.type,
+    title: n.title,
+    body: n.body,
+    read: n.read,
+    metadata: n.metadata ? (() => { try { return JSON.parse(n.metadata!); } catch { return {}; } })() : {},
+    createdAt: n.createdAt.toISOString(),
+  }));
+
+  return res.json({ notifications, unreadCount });
+});
+
+// PATCH /api/users/me/notifications/mark-read — marcar todas como leídas
+router.patch("/me/notifications/mark-read", requireAuth, async (req: any, res) => {
+  const user = req.currentUser;
+  await db
+    .update(notificationsTable)
+    .set({ read: true })
+    .where(and(eq(notificationsTable.userId, user.id), eq(notificationsTable.read, false)));
+  return res.json({ success: true });
+});
+
+// ── Historial de comisiones ───────────────────────────────────────────────────
+
+// GET /api/users/me/commission-history — historial de comisiones recibidas
+router.get("/me/commission-history", requireAuth, async (req: any, res) => {
+  const user = req.currentUser;
+
+  const events = await db
+    .select({
+      id: commissionEventsTable.id,
+      level: commissionEventsTable.level,
+      amountUsdt: commissionEventsTable.amountUsdt,
+      txHash: commissionEventsTable.txHash,
+      sourceTxHash: commissionEventsTable.sourceTxHash,
+      status: commissionEventsTable.status,
+      errorMessage: commissionEventsTable.errorMessage,
+      createdAt: commissionEventsTable.createdAt,
+      sourceName: usersTable.name,
+    })
+    .from(commissionEventsTable)
+    .leftJoin(usersTable, eq(commissionEventsTable.sourceUserId, usersTable.id))
+    .where(eq(commissionEventsTable.recipientId, user.id))
+    .orderBy(desc(commissionEventsTable.createdAt))
+    .limit(100);
+
+  const totalReceived = events
+    .filter((e) => e.status === "sent")
+    .reduce((sum, e) => sum + parseFloat(e.amountUsdt), 0);
+
+  return res.json({
+    events: events.map((e) => ({
+      id: e.id,
+      level: e.level,
+      amountUsdt: parseFloat(e.amountUsdt),
+      txHash: e.txHash ?? null,
+      sourceTxHash: e.sourceTxHash ?? null,
+      status: e.status,
+      errorMessage: e.errorMessage ?? null,
+      sourceName: e.sourceName ?? null,
+      createdAt: e.createdAt.toISOString(),
+    })),
+    totalReceived,
+  });
 });
 
 export default router;

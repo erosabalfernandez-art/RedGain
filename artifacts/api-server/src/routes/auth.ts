@@ -1,6 +1,6 @@
 import { Router } from "express";
 import bcrypt from "bcryptjs";
-import { db, usersTable } from "@workspace/db";
+import { db, usersTable, notificationsTable } from "@workspace/db";
 import { eq } from "drizzle-orm";
 import { randomBytes } from "crypto";
 
@@ -143,6 +143,18 @@ router.post("/register", async (req, res) => {
       bscWallet: normalizedWallet ?? undefined,
     })
     .returning();
+
+  // Notificar al referidor que alguien usó su código
+  if (referrerId) {
+    await db.insert(notificationsTable).values({
+      userId: referrerId,
+      type: "new_referral",
+      title: "🎉 Nuevo referido",
+      body: `${name} se registró usando tu código de referido. ¡Cuando realice su pago recibirás $6 USDT!`,
+      read: false,
+      metadata: JSON.stringify({ newUserId: user.id, newUserName: name }),
+    }).catch(() => {}); // no bloquear el registro si falla la notificación
+  }
 
   req.session.userId = user.id;
   return res.status(201).json({ user: userToResponse(user) });
