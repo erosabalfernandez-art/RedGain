@@ -18,7 +18,9 @@ import { distributeCommissions } from "./distributor";
 
 const USDT_ADDRESS = "0x55d398326f99059fF775485246999027B3197955";
 const RECEIVING_WALLET = (process.env.RECEIVING_WALLET ?? "").toLowerCase();
-const BSCSCAN_API_KEY = process.env.BSCSCAN_API_KEY ?? "YourApiKeyToken";
+// Clave gratuita de bscscan.com (NO de etherscan.io).
+// Sin clave el endpoint V2 rechaza las peticiones.
+const BSCSCAN_API_KEY = process.env.BSCSCAN_API_KEY ?? "";
 
 // 10 USDT en wei (18 decimales)
 const REQUIRED_AMOUNT_WEI = BigInt("10000000000000000000");
@@ -45,9 +47,11 @@ interface BscscanTokenTx {
 }
 
 async function fetchUsdtTransfers(fromBlock: number, toBlock: number): Promise<BscscanTokenTx[]> {
+  // Etherscan V2 con chainid=56 (BSC). Requiere API key gratuita de bscscan.com.
   const url =
-    `https://api.bscscan.com/api` +
-    `?module=account&action=tokentx` +
+    `https://api.etherscan.io/v2/api` +
+    `?chainid=56` +
+    `&module=account&action=tokentx` +
     `&contractaddress=${USDT_ADDRESS}` +
     `&address=${RECEIVING_WALLET}` +
     `&startblock=${fromBlock}` +
@@ -293,8 +297,12 @@ export function startBlockchainPoller(): void {
   if (!process.env.OPERATOR_PRIVATE_KEY) {
     logger.warn("OPERATOR_PRIVATE_KEY no configurado — las comisiones NO se distribuirán automáticamente");
   }
+  if (!process.env.BSCSCAN_API_KEY) {
+    logger.error("BSCSCAN_API_KEY no configurado — el poller NO puede consultar transacciones. Obtén una clave gratuita en https://bscscan.com/myapikey y añádela en Render.");
+    return;
+  }
 
-  logger.info("Iniciando poller de blockchain BSC via BSCScan API (cada 30 segundos)");
+  logger.info("Iniciando poller de blockchain BSC via Etherscan V2 API (cada 30 segundos)");
   poll().catch((err) => logger.error({ err }, "Poller: error en el ciclo inicial"));
   setInterval(() => {
     poll().catch((err) => logger.error({ err }, "Poller: error en ciclo periódico"));
