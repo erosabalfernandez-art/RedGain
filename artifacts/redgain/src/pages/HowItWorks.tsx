@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'wouter';
+import { Link, useSearch } from 'wouter';
 import { motion } from 'framer-motion';
 import {
   ArrowRight, ArrowLeft, Users, Clock, AlertTriangle,
@@ -59,6 +59,11 @@ function PlainSection({ children }: { children: React.ReactNode }) {
 }
 
 export default function HowItWorks() {
+  const search = useSearch();
+  const fromDashboard = search.includes('from=dashboard');
+  const backHref = fromDashboard ? '/dashboard' : '/';
+  const backLabel = fromDashboard ? 'Volver al panel' : 'Volver al inicio';
+
   return (
     <div className="min-h-screen bg-[#0E0C09] text-white selection:bg-[#C9A227]/30">
 
@@ -68,16 +73,23 @@ export default function HowItWorks() {
 
       {/* ── Navbar ── */}
       <nav className="sticky top-0 z-50 border-b border-[#C9A227]/15 bg-[#0E0C09]/88 backdrop-blur-md px-6 h-16 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2.5 font-bold text-white hover:opacity-80 transition-opacity">
+        <Link href={fromDashboard ? '/dashboard' : '/'} className="flex items-center gap-2.5 font-bold text-white hover:opacity-80 transition-opacity">
           <Logo className="w-6 h-6 text-[#C9A227]" />
           <span>RedGain</span>
         </Link>
-        <div className="flex items-center gap-3">
-          <Link href="/login"    className="text-sm font-medium text-white/60 hover:text-[#E8C547] transition-colors">Iniciar sesión</Link>
-          <Link href="/register" className="text-sm font-semibold px-4 py-2 bg-gradient-to-r from-[#8B6914] to-[#C9A227] text-black rounded-lg hover:opacity-90 transition-all hover:scale-105">
-            Comenzar
+        {fromDashboard ? (
+          <Link href="/dashboard" className="inline-flex items-center gap-2 text-sm font-medium text-white/60 hover:text-[#E8C547] transition-colors group">
+            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+            Volver al panel
           </Link>
-        </div>
+        ) : (
+          <div className="flex items-center gap-3">
+            <Link href="/login"    className="text-sm font-medium text-white/60 hover:text-[#E8C547] transition-colors">Iniciar sesión</Link>
+            <Link href="/register" className="text-sm font-semibold px-4 py-2 bg-gradient-to-r from-[#8B6914] to-[#C9A227] text-black rounded-lg hover:opacity-90 transition-all hover:scale-105">
+              Comenzar
+            </Link>
+          </div>
+        )}
       </nav>
 
       {/* ══════════════════════════════════════════════
@@ -86,9 +98,9 @@ export default function HowItWorks() {
       <SectionBg src="/stoic-howitworks.jpg" brightness={0.30}>
         <div className="max-w-4xl mx-auto px-6 py-28 text-center">
           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="flex justify-start mb-8">
-            <Link href="/" className="inline-flex items-center gap-2 text-sm font-medium text-white/50 hover:text-[#E8C547] transition-colors group">
+            <Link href={backHref} className="inline-flex items-center gap-2 text-sm font-medium text-white/50 hover:text-[#E8C547] transition-colors group">
               <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-              Volver al inicio
+              {backLabel}
             </Link>
           </motion.div>
 
@@ -424,9 +436,9 @@ export default function HowItWorks() {
               <Link href="/register" className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-[#8B6914] to-[#C9A227] text-black rounded-full font-bold hover:opacity-90 hover:scale-105 transition-all shadow-[0_0_30px_-5px_#C9A227]">
                 Comenzar ahora <ArrowRight className="w-4 h-4" />
               </Link>
-              <Link href="/" className="inline-flex items-center gap-2 text-sm font-medium text-white/50 hover:text-[#E8C547] transition-colors group">
+              <Link href={backHref} className="inline-flex items-center gap-2 text-sm font-medium text-white/50 hover:text-[#E8C547] transition-colors group">
                 <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-                Volver al inicio
+                {backLabel}
               </Link>
             </div>
           </motion.div>

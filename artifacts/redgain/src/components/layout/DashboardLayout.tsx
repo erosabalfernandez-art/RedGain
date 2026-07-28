@@ -17,7 +17,7 @@ export function DashboardLayout({ children, topbar }: { children: React.ReactNod
     { label: 'Mis Referidos', icon: Users, href: '/dashboard/referidos' },
     { label: 'Pagos', icon: CreditCard, href: '/dashboard/pagos' },
     { label: 'Membresía', icon: Clock, href: '/dashboard/membresia' },
-    { label: 'Cómo Funciona', icon: BookOpen, href: '/como-funciona' },
+    { label: 'Cómo Funciona', icon: BookOpen, href: '/como-funciona?from=dashboard' },
   ];
 
   const isActive = (href: string) => location === href || (href !== '/dashboard' && location.startsWith(href));
