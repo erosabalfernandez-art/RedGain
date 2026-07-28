@@ -34,9 +34,9 @@ const BSC_RPC_URLS = [
 ].filter(Boolean);
 
 // Máximo de bloques por consulta (BSC ~3 seg/bloque → 2000 bloques ≈ 100 min)
-const MAX_BLOCK_RANGE = 2_000;
+const MAX_BLOCK_RANGE = 500;
 // Lookback inicial: últimos 10 000 bloques (~8 horas)
-const INITIAL_LOOKBACK = 10_000;
+const INITIAL_LOOKBACK = 2_000;
 
 let lastCheckedBlock = 0;
 
