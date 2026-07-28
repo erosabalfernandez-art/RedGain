@@ -3,20 +3,28 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: RedGain membership referral platform API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: auth
+    description: Authentication
+  - name: users
+    description: User dashboard operations
+  - name: payments
+    description: Payment proof operations
+  - name: admin
+    description: Admin operations
+
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,13 +32,873 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  # ── Auth ──────────────────────────────────────────────────────────────────
+  /auth/register:
+    post:
+      operationId: register
+      tags: [auth]
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterInput"
+      responses:
+        "201":
+          description: Registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginInput"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/logout:
+    post:
+      operationId: logout
+      tags: [auth]
+      summary: Logout current user
+      responses:
+        "200":
+          description: Logged out
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /auth/me:
+    get:
+      operationId: getMe
+      tags: [auth]
+      summary: Get current authenticated user
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  # ── User dashboard ────────────────────────────────────────────────────────
+  /users/me/referrals:
+    get:
+      operationId: getMyReferrals
+      tags: [users]
+      summary: Get referrals grouped by level (level1, level2, level3)
+      responses:
+        "200":
+          description: Referrals by level
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReferralsByLevel"
+
+  /users/me/tree:
+    get:
+      operationId: getMyTree
+      tags: [users]
+      summary: Get genealogy tree for current user
+      responses:
+        "200":
+          description: Genealogy tree rooted at current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenealogyTree"
+
+  /users/me/membership:
+    get:
+      operationId: getMyMembership
+      tags: [users]
+      summary: Get membership timer and status info
+      responses:
+        "200":
+          description: Membership status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MembershipStatus"
+
+  /users/me/earnings:
+    get:
+      operationId: getMyEarnings
+      tags: [users]
+      summary: Get earnings summary for the current user
+      responses:
+        "200":
+          description: Earnings summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EarningsSummary"
+
+  /users/me/referral-code:
+    get:
+      operationId: getMyReferralCode
+      tags: [users]
+      summary: Get the current user's referral code and link
+      responses:
+        "200":
+          description: Referral code info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReferralCode"
+
+  /users/me/bsc-wallet:
+    patch:
+      operationId: updateMyBscWallet
+      tags: [users]
+      summary: Set or update the user's BSC wallet address
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateBscWalletInput"
+      responses:
+        "200":
+          description: Wallet updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UpdateBscWalletResponse"
+        "400":
+          description: Invalid address or already in use
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  # ── Payments ──────────────────────────────────────────────────────────────
+  /payments:
+    post:
+      operationId: submitPayment
+      tags: [payments]
+      summary: Submit a payment proof
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PaymentInput"
+      responses:
+        "201":
+          description: Payment submitted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentRecord"
+
+  /payments/my:
+    get:
+      operationId: getMyPayments
+      tags: [payments]
+      summary: Get current user's payment history
+      responses:
+        "200":
+          description: Payments list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PaymentRecord"
+
+  # ── Admin ─────────────────────────────────────────────────────────────────
+  /admin/users:
+    get:
+      operationId: adminListUsers
+      tags: [admin]
+      summary: List all users (admin only)
+      responses:
+        "200":
+          description: All users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AdminUser"
+
+  /admin/users/{id}:
+    patch:
+      operationId: adminUpdateUser
+      tags: [admin]
+      summary: Update user status or role (admin only)
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminUserUpdate"
+      responses:
+        "200":
+          description: Updated user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminUser"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      operationId: adminDeleteUser
+      tags: [admin]
+      summary: Delete a user and their payments (admin only)
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "400":
+          description: Cannot delete admin account
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /admin/payments:
+    get:
+      operationId: adminListPayments
+      tags: [admin]
+      summary: List all payments (admin only)
+      responses:
+        "200":
+          description: All payments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AdminPayment"
+
+  /admin/payments/{id}:
+    patch:
+      operationId: adminReviewPayment
+      tags: [admin]
+      summary: Approve or reject a payment (admin only)
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PaymentReview"
+      responses:
+        "200":
+          description: Updated payment
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminPayment"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /admin/tree:
+    get:
+      operationId: adminGetTree
+      tags: [admin]
+      summary: Get global genealogy tree of all users (admin only)
+      responses:
+        "200":
+          description: Full genealogy tree
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GenealogyNode"
+
+  /admin/commissions:
+    get:
+      operationId: adminGetCommissions
+      tags: [admin]
+      summary: Commission payout calculator — who to pay and how much (admin only)
+      responses:
+        "200":
+          description: Commission payouts for current cycle
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommissionReport"
+
+  /admin/stats:
+    get:
+      operationId: adminGetStats
+      tags: [admin]
+      summary: Platform-wide stats (admin only)
+      responses:
+        "200":
+          description: Stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminStats"
+
 components:
   schemas:
+    UpdateBscWalletInput:
+      type: object
+      required: [bscWallet]
+      properties:
+        bscWallet:
+          type: string
+          description: BSC wallet address (0x...)
+
+    UpdateBscWalletResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        bscWallet:
+          type: ["string", "null"]
+
+    UploadResponse:
+      type: object
+      required: [urls]
+      properties:
+        urls:
+          type: array
+          items:
+            type: string
+
     HealthStatus:
       type: object
+      required: [status]
       properties:
         status:
           type: string
-      required:
-        - status
 
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
+
+    SuccessResponse:
+      type: object
+      required: [success]
+      properties:
+        success:
+          type: boolean
+
+    RegisterInput:
+      type: object
+      required: [name, email, password, phone]
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+          description: Phone number with country code e.g. +5588992543996
+        password:
+          type: string
+          minLength: 6
+        referralCode:
+          type: ["string", "null"]
+        bscWallet:
+          type: ["string", "null"]
+          description: BSC wallet address (0x...) from which the user will send payments
+
+    LoginInput:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+
+    User:
+      type: object
+      required: [id, name, email, role, accountStatus, referralCode, createdAt]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: ["string", "null"]
+        role:
+          type: string
+          enum: [user, admin]
+        accountStatus:
+          type: string
+          enum: [pending, active, paused, lost]
+        referralCode:
+          type: string
+        bscWallet:
+          type: ["string", "null"]
+          description: BSC wallet address for automatic payment detection
+        membershipStartedAt:
+          type: ["string", "null"]
+        membershipTimerStartedAt:
+          type: ["string", "null"]
+        membershipExpiresAt:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+
+    AuthResponse:
+      type: object
+      required: [user]
+      properties:
+        user:
+          $ref: "#/components/schemas/User"
+
+    ReferralPerson:
+      type: object
+      required: [id, name, accountStatus, joinedAt, level, commissionAmount]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        phone:
+          type: ["string", "null"]
+        whatsappUrl:
+          type: ["string", "null"]
+        accountStatus:
+          type: string
+          enum: [pending, active, paused, lost]
+        joinedAt:
+          type: string
+        level:
+          type: integer
+          description: 1, 2, or 3
+        commissionAmount:
+          type: number
+          description: "Commission earned per renewal: $6 (L1), $2 (L2), $1 (L3)"
+        membershipExpiresAt:
+          type: ["string", "null"]
+        membershipTimerStartedAt:
+          type: ["string", "null"]
+
+    ReferralsByLevel:
+      type: object
+      required: [level1, level2, level3, totals]
+      properties:
+        level1:
+          type: array
+          items:
+            $ref: "#/components/schemas/ReferralPerson"
+        level2:
+          type: array
+          items:
+            $ref: "#/components/schemas/ReferralPerson"
+        level3:
+          type: array
+          items:
+            $ref: "#/components/schemas/ReferralPerson"
+        totals:
+          type: object
+          properties:
+            count:
+              type: integer
+            active:
+              type: integer
+            projectedMonthly:
+              type: number
+
+    GenealogyNode:
+      type: object
+      required: [id, name, accountStatus, level]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        phone:
+          type: ["string", "null"]
+        whatsappUrl:
+          type: ["string", "null"]
+        accountStatus:
+          type: string
+          enum: [pending, active, paused, lost]
+        level:
+          type: integer
+        membershipExpiresAt:
+          type: ["string", "null"]
+        membershipTimerStartedAt:
+          type: ["string", "null"]
+        children:
+          type: array
+          items:
+            $ref: "#/components/schemas/GenealogyNode"
+
+    GenealogyTree:
+      type: object
+      required: [root, nodes]
+      properties:
+        root:
+          $ref: "#/components/schemas/GenealogyNode"
+        nodes:
+          type: integer
+          description: Total number of nodes in the tree
+
+    MembershipStatus:
+      type: object
+      required: [accountStatus, timerStarted]
+      properties:
+        accountStatus:
+          type: string
+          enum: [pending, active, paused, lost]
+        timerStarted:
+          type: boolean
+          description: Whether the countdown has begun (first referral activated)
+        membershipStartedAt:
+          type: ["string", "null"]
+        membershipTimerStartedAt:
+          type: ["string", "null"]
+        membershipExpiresAt:
+          type: ["string", "null"]
+        gracePeriodEndsAt:
+          type: ["string", "null"]
+          description: membershipExpiresAt + 14 days
+        daysRemaining:
+          type: ["integer", "null"]
+        inGracePeriod:
+          type: boolean
+        graceEndsInDays:
+          type: ["integer", "null"]
+        referralCodeActive:
+          type: boolean
+          description: Whether the referral code can be used to invite people
+
+    EarningsSummary:
+      type: object
+      required: [totalReferrals, activeReferrals, level1Count, level2Count, level3Count, projectedDay15, totalHistorical]
+      properties:
+        totalReferrals:
+          type: integer
+        activeReferrals:
+          type: integer
+        level1Count:
+          type: integer
+        level2Count:
+          type: integer
+        level3Count:
+          type: integer
+        projectedDay15:
+          type: number
+          description: "Expected commission on day 15 if all active referrals renew"
+        totalHistorical:
+          type: number
+          description: Total commissions earned historically
+
+    ReferralCode:
+      type: object
+      required: [code, link, active]
+      properties:
+        code:
+          type: string
+        link:
+          type: string
+        active:
+          type: boolean
+          description: Whether the code is currently active and usable
+
+    PaymentInput:
+      type: object
+      required: [proofText, amount]
+      properties:
+        proofText:
+          type: string
+        amount:
+          type: number
+        proofImageUrl:
+          type: ["string", "null"]
+        proofImageUrls:
+          type: array
+          items:
+            type: string
+
+    PaymentRecord:
+      type: object
+      required: [id, userId, amount, paymentType, status, proofText, createdAt]
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        amount:
+          type: number
+        paymentType:
+          type: string
+          enum: [initial, renewal]
+        status:
+          type: string
+          enum: [pending, approved, rejected]
+        proofText:
+          type: string
+        txHash:
+          type: ["string", "null"]
+          description: Blockchain transaction hash (for crypto payments)
+        proofImageUrl:
+          type: ["string", "null"]
+        proofImageUrls:
+          type: array
+          items:
+            type: string
+        createdAt:
+          type: string
+        reviewedAt:
+          type: ["string", "null"]
+
+    AdminUser:
+      type: object
+      required: [id, name, email, role, accountStatus, referralCode, totalReferrals, activeReferrals, joinedAt]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: ["string", "null"]
+        whatsappUrl:
+          type: ["string", "null"]
+        role:
+          type: string
+        accountStatus:
+          type: string
+          enum: [pending, active, paused, lost]
+        referralCode:
+          type: string
+        referrerName:
+          type: ["string", "null"]
+        referrerId:
+          type: ["integer", "null"]
+        totalReferrals:
+          type: integer
+        activeReferrals:
+          type: integer
+        membershipStartedAt:
+          type: ["string", "null"]
+        membershipTimerStartedAt:
+          type: ["string", "null"]
+        membershipExpiresAt:
+          type: ["string", "null"]
+        gracePeriodEndsAt:
+          type: ["string", "null"]
+        daysRemaining:
+          type: ["integer", "null"]
+        inGracePeriod:
+          type: boolean
+        timerStarted:
+          type: boolean
+        joinedAt:
+          type: string
+
+    AdminUserUpdate:
+      type: object
+      properties:
+        accountStatus:
+          type: string
+          enum: [pending, active, paused, lost]
+        role:
+          type: string
+          enum: [user, admin]
+
+    AdminPayment:
+      type: object
+      required: [id, userId, userName, userEmail, amount, paymentType, status, proofText, createdAt]
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        userName:
+          type: string
+        userEmail:
+          type: string
+        userPhone:
+          type: ["string", "null"]
+        amount:
+          type: number
+        paymentType:
+          type: string
+          enum: [initial, renewal]
+        status:
+          type: string
+          enum: [pending, approved, rejected]
+        proofText:
+          type: string
+        proofImageUrl:
+          type: ["string", "null"]
+        proofImageUrls:
+          type: array
+          items:
+            type: string
+        createdAt:
+          type: string
+        reviewedAt:
+          type: ["string", "null"]
+
+    PaymentReview:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [approved, rejected]
+        note:
+          type: ["string", "null"]
+
+    CommissionEntry:
+      type: object
+      required: [userId, name, totalAmount, breakdown]
+      properties:
+        userId:
+          type: integer
+        name:
+          type: string
+        phone:
+          type: ["string", "null"]
+        whatsappUrl:
+          type: ["string", "null"]
+        totalAmount:
+          type: number
+        breakdown:
+          type: object
+          properties:
+            fromLevel1:
+              type: number
+              description: "$6 per L1 renewal"
+            fromLevel2:
+              type: number
+              description: "$2 per L2 renewal"
+            fromLevel3:
+              type: number
+              description: "$1 per L3 renewal"
+            level1Renewals:
+              type: integer
+            level2Renewals:
+              type: integer
+            level3Renewals:
+              type: integer
+
+    CommissionReport:
+      type: object
+      required: [cycleMonth, cutoffDate, distributionDate, totalToDistribute, platformFee, recipients]
+      properties:
+        cycleMonth:
+          type: string
+          description: "e.g. July 2026"
+        cutoffDate:
+          type: string
+          description: "Day 10 of current month"
+        distributionDate:
+          type: string
+          description: "Day 15 of current month"
+        totalToDistribute:
+          type: number
+        platformFee:
+          type: number
+          description: "$1 per renewal stays with platform"
+        totalRenewals:
+          type: integer
+        recipients:
+          type: array
+          items:
+            $ref: "#/components/schemas/CommissionEntry"
+
+    AdminStats:
+      type: object
+      required: [totalUsers, activeUsers, pendingUsers, pausedUsers, lostUsers, pendingPayments, totalRevenue, monthlyRevenue, expiringThisWeek]
+      properties:
+        totalUsers:
+          type: integer
+        activeUsers:
+          type: integer
+        pendingUsers:
+          type: integer
+        pausedUsers:
+          type: integer
+        lostUsers:
+          type: integer
+        pendingPayments:
+          type: integer
+        totalRevenue:
+          type: number
+        monthlyRevenue:
+          type: number
+        expiringThisWeek:
+          type: integer
+          description: Number of memberships expiring in the next 7 days
