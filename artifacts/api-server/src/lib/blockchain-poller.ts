@@ -95,10 +95,11 @@ async function poll(): Promise<void> {
     return;
   }
 
-  // En el primer arranque, revisar los últimos ~300 bloques (~15 min en BSC)
+  // En el primer arranque, revisar los últimos ~50 000 bloques (~42 horas en BSC)
+  // Esto asegura que los pagos realizados mientras el servidor estaba caído se detecten al reiniciar.
   const fromBlock =
     lastCheckedBlock === 0
-      ? Math.max(0, currentBlock - 300)
+      ? Math.max(0, currentBlock - 50_000)
       : lastCheckedBlock + 1;
 
   if (fromBlock > currentBlock) return;

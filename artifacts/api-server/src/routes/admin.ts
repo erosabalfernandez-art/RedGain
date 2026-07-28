@@ -1,6 +1,8 @@
 import { Router } from "express";
-import { db, usersTable, paymentsTable/*, commissionDistributionsTable*/ } from "@workspace/db";
+import { db, usersTable, paymentsTable/*, commissionDistributionsTable*/, pool } from "@workspace/db";
 import { eq, desc, /*and, gte, lte,*/ sql } from "drizzle-orm";
+import { distributeCommissions } from "../lib/distributor";
+import { logger } from "../lib/logger";
 
 
 // ── Auto-expire: run on every admin users fetch to keep statuses current ────
@@ -553,6 +555,110 @@ router.get("/stats", requireAdmin, async (_req, res) => {
   ).length;
 
   return res.json({ totalUsers, activeUsers, pendingUsers, pausedUsers, lostUsers, pendingPayments, totalRevenue, monthlyRevenue, expiringThisWeek });
+});
+
+// POST /api/admin/process-tx
+// Fuerza el procesamiento manual de una transacción BSC ya confirmada.
+// Body: { txHash: string, fromWallet: string }
+//   txHash    — hash de la tx en BSC
+//   fromWallet — dirección que envió los 10 USDT (para asociar al usuario)
+router.post("/process-tx", requireAdmin, async (req, res) => {
+  const { txHash, fromWallet } = req.body as { txHash?: string; fromWallet?: string };
+
+  if (!txHash || !fromWallet) {
+    return res.status(400).json({ error: "Se requieren txHash y fromWallet" });
+  }
+
+  const txHashLower = txHash.toLowerCase().trim();
+  const fromLower = fromWallet.toLowerCase().trim();
+
+  // Verificar si ya fue procesada
+  const client = await pool.connect();
+  try {
+    const dup = await client.query("SELECT 1 FROM processed_transactions WHERE tx_hash = $1 LIMIT 1", [txHashLower]);
+    if ((dup.rowCount ?? 0) > 0) {
+      return res.status(409).json({ error: "Esta transacción ya fue procesada" });
+    }
+  } finally {
+    client.release();
+  }
+
+  // Buscar usuario por billetera
+  const [user] = await db
+    .select()
+    .from(usersTable)
+    .where(sql`LOWER(${usersTable.bscWallet}) = ${fromLower}`)
+    .limit(1);
+
+  if (!user) {
+    return res.status(404).json({ error: `Ningún usuario registrado con la billetera ${fromWallet}` });
+  }
+
+  try {
+    // Determinar tipo de pago
+    const existingApproved = await db
+      .select({ id: paymentsTable.id })
+      .from(paymentsTable)
+      .where(sql`${paymentsTable.userId} = ${user.id} AND ${paymentsTable.status} = 'approved'`)
+      .limit(1);
+
+    const paymentType: "initial" | "renewal" = existingApproved.length > 0 ? "renewal" : "initial";
+
+    // Registrar pago
+    await db.insert(paymentsTable).values({
+      userId: user.id,
+      amount: "10",
+      paymentType,
+      proofText: "Procesado manualmente por admin",
+      txHash: txHashLower,
+      status: "approved",
+    });
+
+    // Activar membresía
+    const now = new Date();
+    const isFirstPayment = !user.membershipStartedAt;
+    const updates: Record<string, unknown> = { accountStatus: "active", updatedAt: now };
+    if (isFirstPayment) {
+      updates.membershipStartedAt = now;
+    } else {
+      updates.membershipTimerStartedAt = now;
+      updates.membershipExpiresAt = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+    }
+    await db.update(usersTable).set(updates as any).where(eq(usersTable.id, user.id));
+
+    // Iniciar temporizador del referidor si aplica
+    if (isFirstPayment && user.referrerId) {
+      const [referrer] = await db.select().from(usersTable).where(eq(usersTable.id, user.referrerId)).limit(1);
+      if (referrer && referrer.accountStatus === "active" && !referrer.membershipTimerStartedAt) {
+        const expiresAt = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+        await db.update(usersTable).set({
+          membershipTimerStartedAt: now,
+          membershipExpiresAt: expiresAt,
+          updatedAt: now,
+        }).where(eq(usersTable.id, referrer.id));
+      }
+    }
+
+    // Marcar como procesada
+    const c2 = await pool.connect();
+    try {
+      await c2.query("INSERT INTO processed_transactions (tx_hash) VALUES ($1) ON CONFLICT DO NOTHING", [txHashLower]);
+    } finally {
+      c2.release();
+    }
+
+    // Distribuir comisiones
+    const updatedUser = { ...user, accountStatus: "active" as const };
+    distributeCommissions(updatedUser, txHashLower).catch((err) =>
+      logger.error({ err }, "process-tx: error en distributeCommissions"),
+    );
+
+    logger.info({ txHash: txHashLower, userId: user.id }, "Admin: tx procesada manualmente");
+    return res.json({ ok: true, userId: user.id, userName: user.name, paymentType });
+  } catch (err) {
+    logger.error({ err }, "Admin: error al procesar tx manualmente");
+    return res.status(500).json({ error: "Error interno al procesar la transacción" });
+  }
 });
 
 export default router;
