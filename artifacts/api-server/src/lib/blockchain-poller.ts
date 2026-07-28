@@ -16,8 +16,20 @@ import { distributeCommissions } from "./distributor";
 
 const USDT_ADDRESS = "0x55d398326f99059fF775485246999027B3197955";
 const RECEIVING_WALLET = (process.env.RECEIVING_WALLET ?? "").toLowerCase();
-const BSC_RPC_URL = process.env.BSC_RPC_URL ?? "https://bsc-dataseed.binance.org/";
 const REQUIRED_AMOUNT = ethers.parseUnits("10", 18); // $10 USDT — 18 decimales en BSC
+
+// RPCs públicos de BSC con soporte de eth_getLogs, en orden de preferencia.
+// El poller intenta cada uno hasta que uno funciona.
+const BSC_RPC_URLS: string[] = [
+  process.env.BSC_RPC_URL ?? "",
+  "https://bsc-dataseed4.ninicoin.io/",
+  "https://bsc-dataseed1.defibit.io/",
+  "https://bsc-dataseed2.defibit.io/",
+  "https://bsc.drpc.org",
+].filter(Boolean);
+
+// Rango máximo de bloques por consulta para no superar límites del RPC
+const MAX_BLOCK_RANGE = 2_000;
 
 const USDT_ABI = [
   "event Transfer(address indexed from, address indexed to, uint256 value)",
@@ -72,6 +84,44 @@ async function createNotification(
   }
 }
 
+// ── Obtener provider funcionando (prueba RPCs en orden) ───────────────────────
+async function getWorkingProvider(): Promise<{ provider: ethers.JsonRpcProvider; currentBlock: number } | null> {
+  for (const url of BSC_RPC_URLS) {
+    try {
+      const provider = new ethers.JsonRpcProvider(url);
+      const currentBlock = await provider.getBlockNumber();
+      return { provider, currentBlock };
+    } catch {
+      logger.warn({ url }, "Poller: RPC no disponible, probando el siguiente");
+    }
+  }
+  logger.error("Poller: ningún RPC de BSC disponible en este ciclo");
+  return null;
+}
+
+// ── Consultar eventos en chunks para no superar límites del RPC ───────────────
+async function queryEventsInChunks(
+  usdt: ethers.Contract,
+  fromBlock: number,
+  toBlock: number,
+): Promise<ethers.Log[]> {
+  const allEvents: ethers.Log[] = [];
+  const filter = usdt.filters.Transfer(null, RECEIVING_WALLET);
+
+  for (let start = fromBlock; start <= toBlock; start += MAX_BLOCK_RANGE) {
+    const end = Math.min(start + MAX_BLOCK_RANGE - 1, toBlock);
+    try {
+      const chunk = await usdt.queryFilter(filter, start, end);
+      allEvents.push(...chunk);
+    } catch (err) {
+      logger.error({ err, start, end }, "Poller: error consultando chunk de bloques — se reintentará en el próximo ciclo");
+      // Lanzar para que poll() no actualice lastCheckedBlock con este rango
+      throw err;
+    }
+  }
+  return allEvents;
+}
+
 // ── Lógica principal del polling ──────────────────────────────────────────────
 async function poll(): Promise<void> {
   if (!RECEIVING_WALLET) {
@@ -79,42 +129,31 @@ async function poll(): Promise<void> {
     return;
   }
 
-  let provider: ethers.JsonRpcProvider;
-  try {
-    provider = new ethers.JsonRpcProvider(BSC_RPC_URL);
-  } catch (err) {
-    logger.error({ err }, "Poller blockchain: error al crear provider");
-    return;
-  }
-
-  let currentBlock: number;
-  try {
-    currentBlock = await provider.getBlockNumber();
-  } catch (err) {
-    logger.error({ err }, "Poller blockchain: error al obtener número de bloque");
-    return;
-  }
+  const result = await getWorkingProvider();
+  if (!result) return;
+  const { provider, currentBlock } = result;
 
   // En el primer arranque, revisar los últimos ~50 000 bloques (~42 horas en BSC)
-  // Esto asegura que los pagos realizados mientras el servidor estaba caído se detecten al reiniciar.
   const fromBlock =
     lastCheckedBlock === 0
       ? Math.max(0, currentBlock - 50_000)
       : lastCheckedBlock + 1;
 
   if (fromBlock > currentBlock) return;
-  lastCheckedBlock = currentBlock;
 
   const usdt = new ethers.Contract(USDT_ADDRESS, USDT_ABI, provider);
 
   let events: ethers.Log[];
   try {
-    const filter = usdt.filters.Transfer(null, RECEIVING_WALLET);
-    events = await usdt.queryFilter(filter, fromBlock, currentBlock);
-  } catch (err) {
-    logger.error({ err, fromBlock, currentBlock }, "Poller blockchain: error al consultar eventos Transfer");
+    events = await queryEventsInChunks(usdt, fromBlock, currentBlock);
+  } catch {
+    // Error ya logueado en queryEventsInChunks.
+    // NO actualizamos lastCheckedBlock para que se reintente en el próximo ciclo.
     return;
   }
+
+  // Solo actualizamos lastCheckedBlock cuando la consulta fue exitosa
+  lastCheckedBlock = currentBlock;
 
   if (events.length > 0) {
     logger.info(
