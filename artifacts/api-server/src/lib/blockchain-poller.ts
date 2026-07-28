@@ -1,8 +1,8 @@
 /**
  * blockchain-poller.ts
  * Revisa la blockchain de BSC cada 30 segundos buscando transferencias USDT
- * a la billetera receptora. Usa la API HTTP de BSCScan en vez de eth_getLogs
- * (los nodos RPC públicos de BSC rechazan eth_getLogs con rate limit).
+ * a la billetera receptora. Usa eth_getLogs via RPCs fiables (Ankr, PublicNode)
+ * — sin API key, sin dependencias de BSCScan/Etherscan.
  *
  * Cuando detecta un pago de $10 de un usuario registrado:
  *   1. Registra el pago en la DB (aprobado automáticamente)
@@ -18,83 +18,90 @@ import { distributeCommissions } from "./distributor";
 
 const USDT_ADDRESS = "0x55d398326f99059fF775485246999027B3197955";
 const RECEIVING_WALLET = (process.env.RECEIVING_WALLET ?? "").toLowerCase();
-// Clave gratuita de bscscan.com (NO de etherscan.io).
-// Sin clave el endpoint V2 rechaza las peticiones.
-const BSCSCAN_API_KEY = process.env.BSCSCAN_API_KEY ?? "";
 
 // 10 USDT en wei (18 decimales)
 const REQUIRED_AMOUNT_WEI = BigInt("10000000000000000000");
 
-// RPCs de BSC — solo se usan para eth_blockNumber (no para getLogs)
+// Transfer(address,address,uint256) — keccak256 del signature
+const TRANSFER_TOPIC = "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
+
+// RPCs con soporte fiable de eth_getLogs en BSC (sin API key)
 const BSC_RPC_URLS = [
-  process.env.BSC_RPC_URL ?? "",
+  "https://rpc.ankr.com/bsc",        // Ankr — free tier, soporta eth_getLogs
+  "https://bsc.publicnode.com",       // PublicNode — fiable y sin límites estrictos
   "https://bsc-dataseed1.defibit.io/",
-  "https://bsc-dataseed4.ninicoin.io/",
-  "https://bsc.drpc.org",
+  process.env.BSC_RPC_URL ?? "",
 ].filter(Boolean);
+
+// Máximo de bloques por consulta (BSC ~3 seg/bloque → 2000 bloques ≈ 100 min)
+const MAX_BLOCK_RANGE = 2_000;
+// Lookback inicial: últimos 10 000 bloques (~8 horas)
+const INITIAL_LOOKBACK = 10_000;
 
 let lastCheckedBlock = 0;
 
-// ── BSCScan token-transfer API ────────────────────────────────────────────────
-interface BscscanTokenTx {
-  hash: string;
-  from: string;
-  to: string;
-  value: string;          // en wei, como string
-  tokenDecimal: string;
-  confirmations: string;
-  blockNumber: string;
-}
-
-async function fetchUsdtTransfers(fromBlock: number, toBlock: number): Promise<BscscanTokenTx[]> {
-  // Etherscan V2 API con chainid=56 para BSC — requerido por BSCScan desde 2025.
-  // La clave gratuita de bscscan.com funciona aquí con Etherscan V2.
-  const url =
-    `https://api.etherscan.io/v2/api` +
-    `?chainid=56&module=account&action=tokentx` +
-    `&contractaddress=${USDT_ADDRESS}` +
-    `&address=${RECEIVING_WALLET}` +
-    `&startblock=${fromBlock}` +
-    `&endblock=${toBlock}` +
-    `&sort=asc` +
-    `&apikey=${BSCSCAN_API_KEY}`;
-
-  const res = await fetch(url, { signal: AbortSignal.timeout(15_000) });
-  if (!res.ok) throw new Error(`BSCScan HTTP ${res.status}`);
-
-  const data = await res.json() as { status: string; message: string; result: BscscanTokenTx[] | string };
-
-  // status "0" con message "No transactions found" es un resultado vacío válido
-  if (data.status === "0" && data.message === "No transactions found") return [];
-
-  if (data.status !== "1") {
-    throw new Error(`BSCScan error: ${data.message} — ${JSON.stringify(data.result)}`);
-  }
-
-  // Filtrar solo transfers que llegaron A la billetera receptora
-  return (data.result as BscscanTokenTx[]).filter(
-    (tx) => tx.to.toLowerCase() === RECEIVING_WALLET,
-  );
-}
-
-// ── Obtener bloque actual via JSON-RPC ────────────────────────────────────────
-async function getCurrentBlock(): Promise<number | null> {
+// ── Helpers RPC ───────────────────────────────────────────────────────────────
+async function rpcCall(method: string, params: unknown[]): Promise<unknown> {
+  let lastErr: Error = new Error("No RPCs disponibles");
   for (const url of BSC_RPC_URLS) {
     try {
       const res = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ jsonrpc: "2.0", method: "eth_blockNumber", params: [], id: 1 }),
-        signal: AbortSignal.timeout(8_000),
+        body: JSON.stringify({ jsonrpc: "2.0", method, params, id: 1 }),
+        signal: AbortSignal.timeout(10_000),
       });
-      const data = await res.json() as { result?: string };
-      if (data.result) return parseInt(data.result, 16);
-    } catch {
-      // probar el siguiente RPC
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json() as { result?: unknown; error?: { message: string } };
+      if (data.error) throw new Error(data.error.message);
+      return data.result;
+    } catch (err) {
+      lastErr = err instanceof Error ? err : new Error(String(err));
+      // probar siguiente RPC
     }
   }
-  logger.error("Poller: no se pudo obtener el bloque actual de ningún RPC");
-  return null;
+  throw lastErr;
+}
+
+async function getCurrentBlock(): Promise<number | null> {
+  try {
+    const hex = await rpcCall("eth_blockNumber", []) as string;
+    return parseInt(hex, 16);
+  } catch (err) {
+    logger.error({ err }, "Poller: no se pudo obtener el bloque actual");
+    return null;
+  }
+}
+
+// ── Tipos de log ─────────────────────────────────────────────────────────────
+interface EthLog {
+  transactionHash: string;
+  topics: string[];
+  data: string;       // amount en hex (uint256)
+  blockNumber: string;
+}
+
+// ── Consulta eth_getLogs en chunks seguros ───────────────────────────────────
+async function fetchUsdtTransfers(fromBlock: number, toBlock: number): Promise<EthLog[]> {
+  // Dirección receptora padded a 32 bytes para el topic[2]
+  const toTopic = "0x000000000000000000000000" + RECEIVING_WALLET.slice(2).toLowerCase();
+
+  const allLogs: EthLog[] = [];
+
+  for (let start = fromBlock; start <= toBlock; start += MAX_BLOCK_RANGE) {
+    const end = Math.min(start + MAX_BLOCK_RANGE - 1, toBlock);
+
+    const logs = await rpcCall("eth_getLogs", [{
+      address: USDT_ADDRESS,
+      topics: [TRANSFER_TOPIC, null, toTopic],
+      fromBlock: "0x" + start.toString(16),
+      toBlock:   "0x" + end.toString(16),
+    }]) as EthLog[];
+
+    allLogs.push(...logs);
+  }
+
+  return allLogs;
 }
 
 // ── Helpers para processed_transactions ──────────────────────────────────────
@@ -154,41 +161,44 @@ async function poll(): Promise<void> {
   const currentBlock = await getCurrentBlock();
   if (currentBlock === null) return;
 
-  // En el primer arranque revisar los últimos 50 000 bloques (~42 h en BSC)
   const fromBlock =
     lastCheckedBlock === 0
-      ? Math.max(0, currentBlock - 50_000)
+      ? Math.max(0, currentBlock - INITIAL_LOOKBACK)
       : lastCheckedBlock + 1;
 
   if (fromBlock > currentBlock) return;
 
-  logger.info({ fromBlock, currentBlock }, "Poller: consultando BSCScan por transferencias USDT");
+  logger.info({ fromBlock, currentBlock }, "Poller: consultando transferencias USDT via eth_getLogs");
 
-  let transfers: BscscanTokenTx[];
+  let logs: EthLog[];
   try {
-    transfers = await fetchUsdtTransfers(fromBlock, currentBlock);
+    logs = await fetchUsdtTransfers(fromBlock, currentBlock);
   } catch (err) {
     // No actualizar lastCheckedBlock — se reintentará en el próximo ciclo
-    logger.error({ err, fromBlock, currentBlock }, "Poller: error al consultar BSCScan — reintentando en 30 s");
+    logger.error({ err, fromBlock, currentBlock }, "Poller: error al consultar eth_getLogs — reintentando en 30 s");
     return;
   }
 
   // Solo actualizar el puntero si la consulta fue exitosa
   lastCheckedBlock = currentBlock;
 
-  if (transfers.length > 0) {
-    logger.info({ count: transfers.length, fromBlock, currentBlock }, "Poller: transferencias USDT entrantes detectadas");
+  if (logs.length > 0) {
+    logger.info({ count: logs.length, fromBlock, currentBlock }, "Poller: transferencias USDT entrantes detectadas");
   }
 
-  for (const tx of transfers) {
-    const txHash = tx.hash.toLowerCase();
-    const from = tx.from.toLowerCase();
-    const value = BigInt(tx.value);
+  for (const log of logs) {
+    const txHash = log.transactionHash.toLowerCase();
+
+    // Extraer from (topic[1]) y amount (data)
+    const fromTopic = log.topics[1];
+    if (!fromTopic) continue;
+    const from = "0x" + fromTopic.slice(26).toLowerCase();
+    const value = BigInt(log.data);
 
     if (await isProcessed(txHash)) continue;
 
     if (value < REQUIRED_AMOUNT_WEI) {
-      logger.info({ txHash, from, value: tx.value }, "Poller: transferencia menor a $10 — omitiendo");
+      logger.info({ txHash, from, value: value.toString() }, "Poller: transferencia menor a $10 — omitiendo");
       await markProcessed(txHash);
       continue;
     }
@@ -297,12 +307,8 @@ export function startBlockchainPoller(): void {
   if (!process.env.OPERATOR_PRIVATE_KEY) {
     logger.warn("OPERATOR_PRIVATE_KEY no configurado — las comisiones NO se distribuirán automáticamente");
   }
-  if (!process.env.BSCSCAN_API_KEY) {
-    logger.error("BSCSCAN_API_KEY no configurado — el poller NO puede consultar transacciones. Obtén una clave gratuita en https://bscscan.com/myapikey y añádela en Render.");
-    return;
-  }
 
-  logger.info("Iniciando poller de blockchain BSC via Etherscan V2 API chainid=56 (cada 30 segundos)");
+  logger.info("Iniciando poller de blockchain BSC via eth_getLogs (Ankr/PublicNode, cada 30 segundos)");
   poll().catch((err) => logger.error({ err }, "Poller: error en el ciclo inicial"));
   setInterval(() => {
     poll().catch((err) => logger.error({ err }, "Poller: error en ciclo periódico"));
