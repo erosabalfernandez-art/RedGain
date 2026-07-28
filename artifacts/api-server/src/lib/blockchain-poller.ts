@@ -1,8 +1,11 @@
 /**
  * blockchain-poller.ts
  * Revisa la blockchain de BSC cada 30 segundos buscando transferencias USDT
- * a la billetera receptora. Usa eth_getLogs via RPCs fiables (Ankr, PublicNode)
- * — sin API key, sin dependencias de BSCScan/Etherscan.
+ * a la billetera receptora.
+ *
+ * Estrategia: eth_getBlockByNumber (soportado por TODOS los nodos sin límites)
+ * en lugar de eth_getLogs (bloqueado en nodos públicos para contratos de alto
+ * volumen como USDT). Parsea el calldata de las transacciones transfer() directas.
  *
  * Cuando detecta un pago de $10 de un usuario registrado:
  *   1. Registra el pago en la DB (aprobado automáticamente)
@@ -16,33 +19,48 @@ import { eq, and, sql } from "drizzle-orm";
 import { logger } from "./logger";
 import { distributeCommissions } from "./distributor";
 
-const USDT_ADDRESS = "0x55d398326f99059fF775485246999027B3197955";
+const USDT_ADDRESS = "0x55d398326f99059fF775485246999027B3197955".toLowerCase();
 const RECEIVING_WALLET = (process.env.RECEIVING_WALLET ?? "").toLowerCase();
 
 // 10 USDT en wei (18 decimales)
 const REQUIRED_AMOUNT_WEI = BigInt("10000000000000000000");
 
-// Transfer(address,address,uint256) — keccak256 del signature
-const TRANSFER_TOPIC = "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
+// Selector de transfer(address,uint256) — primeros 4 bytes del keccak256
+const TRANSFER_SELECTOR = "0xa9059cbb";
 
-// RPCs con soporte fiable de eth_getLogs en BSC (sin API key)
+// RPCs de BSC — eth_getBlockByNumber funciona en TODOS sin restricciones
 const BSC_RPC_URLS = [
-  "https://rpc.ankr.com/bsc",        // Ankr — free tier, soporta eth_getLogs
-  "https://bsc.publicnode.com",       // PublicNode — fiable y sin límites estrictos
-  "https://bsc-dataseed1.defibit.io/",
+  "https://bsc-dataseed.binance.org/",
+  "https://bsc-dataseed1.binance.org/",
+  "https://bsc-dataseed2.binance.org/",
+  "https://bsc-dataseed3.binance.org/",
+  "https://bsc.publicnode.com",
+  "https://rpc.ankr.com/bsc",
   process.env.BSC_RPC_URL ?? "",
 ].filter(Boolean);
 
-// Máximo de bloques por consulta (BSC ~3 seg/bloque → 2000 bloques ≈ 100 min)
-const MAX_BLOCK_RANGE = 500;
-// Lookback inicial: últimos 10 000 bloques (~8 horas)
-const INITIAL_LOOKBACK = 2_000;
+// Lookback inicial: 300 bloques ≈ últimos 15 minutos de BSC
+const INITIAL_LOOKBACK = 300;
 
 let lastCheckedBlock = 0;
 
-// ── Helpers RPC ───────────────────────────────────────────────────────────────
+// ── Tipos ─────────────────────────────────────────────────────────────────────
+interface RawTx {
+  hash: string;
+  from: string;
+  to: string | null;
+  input: string;
+}
+
+interface ParsedTransfer {
+  txHash: string;
+  from: string;
+  amount: bigint;
+}
+
+// ── Helper RPC ────────────────────────────────────────────────────────────────
 async function rpcCall(method: string, params: unknown[]): Promise<unknown> {
-  let lastErr: Error = new Error("No RPCs disponibles");
+  let lastErr: Error = new Error("Sin RPCs disponibles");
   for (const url of BSC_RPC_URLS) {
     try {
       const res = await fetch(url, {
@@ -57,7 +75,6 @@ async function rpcCall(method: string, params: unknown[]): Promise<unknown> {
       return data.result;
     } catch (err) {
       lastErr = err instanceof Error ? err : new Error(String(err));
-      // probar siguiente RPC
     }
   }
   throw lastErr;
@@ -73,35 +90,49 @@ async function getCurrentBlock(): Promise<number | null> {
   }
 }
 
-// ── Tipos de log ─────────────────────────────────────────────────────────────
-interface EthLog {
-  transactionHash: string;
-  topics: string[];
-  data: string;       // amount en hex (uint256)
-  blockNumber: string;
+// ── Parsear calldata de transfer(address,uint256) ─────────────────────────────
+function parseTransferCalldata(tx: RawTx): ParsedTransfer | null {
+  // Solo transacciones al contrato USDT
+  if (!tx.to || tx.to.toLowerCase() !== USDT_ADDRESS) return null;
+  // Solo llamadas a transfer()
+  if (!tx.input || !tx.input.toLowerCase().startsWith(TRANSFER_SELECTOR)) return null;
+
+  const data = tx.input.slice(10); // quitar el selector (4 bytes = 8 hex chars + "0x")
+  if (data.length < 128) return null; // address(32) + uint256(32) = 64 bytes = 128 hex chars
+
+  // address está padded a 32 bytes — los primeros 24 hex chars son ceros
+  const toAddress = ("0x" + data.slice(24, 64)).toLowerCase();
+  const amountHex = data.slice(64, 128);
+
+  return {
+    txHash: tx.hash.toLowerCase(),
+    from: tx.from.toLowerCase(),
+    amount: BigInt("0x" + amountHex),
+  };
 }
 
-// ── Consulta eth_getLogs en chunks seguros ───────────────────────────────────
-async function fetchUsdtTransfers(fromBlock: number, toBlock: number): Promise<EthLog[]> {
-  // Dirección receptora padded a 32 bytes para el topic[2]
-  const toTopic = "0x000000000000000000000000" + RECEIVING_WALLET.slice(2).toLowerCase();
+// ── Escanear un bloque buscando pagos USDT a la billetera receptora ───────────
+async function scanBlock(blockNumber: number): Promise<ParsedTransfer[]> {
+  const block = await rpcCall("eth_getBlockByNumber", [
+    "0x" + blockNumber.toString(16),
+    true, // incluir transacciones completas
+  ]) as { transactions?: RawTx[] } | null;
 
-  const allLogs: EthLog[] = [];
+  if (!block?.transactions) return [];
 
-  for (let start = fromBlock; start <= toBlock; start += MAX_BLOCK_RANGE) {
-    const end = Math.min(start + MAX_BLOCK_RANGE - 1, toBlock);
-
-    const logs = await rpcCall("eth_getLogs", [{
-      address: USDT_ADDRESS,
-      topics: [TRANSFER_TOPIC, null, toTopic],
-      fromBlock: "0x" + start.toString(16),
-      toBlock:   "0x" + end.toString(16),
-    }]) as EthLog[];
-
-    allLogs.push(...logs);
+  const results: ParsedTransfer[] = [];
+  for (const tx of block.transactions) {
+    const transfer = parseTransferCalldata(tx);
+    if (transfer && transfer.from !== RECEIVING_WALLET) {
+      // Solo nos interesan transferencias que lleguen A nuestra billetera
+      // El "to" en calldata es el destinatario del USDT
+      const toInCalldata = ("0x" + (tx.input.slice(10)).slice(24, 64)).toLowerCase();
+      if (toInCalldata === RECEIVING_WALLET) {
+        results.push(transfer);
+      }
+    }
   }
-
-  return allLogs;
+  return results;
 }
 
 // ── Helpers para processed_transactions ──────────────────────────────────────
@@ -168,63 +199,54 @@ async function poll(): Promise<void> {
 
   if (fromBlock > currentBlock) return;
 
-  logger.info({ fromBlock, currentBlock }, "Poller: consultando transferencias USDT via eth_getLogs");
+  logger.info({ fromBlock, currentBlock }, "Poller: escaneando bloques BSC en busca de pagos USDT");
 
-  let logs: EthLog[];
-  try {
-    logs = await fetchUsdtTransfers(fromBlock, currentBlock);
-  } catch (err) {
-    // No actualizar lastCheckedBlock — se reintentará en el próximo ciclo
-    logger.error({ err, fromBlock, currentBlock }, "Poller: error al consultar eth_getLogs — reintentando en 30 s");
-    return;
+  const allTransfers: ParsedTransfer[] = [];
+  for (let blockNum = fromBlock; blockNum <= currentBlock; blockNum++) {
+    try {
+      const transfers = await scanBlock(blockNum);
+      allTransfers.push(...transfers);
+    } catch (err) {
+      logger.error({ err, blockNum }, "Poller: error escaneando bloque — saltando");
+    }
   }
 
-  // Solo actualizar el puntero si la consulta fue exitosa
+  // Actualizar puntero solo después de escanear todos los bloques
   lastCheckedBlock = currentBlock;
 
-  if (logs.length > 0) {
-    logger.info({ count: logs.length, fromBlock, currentBlock }, "Poller: transferencias USDT entrantes detectadas");
+  if (allTransfers.length > 0) {
+    logger.info({ count: allTransfers.length }, "Poller: pagos USDT detectados en este ciclo");
   }
 
-  for (const log of logs) {
-    const txHash = log.transactionHash.toLowerCase();
+  for (const transfer of allTransfers) {
+    if (await isProcessed(transfer.txHash)) continue;
 
-    // Extraer from (topic[1]) y amount (data)
-    const fromTopic = log.topics[1];
-    if (!fromTopic) continue;
-    const from = "0x" + fromTopic.slice(26).toLowerCase();
-    const value = BigInt(log.data);
-
-    if (await isProcessed(txHash)) continue;
-
-    if (value < REQUIRED_AMOUNT_WEI) {
-      logger.info({ txHash, from, value: value.toString() }, "Poller: transferencia menor a $10 — omitiendo");
-      await markProcessed(txHash);
+    if (transfer.amount < REQUIRED_AMOUNT_WEI) {
+      logger.info({ txHash: transfer.txHash, from: transfer.from }, "Poller: transferencia menor a $10 — omitiendo");
+      await markProcessed(transfer.txHash);
       continue;
     }
 
-    // Buscar usuario por billetera BSC
     const [user] = await db
       .select()
       .from(usersTable)
-      .where(sql`LOWER(${usersTable.bscWallet}) = ${from}`)
+      .where(sql`LOWER(${usersTable.bscWallet}) = ${transfer.from}`)
       .limit(1);
 
     if (!user) {
-      logger.warn({ txHash, from }, "Poller: ningún usuario registrado con esta billetera — omitiendo");
-      await markProcessed(txHash);
+      logger.warn({ txHash: transfer.txHash, from: transfer.from }, "Poller: ningún usuario registrado con esta billetera — omitiendo");
+      await markProcessed(transfer.txHash);
       continue;
     }
 
-    logger.info({ txHash, userId: user.id, from }, "Poller: pago detectado y asociado a usuario — procesando");
+    logger.info({ txHash: transfer.txHash, userId: user.id }, "Poller: pago detectado — procesando");
 
     try {
-      await processPayment(user, txHash);
-      await markProcessed(txHash);
-      logger.info({ txHash, userId: user.id }, "Poller: pago procesado exitosamente");
+      await processPayment(user, transfer.txHash);
+      await markProcessed(transfer.txHash);
+      logger.info({ txHash: transfer.txHash, userId: user.id }, "Poller: pago procesado exitosamente");
     } catch (err) {
-      logger.error({ err, txHash, userId: user.id }, "Poller: error al procesar pago — se reintentará en el próximo ciclo");
-      // No marcar como procesado para que se reintente
+      logger.error({ err, txHash: transfer.txHash, userId: user.id }, "Poller: error al procesar pago — se reintentará en el próximo ciclo");
     }
   }
 }
@@ -308,7 +330,7 @@ export function startBlockchainPoller(): void {
     logger.warn("OPERATOR_PRIVATE_KEY no configurado — las comisiones NO se distribuirán automáticamente");
   }
 
-  logger.info("Iniciando poller de blockchain BSC via eth_getLogs (Ankr/PublicNode, cada 30 segundos)");
+  logger.info("Iniciando poller BSC via eth_getBlockByNumber (cada 30 segundos)");
   poll().catch((err) => logger.error({ err }, "Poller: error en el ciclo inicial"));
   setInterval(() => {
     poll().catch((err) => logger.error({ err }, "Poller: error en ciclo periódico"));
