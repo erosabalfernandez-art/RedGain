@@ -371,20 +371,20 @@ export default function Register() {
               <label className="text-white/70 font-bold text-sm block">
                 Número de WhatsApp <span className="text-[#E8C547]">(requerido)</span>
               </label>
-              <div className="flex gap-2">
+              <div className="flex gap-2 min-w-0">
                 <select
                   id="countryCode"
                   value={formData.countryCode}
                   onChange={handleChange}
-                  className="h-12 px-3 rounded-xl bg-[#C9A227]/4 border border-[#C9A227]/15 text-white focus:outline-none focus:border-[#C9A227]/50 text-sm font-medium shrink-0"
+                  className="h-12 px-2 rounded-xl bg-[#C9A227]/4 border border-[#C9A227]/15 text-white focus:outline-none focus:border-[#C9A227]/50 text-sm font-medium shrink-0 w-[100px]"
                 >
                   {COUNTRY_CODES.map(({ code, country }) => (
                     <option key={`${code}-${country}`} value={code} className="bg-[#0E0C09] text-white">{code} {country}</option>
                   ))}
                 </select>
-                <div className="relative flex-1">
+                <div className="relative flex-1 min-w-0">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-white/30"><Phone className="h-4 w-4" /></div>
-                  <input id="phoneNumber" type="tel" placeholder="8899254399" value={formData.phoneNumber} onChange={handleChange}
+                  <input id="phoneNumber" type="tel" placeholder="Número de teléfono" value={formData.phoneNumber} onChange={handleChange}
                     className="w-full pl-9 pr-4 h-12 rounded-xl bg-[#C9A227]/4 border border-[#C9A227]/15 text-white placeholder:text-white/25 focus:outline-none focus:border-[#C9A227]/50 focus:bg-[#C9A227]/8 transition-all font-medium text-sm" required />
                 </div>
               </div>
