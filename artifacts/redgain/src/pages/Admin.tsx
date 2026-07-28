@@ -347,6 +347,7 @@ function ArbolSection() {
             <X className="w-3.5 h-3.5" /> Limpiar búsqueda
           </button>
         )}
+        </div>
       </div>
       <div className="p-3 rounded-xl" style={{ background: 'rgba(201,162,39,0.05)', border: '1px solid rgba(201,162,39,0.2)' }}>
         <p className="text-xs font-medium" style={{ color: 'rgba(201,162,39,0.7)' }}>Los nodos raíz son usuarios sin referidor. Cada rama muestra el árbol completo hacia abajo.</p>
