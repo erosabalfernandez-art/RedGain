@@ -1,0 +1,50 @@
+2026-07-28T05:49:11.967868259Z ==> Checking out commit efd016e2b44ed6c67f11c4fc6e26d4be704e882b in branch main
+2026-07-28T05:49:17.03357433Z ==> Downloaded 176MB in 7s. Extraction took 4s.
+2026-07-28T05:49:18.004197118Z ==> Using Node.js version 24.14.1 (default)
+2026-07-28T05:49:18.004210305Z ==> Docs on specifying a Node.js version: https://render.com/docs/node-version
+2026-07-28T05:49:18.035781922Z ==> Running build command 'pnpm install --frozen-lockfile && PORT=3000 BASE_PATH=/ pnpm --filter @workspace/redgain run build && pnpm --filter @workspace/api-server run build'...
+2026-07-28T05:49:20.067551539Z 
+2026-07-28T05:49:20.067564781Z > @workspace/redgain@0.0.0 build /opt/render/project/src/artifacts/redgain
+2026-07-28T05:49:20.067568053Z > vite build --config vite.config.ts
+2026-07-28T05:49:20.067569502Z 
+2026-07-28T05:49:20.255824532Z vite v7.3.6 building client environment for production...
+2026-07-28T05:49:20.301623325Z transforming...
+2026-07-28T05:49:20.562469054Z ✓ 42 modules transformed.
+2026-07-28T05:49:20.563731093Z ✗ Build failed in 289ms
+2026-07-28T05:49:20.563742347Z error during build:
+2026-07-28T05:49:20.563744088Z [vite:esbuild] Transform failed with 2 errors:
+2026-07-28T05:49:20.563745426Z /opt/render/project/src/artifacts/redgain/src/pages/Admin.tsx:359:0: ERROR: The character "}" is not valid inside a JSX element
+2026-07-28T05:49:20.56374701Z /opt/render/project/src/artifacts/redgain/src/pages/Admin.tsx:363:2: ERROR: Unexpected "const"
+2026-07-28T05:49:20.5637483Z file: /opt/render/project/src/artifacts/redgain/src/pages/Admin.tsx:359:0
+2026-07-28T05:49:20.56374906Z 
+2026-07-28T05:49:20.563750368Z The character "}" is not valid inside a JSX element
+2026-07-28T05:49:20.563751376Z 357 |      </div>
+2026-07-28T05:49:20.563752223Z 358 |    );
+2026-07-28T05:49:20.563753188Z 359 |  }
+2026-07-28T05:49:20.563754008Z     |  ^
+2026-07-28T05:49:20.563754783Z 360 |  
+2026-07-28T05:49:20.563756117Z 361 |  /* ── Payments (comentado — sistema ahora es automático) ─────────────────────
+2026-07-28T05:49:20.563756875Z 
+2026-07-28T05:49:20.563757648Z Unexpected "const"
+2026-07-28T05:49:20.563758519Z 361 |  /* ── Payments (comentado — sistema ahora es automático) ─────────────────────
+2026-07-28T05:49:20.563759323Z 362 |  function PagosSection() {
+2026-07-28T05:49:20.563760416Z 363 |    const queryClient = useQueryClient();
+2026-07-28T05:49:20.563761213Z     |    ^
+2026-07-28T05:49:20.563762086Z 364 |    const { data: payments, isLoading } = useAdminListPayments();
+2026-07-28T05:49:20.563762886Z 365 |    const reviewPayment = useAdminReviewPayment();
+2026-07-28T05:49:20.563763581Z 
+2026-07-28T05:49:20.563764366Z     at failureErrorWithLog (/opt/render/project/src/node_modules/.pnpm/esbuild@0.27.3/node_modules/esbuild/lib/main.js:1467:15)
+2026-07-28T05:49:20.563765791Z     at /opt/render/project/src/node_modules/.pnpm/esbuild@0.27.3/node_modules/esbuild/lib/main.js:736:50
+2026-07-28T05:49:20.563766624Z     at responseCallbacks.<computed> (/opt/render/project/src/node_modules/.pnpm/esbuild@0.27.3/node_modules/esbuild/lib/main.js:603:9)
+2026-07-28T05:49:20.563767396Z     at handleIncomingPacket (/opt/render/project/src/node_modules/.pnpm/esbuild@0.27.3/node_modules/esbuild/lib/main.js:658:12)
+2026-07-28T05:49:20.563779186Z     at Socket.readFromStdout (/opt/render/project/src/node_modules/.pnpm/esbuild@0.27.3/node_modules/esbuild/lib/main.js:581:7)
+2026-07-28T05:49:20.563780403Z     at Socket.emit (node:events:508:28)
+2026-07-28T05:49:20.563781718Z     at addChunk (node:internal/streams/readable:563:12)
+2026-07-28T05:49:20.563782579Z     at readableAddChunkPushByteMode (node:internal/streams/readable:514:3)
+2026-07-28T05:49:20.563783346Z     at Readable.push (node:internal/streams/readable:394:5)
+2026-07-28T05:49:20.56378412Z     at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)
+2026-07-28T05:49:20.592893921Z /opt/render/project/src/artifacts/redgain:
+2026-07-28T05:49:20.592897485Z  ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @workspace/redgain@0.0.0 build: `vite build --config vite.config.ts`
+2026-07-28T05:49:20.592899428Z Exit status 1
+2026-07-28T05:49:20.63312469Z ==> Build failed 😞
+2026-07-28T05:49:20.633136483Z ==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
