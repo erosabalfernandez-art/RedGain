@@ -1020,11 +1020,11 @@ function MembresiaSectionContent() {
         <p className="text-sm font-bold" style={{ color: '#E8C547' }}>Reglas de membresía</p>
         <div className="space-y-3">
           {[
-            { icon: CheckCircle2, color: 'text-emerald-400', title: 'Membresía activa', desc: 'Puedes referir personas, tu código funciona y cobras comisiones el día 15.' },
+            { icon: CheckCircle2, color: 'text-emerald-400', title: 'Membresía activa', desc: 'Puedes referir personas, tu código funciona y recibes comisiones automáticamente en el momento en que cada uno de tus referidos realiza su pago — sin esperas ni fechas de corte.' },
             { icon: RefreshCw, color: 'text-red-400', title: 'Ventana de renovación (días 29-30)', desc: 'En los últimos 2 días de tu ciclo puedes renovar anticipadamente. Si el equipo aprueba antes de que venza, el nuevo ciclo empieza justo donde termina el actual sin ningún segundo de pausa.' },
             { icon: Clock, color: 'text-yellow-400', title: 'Período de gracia (2 semanas)', desc: 'Si vence sin renovar, tienes 14 días para pagar. Tu código queda inutilizado y no cobras comisiones durante este tiempo, pero no pierdes tu árbol.' },
             { icon: XCircle, color: 'text-red-400', title: 'Sin renovación = Todo perdido', desc: 'Si no renuevas en las 2 semanas de gracia, pierdes tu árbol completo y debes empezar de cero.' },
-            { icon: AlertTriangle, color: 'text-orange-400', title: 'Corte de renovaciones — día 10 del mes', desc: 'Para que tus referidores cobren comisión por tu renovación en el ciclo actual, debes renovar antes del día 10 del mes. Después del 10, cobran el mes siguiente.' },
+            { icon: Activity, color: 'text-blue-400', title: 'Comisiones automáticas e instantáneas', desc: 'Cada vez que alguien de tu red paga o renueva, el sistema detecta el pago en la blockchain y distribuye las comisiones en ese mismo momento. No hay día de corte ni fecha de espera.' },
           ].map(({ icon: Icon, color, title, desc }) => (
             <div key={title} className="flex gap-3">
               <Icon className={`w-5 h-5 ${color} mt-0.5 shrink-0`} />
