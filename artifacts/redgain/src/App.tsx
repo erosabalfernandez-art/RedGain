@@ -8,6 +8,8 @@ import Register from '@/pages/Register';
 import Dashboard from '@/pages/Dashboard';
 import Admin from '@/pages/Admin';
 import HowItWorks from '@/pages/HowItWorks';
+import Terminos from '@/pages/Terminos';
+import Privacidad from '@/pages/Privacidad';
 import { Route, Switch, Router as WouterRouter } from 'wouter';
 import { useEffect } from 'react';
 import { AuthProvider, useAuth } from '@/lib/auth';
@@ -45,6 +47,8 @@ function Router() {
       <Route path="/login" component={Login} />
       <Route path="/register" component={Register} />
       <Route path="/como-funciona" component={HowItWorks} />
+      <Route path="/terminos" component={Terminos} />
+      <Route path="/privacidad" component={Privacidad} />
       {/* Dashboard sections — all handled by Dashboard with internal tab routing */}
       <Route path="/dashboard">
         {() => <ProtectedRoute component={Dashboard} />}

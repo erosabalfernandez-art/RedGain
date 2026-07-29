@@ -607,8 +607,10 @@ export default function Home() {
             © {new Date().getFullYear()} RedGain. "Controla lo que puedes controlar."
           </p>
           <div className="flex items-center gap-6 text-sm text-white/40">
-            <Link href="/login"    className="hover:text-[#E8C547] transition-colors">Iniciar Sesión</Link>
-            <Link href="/register" className="hover:text-[#E8C547] transition-colors">Registrarse</Link>
+            <Link href="/terminos"   className="hover:text-[#E8C547] transition-colors">Términos</Link>
+            <Link href="/privacidad" className="hover:text-[#E8C547] transition-colors">Privacidad</Link>
+            <Link href="/login"      className="hover:text-[#E8C547] transition-colors">Iniciar Sesión</Link>
+            <Link href="/register"   className="hover:text-[#E8C547] transition-colors">Registrarse</Link>
           </div>
         </div>
       </footer>
