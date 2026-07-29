@@ -600,7 +600,7 @@ export default function Home() {
                     'No existe un "fondo" central. Cada $10 se distribuye en el instante del pago.',
                     'Las comisiones llegan a tu billetera personal en segundos, no en días.',
                     'Cada pago genera un hash en BSC que cualquiera puede verificar en bscscan.com.',
-                    'Aunque RedGain desapareciera mañana, tus pagos pasados están en la blockchain para siempre.',
+                    'Aunque RedGain desapareciera mañana, todo lo que ya te pagaron estará en tu billetera cripto — porque se transfiere al instante en el momento del pago, no queda guardado en ningún lado de la plataforma.',
                   ].map((item, i) => (
                     <li key={i} className="flex items-start gap-3 text-white/70 text-sm leading-relaxed">
                       <CheckCircle2 className="mt-0.5 flex-shrink-0 w-5 h-5 text-[#C9A227]" />
