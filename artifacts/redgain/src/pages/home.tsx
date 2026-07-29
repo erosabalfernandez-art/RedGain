@@ -14,7 +14,8 @@ import {
 import { 
   ArrowRight, Menu, X,
   ShieldCheck, TrendingUp, Users, Zap,
-  Star, Clock, Target, Briefcase, Quote
+  Star, Clock, Target, Briefcase, Quote,
+  Lock, Globe, RefreshCw, CheckCircle2, Cpu, ExternalLink, MessageCircle
 } from 'lucide-react';
 
 // ── Stoic gold palette ────────────────────────────────────────────────────────
@@ -53,6 +54,7 @@ export default function Home() {
     { name: 'La Solución',  href: '#solucion' },
     { name: 'Potencial',    href: '#potencial' },
     { name: 'Comunidad',    href: '#comunidad' },
+    { name: 'Sobre RedGain', href: '#sobre' },
     { name: 'FAQ',          href: '#faq' },
     { name: 'Cómo Funciona', href: '/como-funciona', isPage: true },
   ];
@@ -535,6 +537,307 @@ export default function Home() {
                 </motion.div>
               ))}
             </div>
+          </div>
+        </section>
+
+        {/* ── SOBRE REDGAIN ── */}
+        <section id="sobre" className="py-24 lg:py-32 px-6 relative overflow-hidden">
+          {/* Background */}
+          <div className="absolute inset-0 z-0">
+            <img src="/stoic-steps.jpg" alt="" className="w-full h-full object-cover object-center" style={{ filter: 'brightness(0.13) saturate(0.55)' }} />
+            <div className="absolute inset-0 bg-gradient-to-b from-[#0E0C09] via-[#0E0C09]/50 to-[#0E0C09]" />
+            <div className="absolute inset-0 bg-[#1A0900]/40 mix-blend-multiply" />
+          </div>
+          <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#C9A227]/30 to-transparent z-10" />
+          <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#C9A227]/15 to-transparent z-10" />
+
+          <div className="container mx-auto max-w-7xl relative z-10">
+
+            {/* Header */}
+            <div className="text-center max-w-4xl mx-auto mb-20">
+              <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="inline-flex items-center justify-center px-4 py-1.5 rounded-full border border-[#C9A227]/20 bg-[#C9A227]/8 text-[#E8C547] text-sm font-semibold mb-6">
+                Sobre RedGain
+              </motion.div>
+              <motion.h2 initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="text-4xl lg:text-6xl font-extrabold tracking-tight text-white mb-8 leading-tight">
+                Un sistema construido para que{' '}
+                <span className="bg-gradient-to-r from-[#8B6914] via-[#C9A227] to-[#E8C547] bg-clip-text text-transparent">nadie pueda robarte.</span>
+              </motion.h2>
+              <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }} className="text-xl text-white/60 leading-relaxed max-w-3xl mx-auto">
+                RedGain nació de una sola pregunta: ¿por qué los programas de referidos dependen siempre de que alguien, en algún lugar, decida pagar? La respuesta fue eliminar al intermediario por completo. El dinero va directo a las billeteras. Sin aprobaciones. Sin esperas. Sin excusas.
+              </motion.p>
+            </div>
+
+            {/* The core problem + solution */}
+            <div className="grid lg:grid-cols-2 gap-8 mb-16">
+              {/* Problem */}
+              <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="rounded-3xl border border-white/8 bg-[#1A1208]/40 backdrop-blur-sm p-10 relative overflow-hidden">
+                <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-red-500/40 to-transparent" />
+                <h3 className="text-2xl font-bold text-white mb-6">El problema con los programas tradicionales</h3>
+                <ul className="space-y-5">
+                  {[
+                    'Prometen pagos que dependen de que "alguien" los autorice.',
+                    'Acumulan el dinero en un fondo centralizado que puede desaparecer.',
+                    'Los retiros tardan días, semanas, o simplemente no llegan.',
+                    'No puedes verificar si las comisiones que dicen pagarte son reales.',
+                    'Cuando cierran, el dinero desaparece con ellos.',
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-start gap-3 text-white/55 text-sm leading-relaxed">
+                      <span className="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full border border-red-500/40 bg-red-500/10 flex items-center justify-center text-red-400 text-xs font-bold">✕</span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+
+              {/* Solution */}
+              <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="rounded-3xl border border-[#C9A227]/20 bg-[#1A1208]/60 backdrop-blur-sm p-10 relative overflow-hidden">
+                <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#C9A227]/60 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-br from-[#C9A227]/5 to-transparent pointer-events-none" />
+                <h3 className="text-2xl font-bold text-white mb-6">Cómo RedGain lo resuelve</h3>
+                <ul className="space-y-5">
+                  {[
+                    'Los pagos ocurren automáticamente en la blockchain. Sin ningún humano en el medio.',
+                    'No existe un "fondo" central. Cada $10 se distribuye en el instante del pago.',
+                    'Las comisiones llegan a tu billetera personal en segundos, no en días.',
+                    'Cada pago genera un hash en BSC que cualquiera puede verificar en bscscan.com.',
+                    'Aunque RedGain desapareciera mañana, tus pagos pasados están en la blockchain para siempre.',
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-start gap-3 text-white/70 text-sm leading-relaxed">
+                      <CheckCircle2 className="mt-0.5 flex-shrink-0 w-5 h-5 text-[#C9A227]" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+            </div>
+
+            {/* Por qué blockchain */}
+            <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="mb-16">
+              <div className="text-center mb-12">
+                <h3 className="text-3xl lg:text-4xl font-bold text-white mb-4">¿Por qué usamos blockchain?</h3>
+                <p className="text-white/50 max-w-2xl mx-auto">No es tecnología por moda. Es la única forma que existe hoy de hacer que un sistema de pagos sea completamente imposible de manipular.</p>
+              </div>
+              <div className="grid md:grid-cols-3 gap-6">
+                {[
+                  {
+                    icon: Lock,
+                    title: 'Inmutabilidad',
+                    desc: 'Una vez que una transacción se registra en la blockchain de BSC, no existe forma humana, técnica ni legal de borrarla o modificarla. Ni nosotros podemos hacerlo. Es matemáticamente permanente.',
+                  },
+                  {
+                    icon: Globe,
+                    title: 'Transparencia total',
+                    desc: 'BSCScan es un explorador público. Cualquier persona, en cualquier parte del mundo, puede buscar cualquier transacción de RedGain en tiempo real sin necesidad de registrarse en ningún lado.',
+                  },
+                  {
+                    icon: Cpu,
+                    title: 'Sin intermediarios',
+                    desc: 'El contrato distribuye automáticamente. No hay un empleado que "procese" el pago, no hay un banco que lo "retenga", no hay un admin que lo "apruebe". El código se ejecuta solo.',
+                  },
+                ].map((item, i) => (
+                  <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className="group p-8 rounded-3xl bg-[#1A1208]/50 border border-[#C9A227]/12 hover:border-[#C9A227]/35 hover:bg-[#1A1208]/80 transition-all duration-300 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#C9A227]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    <div className="relative z-10">
+                      <div className="w-14 h-14 rounded-2xl bg-[#C9A227]/10 border border-[#C9A227]/20 flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-[#C9A227] group-hover:border-[#C9A227] transition-all duration-300">
+                        <item.icon className="w-7 h-7 text-[#E8C547] group-hover:text-black transition-colors" />
+                      </div>
+                      <h4 className="text-xl font-bold text-white mb-3">{item.title}</h4>
+                      <p className="text-white/55 text-sm leading-relaxed">{item.desc}</p>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* Distribución de los $10 */}
+            <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="mb-16">
+              <div className="rounded-[2rem] border border-[#C9A227]/20 bg-[#1A1208]/70 backdrop-blur-xl overflow-hidden relative">
+                <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#C9A227]/60 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-br from-[#C9A227]/4 to-transparent pointer-events-none" />
+                <div className="p-10 lg:p-14 relative z-10">
+                  <div className="grid lg:grid-cols-2 gap-12 items-center">
+                    <div>
+                      <p className="text-[#C9A227]/70 text-xs font-bold uppercase tracking-[0.3em] mb-4">Transparencia total</p>
+                      <h3 className="text-3xl lg:text-4xl font-extrabold text-white mb-6 leading-tight">¿A dónde va cada dólar de tu membresía?</h3>
+                      <p className="text-white/55 leading-relaxed mb-6">
+                        Cuando alguien paga $10 para unirse a RedGain, ese dinero no entra en ninguna caja. Se distribuye automáticamente en el mismo instante a las billeteras reales de las personas que construyeron la red. Aquí está el desglose exacto:
+                      </p>
+                      <p className="text-white/40 text-sm leading-relaxed">
+                        Cada distribución es verificable. Cada $10 tiene un hash de blockchain asociado. Nada es opaco. Si tienes dudas de algún pago, puedes rastrearlo en BSCScan con el hash que aparece en tu panel.
+                      </p>
+                    </div>
+                    <div className="space-y-4">
+                      {[
+                        { label: 'Nivel 1 — Tu referidor directo',           amount: '$6.00', pct: '60%', color: '#C9A227', barColor: 'from-[#8B6914] to-[#C9A227]' },
+                        { label: 'Nivel 2 — El referidor de tu referidor',   amount: '$2.00', pct: '20%', color: '#A8871F', barColor: 'from-[#6B5010] to-[#A8871F]' },
+                        { label: 'Nivel 3 — Un nivel más arriba',            amount: '$1.00', pct: '10%', color: '#7A6018', barColor: 'from-[#4A3A0A] to-[#7A6018]' },
+                        { label: 'Operación de la plataforma',                amount: '$1.00', pct: '10%', color: '#4A4030', barColor: 'from-[#2A2018] to-[#4A4030]' },
+                      ].map((row, i) => (
+                        <div key={i} className="group">
+                          <div className="flex justify-between items-center mb-1.5">
+                            <span className="text-sm text-white/65 font-medium">{row.label}</span>
+                            <span className="text-sm font-extrabold" style={{ color: row.color }}>{row.amount}</span>
+                          </div>
+                          <div className="h-3 bg-white/5 rounded-full overflow-hidden">
+                            <motion.div
+                              initial={{ width: 0 }}
+                              whileInView={{ width: row.pct }}
+                              viewport={{ once: true }}
+                              transition={{ duration: 1, delay: i * 0.15, ease: 'easeOut' }}
+                              className={`h-full bg-gradient-to-r ${row.barColor} rounded-full`}
+                            />
+                          </div>
+                          <div className="text-xs text-white/30 mt-1">{row.pct} del total</div>
+                        </div>
+                      ))}
+                      <div className="pt-4 border-t border-[#C9A227]/15 flex justify-between items-center">
+                        <span className="text-white/50 text-sm font-semibold">Total distribuido</span>
+                        <span className="text-[#E8C547] font-extrabold text-lg">$10.00</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Principios del sistema */}
+            <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="mb-16">
+              <div className="text-center mb-12">
+                <h3 className="text-3xl lg:text-4xl font-bold text-white mb-4">Los principios que gobiernan el sistema</h3>
+                <p className="text-white/50 max-w-2xl mx-auto">No son promesas de marketing. Son las reglas que están escritas en el código y que ningún humano puede cambiar.</p>
+              </div>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {[
+                  {
+                    icon: RefreshCw,
+                    title: 'Pago automático',
+                    desc: 'El sistema detecta cada transacción en la blockchain cada 30 segundos y distribuye las comisiones sin intervención humana.',
+                  },
+                  {
+                    icon: ShieldCheck,
+                    title: 'Sin retención',
+                    desc: 'RedGain nunca toca tu dinero. Las comisiones van directo de la billetera del nuevo miembro a la tuya. No pasan por nosotros.',
+                  },
+                  {
+                    icon: ExternalLink,
+                    title: 'Verificable en vivo',
+                    desc: 'Cada transacción tiene un hash público en BSCScan. Puedes comprobarlo tú mismo en segundos, sin necesidad de creer en nuestra palabra.',
+                  },
+                  {
+                    icon: Globe,
+                    title: 'Sin fronteras',
+                    desc: 'USDT BEP-20 funciona igual en México, Colombia, Argentina, Brasil, España o Filipinas. No hay bancos, no hay restricciones geográficas.',
+                  },
+                ].map((item, i) => (
+                  <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className="p-7 rounded-2xl bg-[#1A1208]/40 border border-[#C9A227]/10 hover:border-[#C9A227]/30 hover:bg-[#1A1208]/70 transition-all duration-300">
+                    <div className="w-12 h-12 rounded-xl bg-[#C9A227]/10 border border-[#C9A227]/20 flex items-center justify-center mb-5">
+                      <item.icon className="w-6 h-6 text-[#E8C547]" />
+                    </div>
+                    <h4 className="text-base font-bold text-white mb-2">{item.title}</h4>
+                    <p className="text-white/50 text-sm leading-relaxed">{item.desc}</p>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* Verificar en BSCScan CTA */}
+            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }} className="mb-16">
+              <div className="rounded-2xl border border-[#C9A227]/15 bg-[#1A1208]/40 p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+                <div>
+                  <h4 className="text-lg font-bold text-white mb-1">¿Quieres ver las transacciones reales de RedGain?</h4>
+                  <p className="text-white/50 text-sm">Cualquier pago en la plataforma genera un registro público permanente en la blockchain de BNB Smart Chain.</p>
+                </div>
+                <a
+                  href="https://bscscan.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-shrink-0 flex items-center gap-2 px-7 py-3.5 rounded-full border border-[#C9A227]/40 text-[#E8C547] text-sm font-bold hover:bg-[#C9A227]/10 transition-all duration-200 whitespace-nowrap"
+                >
+                  Verificar en BSCScan <ExternalLink className="w-4 h-4" />
+                </a>
+              </div>
+            </motion.div>
+
+            {/* Honestidad sobre lo que no somos */}
+            <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="mb-16">
+              <div className="rounded-[2rem] border border-white/8 bg-[#120D05]/60 backdrop-blur-sm p-10 lg:p-14 relative overflow-hidden">
+                <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+                <div className="grid lg:grid-cols-2 gap-12">
+                  <div>
+                    <h3 className="text-2xl lg:text-3xl font-extrabold text-white mb-6 leading-tight">Lo que RedGain <span className="text-[#C9A227]">no</span> es</h3>
+                    <p className="text-white/55 leading-relaxed mb-6">
+                      Preferimos que lo sepas desde el principio para que tomes una decisión informada, no una impulsiva.
+                    </p>
+                    <ul className="space-y-4">
+                      {[
+                        { label: 'No es una inversión pasiva', desc: 'No hay rendimiento garantizado. Sin referidos activos, no hay comisiones.' },
+                        { label: 'No es trading ni DeFi', desc: 'No manejamos fondos de inversión, pools de liquidez ni ningún activo financiero.' },
+                        { label: 'No hay retorno fijo mensual', desc: 'Los ingresos dependen 100% de la actividad de tu red, no de algún algoritmo.' },
+                        { label: 'No somos anónimos por descuido', desc: 'El sistema opera con contratos y wallets verificables. La transparencia está en el código, no en las personas.' },
+                      ].map((item, i) => (
+                        <li key={i} className="flex items-start gap-3">
+                          <span className="mt-1 flex-shrink-0 w-2 h-2 rounded-full bg-[#C9A227]/60" />
+                          <div>
+                            <span className="text-white font-semibold text-sm">{item.label}: </span>
+                            <span className="text-white/50 text-sm">{item.desc}</span>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div>
+                    <h3 className="text-2xl lg:text-3xl font-extrabold text-white mb-6 leading-tight">Lo que RedGain <span className="text-[#C9A227]">sí</span> es</h3>
+                    <p className="text-white/55 leading-relaxed mb-6">
+                      Exactamente esto. Sin adornos.
+                    </p>
+                    <ul className="space-y-4">
+                      {[
+                        { label: 'Un programa de referidos', desc: 'Ganas comisiones cuando personas de tu red pagan su membresía mensual.' },
+                        { label: 'Pagos en blockchain', desc: 'Cada comisión es una transacción real en BSC verificable por cualquier persona.' },
+                        { label: 'Distribución a 3 niveles', desc: '$6 al nivel 1, $2 al nivel 2, $1 al nivel 3. Estructura fija. Matemática simple.' },
+                        { label: 'Una herramienta, no una solución mágica', desc: 'El resultado depende de cuánto construyas tu red. La plataforma solo automatiza el pago.' },
+                      ].map((item, i) => (
+                        <li key={i} className="flex items-start gap-3">
+                          <CheckCircle2 className="mt-0.5 flex-shrink-0 w-5 h-5 text-[#C9A227]" />
+                          <div>
+                            <span className="text-white font-semibold text-sm">{item.label}: </span>
+                            <span className="text-white/50 text-sm">{item.desc}</span>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Contacto */}
+            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }}>
+              <div className="rounded-2xl border border-[#C9A227]/20 bg-[#1A1208]/60 p-10 text-center relative overflow-hidden">
+                <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#C9A227]/50 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-br from-[#C9A227]/5 to-transparent pointer-events-none" />
+                <div className="relative z-10">
+                  <div className="w-16 h-16 rounded-2xl bg-[#C9A227]/10 border border-[#C9A227]/20 flex items-center justify-center mx-auto mb-6">
+                    <MessageCircle className="w-8 h-8 text-[#E8C547]" />
+                  </div>
+                  <h3 className="text-2xl lg:text-3xl font-bold text-white mb-4">¿Tienes dudas? Hay una persona real que responde.</h3>
+                  <p className="text-white/55 leading-relaxed max-w-2xl mx-auto mb-8">
+                    Antes de unirte, después de unirte, o simplemente si tienes alguna pregunta que no encuentras respondida aquí. Escríbenos directo por WhatsApp. Sin bots. Sin respuestas automáticas. Sin tiempos de espera.
+                  </p>
+                  <a
+                    href="https://wa.me/5588992543996"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-3 bg-gradient-to-r from-[#8B6914] to-[#C9A227] text-black px-8 py-4 rounded-full font-bold text-base hover:opacity-90 transition-all hover:scale-105 active:scale-95 shadow-[0_0_30px_-5px_rgba(201,162,39,0.5)]"
+                  >
+                    <MessageCircle className="w-5 h-5" />
+                    Hablar por WhatsApp
+                  </a>
+                  <p className="text-white/30 text-xs mt-4">Respondemos en menos de 24 horas</p>
+                </div>
+              </div>
+            </motion.div>
+
           </div>
         </section>
 
