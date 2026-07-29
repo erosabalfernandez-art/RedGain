@@ -159,16 +159,30 @@ function UserDetailModal({ user: u, onClose, onUpdate, onDelete }: { user: any; 
 
 // ── Overview ────────────────────────────────────────────────────────────────
 function OverviewSection() {
-  const { data: stats, isLoading } = useAdminGetStats();
+  const { data: raw, isLoading } = useAdminGetStats();
+  const stats = raw as any; // extended with profit fields
   if (isLoading) return <div className="flex justify-center py-20"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>;
+
+  const totalNetProfit       = (stats?.totalNetProfit   ?? 0) as number;
+  const monthlyNetProfit     = (stats?.monthlyNetProfit ?? 0) as number;
+  const totalRevenue         = (stats?.totalRevenue     ?? 0) as number;
+  const monthlyRevenue       = (stats?.monthlyRevenue   ?? 0) as number;
+  const totalCommissionsSent = (stats?.totalCommissionsSent   ?? 0) as number;
+  const monthlyCommsSent     = (stats?.monthlyCommissionsSent ?? 0) as number;
+  const commissionsFailed    = (stats?.commissionsFailed  ?? 0) as number;
+  const commissionsSkipped   = (stats?.commissionsSkipped ?? 0) as number;
+  const totalInitial         = (stats?.totalInitialPayments  ?? 0) as number;
+  const totalRenewals        = (stats?.totalRenewalPayments  ?? 0) as number;
+
   const cards = [
-    { label: 'Usuarios totales', value: stats?.totalUsers ?? 0, icon: Users, color: 'text-[#C9A227]', bg: 'bg-[#C9A227]/10' },
-    { label: 'Cuentas activas', value: stats?.activeUsers ?? 0, icon: Activity, color: 'text-emerald-400', bg: 'bg-emerald-400/10' },
-    { label: 'Pagos pendientes', value: stats?.pendingPayments ?? 0, icon: Receipt, color: 'text-yellow-400', bg: 'bg-yellow-400/10' },
-    { label: 'Vencen esta semana', value: stats?.expiringThisWeek ?? 0, icon: Clock, color: 'text-orange-400', bg: 'bg-orange-400/10' },
-    { label: 'Ingresos totales', value: `$${(stats?.totalRevenue ?? 0).toFixed(2)}`, icon: DollarSign, color: 'text-purple-400', bg: 'bg-purple-400/10' },
-    { label: 'Ingresos este mes', value: `$${(stats?.monthlyRevenue ?? 0).toFixed(2)}`, icon: TrendingUp, color: 'text-pink-400', bg: 'bg-pink-400/10' },
+    { label: 'Usuarios totales',    value: stats?.totalUsers    ?? 0,    icon: Users,     color: 'text-[#C9A227]',  bg: 'bg-[#C9A227]/10' },
+    { label: 'Cuentas activas',     value: stats?.activeUsers   ?? 0,    icon: Activity,  color: 'text-emerald-400', bg: 'bg-emerald-400/10' },
+    { label: 'Pagos pendientes',    value: stats?.pendingPayments ?? 0,  icon: Receipt,   color: 'text-yellow-400',  bg: 'bg-yellow-400/10' },
+    { label: 'Vencen esta semana',  value: stats?.expiringThisWeek ?? 0, icon: Clock,     color: 'text-orange-400',  bg: 'bg-orange-400/10' },
+    { label: 'Membresías iniciales',value: totalInitial,                 icon: DollarSign,color: 'text-purple-400',  bg: 'bg-purple-400/10' },
+    { label: 'Renovaciones',        value: totalRenewals,                icon: TrendingUp, color: 'text-pink-400',   bg: 'bg-pink-400/10' },
   ];
+
   return (
     <div className="space-y-6">
       {/* ── Stoic admin banner ── */}
@@ -180,6 +194,133 @@ function OverviewSection() {
           <p className="text-xs mt-0.5 italic" style={{ color: 'rgba(201,162,39,0.5)' }}>"El que gobierna a otros debe primero gobernarse a sí mismo." — Séneca</p>
         </div>
       </div>
+
+      {/* ── NET PROFIT HERO BLOCK ─────────────────────────────────────────── */}
+      <div className="rounded-2xl overflow-hidden" style={{ background: 'linear-gradient(135deg, rgba(16,32,16,0.95) 0%, rgba(14,10,5,0.98) 100%)', border: '1px solid rgba(52,211,153,0.3)', boxShadow: '0 0 40px -15px rgba(52,211,153,0.2)' }}>
+        {/* Header */}
+        <div className="px-6 pt-5 pb-3 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl flex items-center justify-center" style={{ background: 'rgba(52,211,153,0.12)', border: '1px solid rgba(52,211,153,0.3)' }}>
+              <DollarSign className="w-5 h-5 text-emerald-400" />
+            </div>
+            <div>
+              <p className="text-sm font-extrabold text-emerald-400">Ganancia Neta — Dinero Limpio</p>
+              <p className="text-xs text-muted-foreground">Lo que realmente es tuyo después de todas las comisiones</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Two big numbers */}
+        <div className="grid grid-cols-2 gap-px mx-6 mb-5 rounded-xl overflow-hidden" style={{ border: '1px solid rgba(52,211,153,0.15)' }}>
+          <div className="px-5 py-4" style={{ background: 'rgba(52,211,153,0.05)' }}>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-400/60 mb-1">Total acumulado</p>
+            <p className="text-3xl font-extrabold text-emerald-400">${totalNetProfit.toFixed(2)}</p>
+            <p className="text-xs text-muted-foreground mt-1">USDT ganancia limpia</p>
+          </div>
+          <div className="px-5 py-4" style={{ background: 'rgba(52,211,153,0.03)' }}>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-400/60 mb-1">Este mes</p>
+            <p className="text-3xl font-extrabold" style={{ color: monthlyNetProfit >= 0 ? '#34d399' : '#f87171' }}>
+              ${monthlyNetProfit.toFixed(2)}
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">USDT ganancia limpia</p>
+          </div>
+        </div>
+
+        {/* Calculation breakdown */}
+        <div className="mx-6 mb-5 rounded-xl p-4 space-y-3" style={{ background: 'rgba(0,0,0,0.25)', border: '1px solid rgba(255,255,255,0.04)' }}>
+          <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">Cómo se calcula</p>
+
+          {/* All time */}
+          <div className="space-y-1.5">
+            <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Histórico total</p>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-blue-400" />
+                <span className="text-xs text-muted-foreground">Bruto recibido ({totalInitial + totalRenewals} pagos)</span>
+              </div>
+              <span className="text-xs font-bold text-blue-400">+${totalRevenue.toFixed(2)}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-red-400" />
+                <span className="text-xs text-muted-foreground">Comisiones enviadas a referidos</span>
+              </div>
+              <span className="text-xs font-bold text-red-400">−${totalCommissionsSent.toFixed(2)}</span>
+            </div>
+            <div className="h-px bg-white/5" />
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-emerald-400" />
+                <span className="text-xs font-bold text-foreground">= Ganancia neta</span>
+              </div>
+              <span className="text-sm font-extrabold text-emerald-400">${totalNetProfit.toFixed(2)}</span>
+            </div>
+          </div>
+
+          <div className="h-px bg-white/5" />
+
+          {/* This month */}
+          <div className="space-y-1.5">
+            <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Este mes</p>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-blue-400" />
+                <span className="text-xs text-muted-foreground">Bruto recibido</span>
+              </div>
+              <span className="text-xs font-bold text-blue-400">+${monthlyRevenue.toFixed(2)}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-red-400" />
+                <span className="text-xs text-muted-foreground">Comisiones enviadas</span>
+              </div>
+              <span className="text-xs font-bold text-red-400">−${monthlyCommsSent.toFixed(2)}</span>
+            </div>
+            <div className="h-px bg-white/5" />
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-emerald-400" />
+                <span className="text-xs font-bold text-foreground">= Ganancia neta mes</span>
+              </div>
+              <span className="text-sm font-extrabold text-emerald-400">${monthlyNetProfit.toFixed(2)}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Extra info row */}
+        <div className="grid grid-cols-2 gap-3 mx-6 mb-5">
+          <div className="rounded-xl p-3 space-y-0.5" style={{ background: 'rgba(234,179,8,0.06)', border: '1px solid rgba(234,179,8,0.15)' }}>
+            <p className="text-[10px] font-bold uppercase tracking-wide text-yellow-400/70">Comisiones no cobradas</p>
+            <p className="text-lg font-extrabold text-yellow-400">${commissionsSkipped.toFixed(2)}</p>
+            <p className="text-[10px] text-muted-foreground leading-tight">Referidor inactivo o sin billetera — legítimamente tuyo</p>
+          </div>
+          <div className="rounded-xl p-3 space-y-0.5" style={{ background: commissionsFailed > 0 ? 'rgba(239,68,68,0.06)' : 'rgba(14,10,5,0.5)', border: commissionsFailed > 0 ? '1px solid rgba(239,68,68,0.25)' : '1px solid rgba(255,255,255,0.05)' }}>
+            <p className={`text-[10px] font-bold uppercase tracking-wide ${commissionsFailed > 0 ? 'text-red-400/70' : 'text-muted-foreground/50'}`}>Comisiones fallidas</p>
+            <p className={`text-lg font-extrabold ${commissionsFailed > 0 ? 'text-red-400' : 'text-muted-foreground/40'}`}>${commissionsFailed.toFixed(2)}</p>
+            <p className="text-[10px] text-muted-foreground leading-tight">{commissionsFailed > 0 ? '⚠️ Revisar — fondos en billetera pero no enviados' : 'Sin comisiones fallidas ✓'}</p>
+          </div>
+        </div>
+
+        {/* Payment type mini stats */}
+        <div className="mx-6 mb-6 flex items-center gap-4 px-4 py-3 rounded-xl" style={{ background: 'rgba(201,162,39,0.04)', border: '1px solid rgba(201,162,39,0.12)' }}>
+          <div className="flex-1 text-center">
+            <p className="text-lg font-extrabold" style={{ color: '#C9A227' }}>{totalInitial}</p>
+            <p className="text-[10px] text-muted-foreground">Membresías iniciales</p>
+          </div>
+          <div className="w-px h-8 bg-border" />
+          <div className="flex-1 text-center">
+            <p className="text-lg font-extrabold text-purple-400">{totalRenewals}</p>
+            <p className="text-[10px] text-muted-foreground">Renovaciones</p>
+          </div>
+          <div className="w-px h-8 bg-border" />
+          <div className="flex-1 text-center">
+            <p className="text-lg font-extrabold text-blue-400">{totalInitial + totalRenewals}</p>
+            <p className="text-[10px] text-muted-foreground">Pagos totales</p>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Stat cards ───────────────────────────────────────────────────────── */}
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         {cards.map(({ label, value, icon: Icon, color, bg }) => (
           <div key={label} className="rounded-2xl p-5" style={{ background: 'rgba(14,10,5,0.85)', border: '1px solid rgba(201,162,39,0.15)' }}>
@@ -189,12 +330,14 @@ function OverviewSection() {
           </div>
         ))}
       </div>
+
+      {/* ── Status pills ─────────────────────────────────────────────────────── */}
       <div className="grid md:grid-cols-4 gap-3">
         {[
           { label: 'Pendientes', value: stats?.pendingUsers ?? 0, color: 'text-yellow-400', bg: 'bg-yellow-400/5 border-yellow-400/20' },
-          { label: 'Activas', value: stats?.activeUsers ?? 0, color: 'text-emerald-400', bg: 'bg-emerald-400/5 border-emerald-400/20' },
-          { label: 'Pausadas', value: stats?.pausedUsers ?? 0, color: 'text-orange-400', bg: 'bg-orange-400/5 border-orange-400/20' },
-          { label: 'Perdidas', value: stats?.lostUsers ?? 0, color: 'text-red-400', bg: 'bg-red-400/5 border-red-400/20' },
+          { label: 'Activas',    value: stats?.activeUsers  ?? 0, color: 'text-emerald-400', bg: 'bg-emerald-400/5 border-emerald-400/20' },
+          { label: 'Pausadas',   value: stats?.pausedUsers  ?? 0, color: 'text-orange-400', bg: 'bg-orange-400/5 border-orange-400/20' },
+          { label: 'Perdidas',   value: stats?.lostUsers    ?? 0, color: 'text-red-400',    bg: 'bg-red-400/5 border-red-400/20' },
         ].map(({ label, value, color, bg }) => (
           <div key={label} className={`border rounded-xl p-4 text-center ${bg}`}>
             <p className={`text-2xl font-extrabold ${color}`}>{value}</p>

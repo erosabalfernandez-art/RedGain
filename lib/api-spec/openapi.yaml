@@ -996,7 +996,7 @@ components:
 
     AdminStats:
       type: object
-      required: [totalUsers, activeUsers, pendingUsers, pausedUsers, lostUsers, pendingPayments, totalRevenue, monthlyRevenue, expiringThisWeek]
+      required: [totalUsers, activeUsers, pendingUsers, pausedUsers, lostUsers, pendingPayments, totalRevenue, monthlyRevenue, expiringThisWeek, totalNetProfit, monthlyNetProfit, totalCommissionsSent, monthlyCommissionsSent, commissionsFailed, commissionsSkipped, totalInitialPayments, totalRenewalPayments]
       properties:
         totalUsers:
           type: integer
@@ -1012,8 +1012,34 @@ components:
           type: integer
         totalRevenue:
           type: number
+          description: Gross total received (all approved payments × $10)
         monthlyRevenue:
           type: number
+          description: Gross received this month
         expiringThisWeek:
           type: integer
           description: Number of memberships expiring in the next 7 days
+        totalNetProfit:
+          type: number
+          description: "Net platform profit = totalRevenue - totalCommissionsSent"
+        monthlyNetProfit:
+          type: number
+          description: "Net platform profit this month = monthlyRevenue - monthlyCommissionsSent"
+        totalCommissionsSent:
+          type: number
+          description: Total USDT actually sent to referrers (status=sent)
+        monthlyCommissionsSent:
+          type: number
+          description: USDT sent to referrers this month
+        commissionsFailed:
+          type: number
+          description: USDT that failed to send (still in operator wallet, but owed)
+        commissionsSkipped:
+          type: number
+          description: USDT legitimately kept because referrer was inactive/no wallet
+        totalInitialPayments:
+          type: integer
+          description: Count of initial membership payments
+        totalRenewalPayments:
+          type: integer
+          description: Count of renewal payments

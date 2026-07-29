@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { db, usersTable, paymentsTable/*, commissionDistributionsTable*/, pool } from "@workspace/db";
+import { db, usersTable, paymentsTable, commissionEventsTable/*, commissionDistributionsTable*/, pool } from "@workspace/db";
 import { eq, desc, /*and, gte, lte,*/ sql } from "drizzle-orm";
 import { distributeCommissions } from "../lib/distributor";
 import { logger } from "../lib/logger";
@@ -530,31 +530,75 @@ FIN COMISIONES MANUALES COMENTADAS */
 
 // GET /api/admin/stats
 router.get("/stats", requireAdmin, async (_req, res) => {
-  const users = await db.select().from(usersTable);
-  const payments = await db.select().from(paymentsTable);
+  const [users, payments, commissions] = await Promise.all([
+    db.select().from(usersTable),
+    db.select().from(paymentsTable),
+    db.select().from(commissionEventsTable),
+  ]);
 
   const now = new Date();
   const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
   const nextWeek = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
 
-  const totalUsers = users.filter((u) => u.role !== "admin").length;
-  const activeUsers = users.filter((u) => u.accountStatus === "active").length;
+  // ── Users ──────────────────────────────────────────────────────────────────
+  const totalUsers   = users.filter((u) => u.role !== "admin").length;
+  const activeUsers  = users.filter((u) => u.accountStatus === "active").length;
   const pendingUsers = users.filter((u) => u.accountStatus === "pending").length;
-  const pausedUsers = users.filter((u) => u.accountStatus === "paused").length;
-  const lostUsers = users.filter((u) => u.accountStatus === "lost").length;
+  const pausedUsers  = users.filter((u) => u.accountStatus === "paused").length;
+  const lostUsers    = users.filter((u) => u.accountStatus === "lost").length;
   const pendingPayments = payments.filter((p) => p.status === "pending").length;
 
+  // ── Gross revenue ──────────────────────────────────────────────────────────
   const approvedPayments = payments.filter((p) => p.status === "approved");
   const totalRevenue = approvedPayments.reduce((s, p) => s + parseFloat(p.amount), 0);
   const monthlyRevenue = approvedPayments
     .filter((p) => p.createdAt >= monthStart)
     .reduce((s, p) => s + parseFloat(p.amount), 0);
 
+  // Payment type breakdown
+  const totalInitialPayments  = approvedPayments.filter((p) => p.paymentType === "initial").length;
+  const totalRenewalPayments  = approvedPayments.filter((p) => p.paymentType === "renewal").length;
+
+  // ── Commission breakdown ───────────────────────────────────────────────────
+  // sent    → money actually left the operator wallet (real expense)
+  // failed  → tried to send but failed; money is still in the wallet (owed, but present)
+  // skipped → referrer was inactive/no wallet; platform legitimately keeps it
+  const sentAll    = commissions.filter((c) => c.status === "sent");
+  const failedAll  = commissions.filter((c) => c.status === "failed");
+  const skippedAll = commissions.filter((c) => c.status === "skipped");
+
+  const totalCommissionsSent   = sentAll.reduce((s, c) => s + parseFloat(c.amountUsdt), 0);
+  const monthlyCommissionsSent = sentAll
+    .filter((c) => c.createdAt >= monthStart)
+    .reduce((s, c) => s + parseFloat(c.amountUsdt), 0);
+  const commissionsFailed  = failedAll.reduce((s, c) => s + parseFloat(c.amountUsdt), 0);
+  const commissionsSkipped = skippedAll.reduce((s, c) => s + parseFloat(c.amountUsdt), 0);
+
+  // ── Net profit (what is really yours) ─────────────────────────────────────
+  // Gross received − commissions actually sent out = clean profit
+  const totalNetProfit   = totalRevenue   - totalCommissionsSent;
+  const monthlyNetProfit = monthlyRevenue - monthlyCommissionsSent;
+
+  // ── Expiring soon ──────────────────────────────────────────────────────────
   const expiringThisWeek = users.filter(
     (u) => u.membershipExpiresAt && u.membershipExpiresAt > now && u.membershipExpiresAt <= nextWeek,
   ).length;
 
-  return res.json({ totalUsers, activeUsers, pendingUsers, pausedUsers, lostUsers, pendingPayments, totalRevenue, monthlyRevenue, expiringThisWeek });
+  return res.json({
+    // users
+    totalUsers, activeUsers, pendingUsers, pausedUsers, lostUsers,
+    pendingPayments,
+    // gross
+    totalRevenue, monthlyRevenue,
+    totalInitialPayments, totalRenewalPayments,
+    // net profit
+    totalNetProfit, monthlyNetProfit,
+    // commission detail
+    totalCommissionsSent, monthlyCommissionsSent,
+    commissionsFailed, commissionsSkipped,
+    // misc
+    expiringThisWeek,
+  });
 });
 
 // POST /api/admin/process-tx
