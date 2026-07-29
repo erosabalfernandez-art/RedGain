@@ -578,7 +578,7 @@ function CommissionHistoryBlock() {
     skipped: { icon: Clock,       color: 'text-yellow-400' },
   };
 
-  const SUPPORT_WA = 'https://wa.me/5491112345678'; // fallback; real number is in distributor env
+  const SUPPORT_WA = 'https://wa.me/5588992543996';
 
   return (
     <div className="rounded-2xl p-5 space-y-4" style={{ background: 'rgba(14,10,5,0.85)', border: '1px solid rgba(201,162,39,0.15)' }}>
@@ -772,6 +772,93 @@ function MembresiaSectionContent() {
   );
 }
 
+// ── Support Section ──────────────────────────────────────────────────────────
+const WA_NUMBER = '5588992543996';
+const WA_LINK = `https://wa.me/${WA_NUMBER}`;
+
+function SoporteSection() {
+  const topics = [
+    { emoji: '💳', label: 'Problemas con mi pago' },
+    { emoji: '👥', label: 'Mi referido no aparece' },
+    { emoji: '💰', label: 'No recibí mi comisión' },
+    { emoji: '🔐', label: 'Problema con mi cuenta' },
+    { emoji: '❓', label: 'Otra consulta' },
+  ];
+
+  const waLink = (msg: string) =>
+    `${WA_LINK}?text=${encodeURIComponent(msg)}`;
+
+  return (
+    <div className="space-y-6">
+      {/* Banner */}
+      <div className="relative rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(201,162,39,0.2)' }}>
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(37,211,102,0.12) 0%, rgba(14,10,5,0.95) 60%)' }} />
+        <div className="relative px-6 py-5 flex items-center gap-4">
+          <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0" style={{ background: 'rgba(37,211,102,0.15)', border: '1px solid rgba(37,211,102,0.3)' }}>
+            <MessageCircle className="w-6 h-6" style={{ color: '#25D366' }} />
+          </div>
+          <div>
+            <h2 className="text-xl font-extrabold" style={{ color: '#E8C547' }}>Atención al Cliente</h2>
+            <p className="text-xs mt-0.5 italic" style={{ color: 'rgba(201,162,39,0.5)' }}>"El que pregunta no se pierde." — Proverbio estoico</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Main CTA */}
+      <div className="rounded-2xl p-6 text-center space-y-4" style={{ background: 'rgba(14,10,5,0.85)', border: '1px solid rgba(37,211,102,0.2)' }}>
+        <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto" style={{ background: 'rgba(37,211,102,0.12)', border: '2px solid rgba(37,211,102,0.3)' }}>
+          <MessageCircle className="w-8 h-8" style={{ color: '#25D366' }} />
+        </div>
+        <div>
+          <p className="text-lg font-extrabold text-foreground">¿Necesitas ayuda?</p>
+          <p className="text-sm text-muted-foreground mt-1 max-w-xs mx-auto leading-relaxed">
+            Escríbenos directamente por WhatsApp. Te respondemos lo antes posible.
+          </p>
+        </div>
+        <a
+          href={WA_LINK}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2.5 px-6 py-3 rounded-xl font-bold text-sm transition-all hover:opacity-90 active:scale-95"
+          style={{ background: 'linear-gradient(135deg, #25D366, #128C7E)', color: '#fff', boxShadow: '0 4px 20px -4px rgba(37,211,102,0.4)' }}
+        >
+          <MessageCircle className="w-5 h-5" />
+          Abrir WhatsApp ahora
+        </a>
+        <p className="text-xs text-muted-foreground">+55 88992-543996</p>
+      </div>
+
+      {/* Quick topics */}
+      <div className="rounded-2xl p-5 space-y-3" style={{ background: 'rgba(14,10,5,0.85)', border: '1px solid rgba(201,162,39,0.15)' }}>
+        <p className="text-sm font-bold" style={{ color: '#E8C547' }}>Consultas frecuentes — toca para escribirnos directamente</p>
+        <div className="space-y-2">
+          {topics.map(({ emoji, label }) => (
+            <a
+              key={label}
+              href={waLink(`Hola, necesito ayuda con: ${label}`)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 p-3 rounded-xl border border-border hover:border-[rgba(37,211,102,0.3)] hover:bg-[rgba(37,211,102,0.04)] transition-all group"
+            >
+              <span className="text-lg shrink-0">{emoji}</span>
+              <span className="flex-1 text-sm font-medium text-foreground group-hover:text-white">{label}</span>
+              <MessageCircle className="w-4 h-4 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: '#25D366' }} />
+            </a>
+          ))}
+        </div>
+      </div>
+
+      {/* Info note */}
+      <div className="rounded-xl p-4 flex items-start gap-3" style={{ background: 'rgba(201,162,39,0.05)', border: '1px solid rgba(201,162,39,0.12)' }}>
+        <Clock className="w-4 h-4 text-yellow-400 mt-0.5 shrink-0" />
+        <p className="text-xs text-muted-foreground leading-relaxed">
+          El soporte se atiende en horario hábil. Si escribes fuera de horario, te responderemos al siguiente día disponible. Incluye tu <strong className="text-foreground">nombre de usuario</strong> para agilizar la atención.
+        </p>
+      </div>
+    </div>
+  );
+}
+
 // ── Main Dashboard ───────────────────────────────────────────────────────────
 export default function Dashboard() {
   const [location] = useLocation();
@@ -780,6 +867,7 @@ export default function Dashboard() {
   const section = location.includes('/referidos') ? 'referidos'
     : location.includes('/pagos') ? 'pagos'
     : location.includes('/membresia') ? 'membresia'
+    : location.includes('/soporte') ? 'soporte'
     : 'inicio';
 
   const { user } = useAuth();
@@ -799,6 +887,7 @@ export default function Dashboard() {
       {section === 'referidos' && <ReferidosSection />}
       {section === 'pagos' && <PagosSection />}
       {section === 'membresia' && <MembresiaSectionContent />}
+      {section === 'soporte' && <SoporteSection />}
     </DashboardLayout>
   );
 }

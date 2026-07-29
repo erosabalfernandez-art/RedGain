@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Menu, LayoutDashboard, LogOut, Users, CreditCard, Clock, BookOpen, Bell } from 'lucide-react';
+import { Menu, LayoutDashboard, LogOut, Users, CreditCard, Clock, BookOpen, Bell, MessageCircle } from 'lucide-react';
 import { Logo } from '@/components/ui/logo';
 import { useAuth } from '@/lib/auth';
 import { Link, useLocation } from 'wouter';
@@ -134,6 +134,7 @@ export function DashboardLayout({ children, topbar }: { children: React.ReactNod
     { label: 'Pagos', icon: CreditCard, href: '/dashboard/pagos' },
     { label: 'Membresía', icon: Clock, href: '/dashboard/membresia' },
     { label: 'Cómo Funciona', icon: BookOpen, href: '/como-funciona?from=dashboard' },
+    { label: 'Soporte', icon: MessageCircle, href: '/dashboard/soporte' },
   ];
 
   const isActive = (href: string) => location === href || (href !== '/dashboard' && location.startsWith(href));
