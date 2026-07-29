@@ -97,6 +97,50 @@ paths:
               schema:
                 $ref: "#/components/schemas/SuccessResponse"
 
+  /auth/verify-email:
+    get:
+      operationId: verifyEmail
+      tags: [auth]
+      summary: Verify email address with token
+      parameters:
+        - in: query
+          name: token
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Email verified successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "400":
+          description: Invalid or expired token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/resend-verification:
+    post:
+      operationId: resendVerification
+      tags: [auth]
+      summary: Resend verification email
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResendVerificationInput"
+      responses:
+        "200":
+          description: Verification email sent (or silently skipped if already verified)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
   /auth/me:
     get:
       operationId: getMe
@@ -521,9 +565,16 @@ components:
         password:
           type: string
 
+    ResendVerificationInput:
+      type: object
+      required: [email]
+      properties:
+        email:
+          type: string
+
     User:
       type: object
-      required: [id, name, email, role, accountStatus, referralCode, createdAt]
+      required: [id, name, email, role, accountStatus, referralCode, emailVerified, createdAt]
       properties:
         id:
           type: integer
@@ -539,6 +590,8 @@ components:
         accountStatus:
           type: string
           enum: [pending, active, paused, lost]
+        emailVerified:
+          type: boolean
         referralCode:
           type: string
         bscWallet:

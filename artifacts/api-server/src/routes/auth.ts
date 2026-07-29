@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import { db, usersTable, notificationsTable } from "@workspace/db";
 import { eq } from "drizzle-orm";
 import { randomBytes } from "crypto";
+import { sendVerificationEmail } from "../lib/email";
 
 declare module "express-session" {
   interface SessionData {
@@ -54,6 +55,7 @@ function userToResponse(user: typeof usersTable.$inferSelect) {
     phone: user.phone ?? null,
     role: user.role,
     accountStatus: user.accountStatus,
+    emailVerified: user.emailVerified,
     referralCode: user.referralCode,
     bscWallet: user.bscWallet ?? null,
     membershipStartedAt: user.membershipStartedAt?.toISOString() ?? null,
@@ -104,7 +106,6 @@ router.post("/register", async (req, res) => {
       .limit(1);
     if (referrer.length > 0) {
       const ref = referrer[0];
-      // Referral code is only valid if referrer's account is active
       if (ref.accountStatus !== "active") {
         return res
           .status(400)
@@ -129,6 +130,10 @@ router.post("/register", async (req, res) => {
     else code = generateReferralCode();
   }
 
+  // Generate email verification token (24h expiry)
+  const verificationToken = randomBytes(32).toString("hex");
+  const verificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
   const [user] = await db
     .insert(usersTable)
     .values({
@@ -141,10 +146,13 @@ router.post("/register", async (req, res) => {
       accountStatus: "pending",
       role: "user",
       bscWallet: normalizedWallet ?? undefined,
+      emailVerified: false,
+      emailVerificationToken: verificationToken,
+      emailVerificationTokenExpires: verificationExpires,
     })
     .returning();
 
-  // Notificar al referidor que alguien usó su código
+  // Notify referrer
   if (referrerId) {
     await db.insert(notificationsTable).values({
       userId: referrerId,
@@ -153,11 +161,78 @@ router.post("/register", async (req, res) => {
       body: `${name} se registró usando tu código de referido. ¡Cuando realice su pago recibirás $6 USDT!`,
       read: false,
       metadata: JSON.stringify({ newUserId: user.id, newUserName: name }),
-    }).catch(() => {}); // no bloquear el registro si falla la notificación
+    }).catch(() => {});
   }
 
+  // Send verification email — don't block registration if it fails
+  sendVerificationEmail(email, name, verificationToken).catch((err) => {
+    console.error("Registration: failed to send verification email", err);
+  });
+
+  // Set session so user is "logged in" (but dashboard will prompt to verify)
   req.session.userId = user.id;
   return res.status(201).json({ user: userToResponse(user) });
+});
+
+// GET /api/auth/verify-email?token=...
+router.get("/verify-email", async (req, res) => {
+  const { token } = req.query;
+  if (!token || typeof token !== "string") {
+    return res.status(400).json({ error: "Token inválido" });
+  }
+
+  const [user] = await db
+    .select()
+    .from(usersTable)
+    .where(eq(usersTable.emailVerificationToken, token))
+    .limit(1);
+
+  if (!user) {
+    return res.status(400).json({ error: "Enlace inválido o ya utilizado" });
+  }
+
+  if (user.emailVerificationTokenExpires && user.emailVerificationTokenExpires < new Date()) {
+    return res.status(400).json({ error: "El enlace ha expirado. Solicita uno nuevo desde tu panel." });
+  }
+
+  const [updated] = await db
+    .update(usersTable)
+    .set({
+      emailVerified: true,
+      emailVerificationToken: null,
+      emailVerificationTokenExpires: null,
+      updatedAt: new Date(),
+    })
+    .where(eq(usersTable.id, user.id))
+    .returning();
+
+  req.session.userId = updated!.id;
+  return res.json({ user: userToResponse(updated!) });
+});
+
+// POST /api/auth/resend-verification
+router.post("/resend-verification", async (req, res) => {
+  const { email } = req.body;
+  if (!email) return res.status(400).json({ error: "Email requerido" });
+
+  const [user] = await db.select().from(usersTable).where(eq(usersTable.email, email)).limit(1);
+
+  // Silently succeed if user not found or already verified (security: don't reveal existence)
+  if (!user || user.emailVerified) {
+    return res.json({ success: true });
+  }
+
+  const token = randomBytes(32).toString("hex");
+  const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+  await db
+    .update(usersTable)
+    .set({ emailVerificationToken: token, emailVerificationTokenExpires: expires, updatedAt: new Date() })
+    .where(eq(usersTable.id, user.id));
+
+  sendVerificationEmail(email, user.name, token).catch(() => {});
+
+  return res.json({ success: true });
 });
 
 // POST /api/auth/login

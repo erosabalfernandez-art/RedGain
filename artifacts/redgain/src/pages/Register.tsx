@@ -189,6 +189,9 @@ export default function Register() {
     name: '', email: '', countryCode: '+55', phoneNumber: '', password: '', confirmPassword: '', referralCode: '', bscWallet: ''
   });
   const [errorMsg, setErrorMsg] = useState('');
+  const [verificationSent, setVerificationSent] = useState(false);
+  const [resendSent, setResendSent] = useState(false);
+  const [resending, setResending] = useState(false);
 
   const registerMutation = useRegister();
   const { refetch } = useAuth();
@@ -226,7 +229,7 @@ export default function Register() {
     }, {
       onSuccess: async () => {
         await refetch();
-        window.location.href = '/dashboard';
+        setVerificationSent(true);
       },
       onError: (error: any) => {
         setErrorMsg(error?.response?.data?.error || error.message || 'Ocurrió un error al registrarse. Verifica tus datos.');
@@ -234,8 +237,66 @@ export default function Register() {
     });
   };
 
+  const handleResend = async () => {
+    setResending(true);
+    await fetch('/api/auth/resend-verification', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: formData.email }),
+      credentials: 'include',
+    }).catch(() => {});
+    setResending(false);
+    setResendSent(true);
+  };
+
   // Input class shared across all form fields
   const inputCls = "w-full pl-10 pr-4 h-12 rounded-xl bg-[#C9A227]/4 border border-[#C9A227]/15 text-white placeholder:text-white/25 focus:outline-none focus:border-[#C9A227]/50 focus:bg-[#C9A227]/8 transition-all font-medium text-sm";
+
+  // ── "Check your email" screen ──────────────────────────────────────────────
+  if (verificationSent) {
+    return (
+      <div className="min-h-screen w-full flex items-center justify-center bg-[#0E0C09] relative overflow-hidden p-6">
+        <div className="fixed top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-[#8B6914]/15 blur-[140px] pointer-events-none" />
+        <div className="fixed bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-[#C9A227]/8 blur-[140px] pointer-events-none" />
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="w-full max-w-md text-center z-10"
+        >
+          <div className="flex items-center justify-center gap-3 mb-8">
+            <Logo className="w-8 h-8 text-[#C9A227]" />
+            <span className="font-black text-2xl text-white">RedGain</span>
+          </div>
+          <div className="bg-[#1A1208]/70 border border-[#C9A227]/15 backdrop-blur-xl p-10 rounded-3xl relative shadow-2xl">
+            <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#C9A227]/50 to-transparent rounded-t-3xl" />
+            <div className="w-16 h-16 rounded-full bg-[#C9A227]/10 border border-[#C9A227]/20 flex items-center justify-center mx-auto mb-6">
+              <Mail className="w-8 h-8 text-[#C9A227]" />
+            </div>
+            <h1 className="text-2xl font-black text-white mb-2">¡Cuenta creada!</h1>
+            <p className="text-white/50 text-sm leading-relaxed mb-2">
+              Te enviamos un email de verificación a
+            </p>
+            <p className="text-[#E8C547] font-bold text-sm mb-6">{formData.email}</p>
+            <p className="text-white/40 text-xs leading-relaxed mb-8">
+              Abre ese correo y haz clic en el enlace para acceder a tu cuenta. Revisa también la carpeta de spam.
+            </p>
+            {resendSent ? (
+              <p className="text-emerald-400 text-sm font-semibold">✅ Email reenviado. Revisa tu bandeja.</p>
+            ) : (
+              <button
+                onClick={handleResend}
+                disabled={resending}
+                className="text-sm font-medium text-white/35 hover:text-[#E8C547] transition-colors disabled:opacity-50"
+              >
+                {resending ? 'Enviando…' : '¿No llegó el email? Reenviar'}
+              </button>
+            )}
+          </div>
+        </motion.div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen w-full flex bg-[#0E0C09] relative overflow-hidden selection:bg-[#C9A227]/30">
