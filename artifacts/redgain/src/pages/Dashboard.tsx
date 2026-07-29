@@ -3,7 +3,7 @@ import { useLocation } from 'wouter';
 import {
   Copy, CheckCircle2, XCircle, Loader2, Clock, AlertTriangle,
   DollarSign, Users, Activity, Wallet, MessageCircle, GitBranch,
-  List, Eye, RefreshCw, Phone, X, Download, ChevronLeft, ChevronRight, ExternalLink
+  List, Eye, RefreshCw, Phone, X, Download, ChevronLeft, ChevronRight, ExternalLink, ChevronDown
 } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
 import { useQueryClient } from '@tanstack/react-query';
@@ -335,6 +335,106 @@ function ReferidosSection() {
   );
 }
 
+// ── Payment Warning Accordion ────────────────────────────────────────────────
+const SUPPORT_WA_PAGOS = 'https://wa.me/5588992543996';
+
+function PaymentWarningAccordion() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(239,68,68,0.35)', background: 'rgba(14,10,5,0.9)' }}>
+      {/* Header — always visible */}
+      <button
+        onClick={() => setOpen(v => !v)}
+        className="w-full flex items-center gap-3 px-5 py-4 text-left transition-colors hover:bg-red-500/5"
+      >
+        <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.3)' }}>
+          <AlertTriangle className="w-4 h-4 text-red-400" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-bold text-red-400">Advertencias importantes sobre montos de pago</p>
+          <p className="text-xs text-muted-foreground mt-0.5">Qué ocurre si envías un monto incorrecto — lee antes de pagar</p>
+        </div>
+        <ChevronDown
+          className="w-4 h-4 text-red-400 shrink-0 transition-transform duration-200"
+          style={{ transform: open ? 'rotate(180deg)' : 'rotate(0deg)' }}
+        />
+      </button>
+
+      {/* Body — collapsible */}
+      {open && (
+        <div className="px-5 pb-5 space-y-4 border-t border-red-500/20">
+          <p className="text-xs text-muted-foreground pt-4 leading-relaxed">
+            Nuestro sistema detecta pagos automáticamente en la blockchain. Enviar un monto distinto a <strong className="text-foreground">exactamente $10 USDT</strong> genera incidencias que el equipo debe resolver manualmente, con las siguientes consecuencias en ambos casos:
+          </p>
+
+          {/* Case 1 — Less than 10 */}
+          <div className="rounded-xl p-4 space-y-3" style={{ background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.2)' }}>
+            <div className="flex items-center gap-2">
+              <XCircle className="w-4 h-4 text-red-400 shrink-0" />
+              <p className="text-sm font-bold text-red-400">Si envías MENOS de $10 USDT</p>
+            </div>
+            <div className="space-y-2 pl-1">
+              {[
+                { icon: '❌', text: 'El sistema no reconoce el pago y tu cuenta NO se activa.' },
+                { icon: '🔄', text: 'El equipo te devolverá el dinero a tu billetera de origen.' },
+                { icon: '⚠️', text: <span>Perderás la <strong className="text-red-300">comisión de red</strong> (gas fee) que el equipo paga al enviarte el dinero de vuelta. Ese costo corre por tu cuenta.</span> },
+                { icon: '🔁', text: 'Una vez recibida la devolución, deberás reenviar el monto íntegro de $10 USDT para activar tu cuenta.' },
+              ].map(({ icon, text }, i) => (
+                <div key={i} className="flex items-start gap-2">
+                  <span className="text-sm shrink-0 mt-0.5">{icon}</span>
+                  <p className="text-xs text-red-200 leading-relaxed">{text}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Case 2 — More than 10 */}
+          <div className="rounded-xl p-4 space-y-3" style={{ background: 'rgba(234,179,8,0.06)', border: '1px solid rgba(234,179,8,0.2)' }}>
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 text-yellow-400 shrink-0" />
+              <p className="text-sm font-bold text-yellow-400">Si envías MÁS de $10 USDT</p>
+            </div>
+            <div className="space-y-2 pl-1">
+              {[
+                { icon: '✅', text: 'El sistema detecta el pago y tu cuenta SÍ se activa normalmente.' },
+                { icon: '💰', text: 'El excedente (lo que enviaste de más) queda retenido en la billetera del sistema.' },
+                { icon: '📩', text: 'Puedes reclamar el excedente escribiendo al soporte. El equipo lo revisará y te lo devolverá.' },
+                { icon: '⚠️', text: <span>Perderás la <strong className="text-yellow-300">comisión de red</strong> (gas fee) que el equipo paga al devolverte el excedente. Ese costo corre por tu cuenta.</span> },
+              ].map(({ icon, text }, i) => (
+                <div key={i} className="flex items-start gap-2">
+                  <span className="text-sm shrink-0 mt-0.5">{icon}</span>
+                  <p className="text-xs text-yellow-200 leading-relaxed">{text}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Summary rule */}
+          <div className="rounded-xl p-3 flex items-start gap-3" style={{ background: 'rgba(201,162,39,0.05)', border: '1px solid rgba(201,162,39,0.2)' }}>
+            <CheckCircle2 className="w-4 h-4 text-[#C9A227] shrink-0 mt-0.5" />
+            <p className="text-xs leading-relaxed" style={{ color: 'rgba(201,162,39,0.85)' }}>
+              <strong className="text-[#E8C547]">Regla de oro:</strong> envía siempre exactamente <strong className="text-[#E8C547]">$10.00 USDT</strong> en la red BEP20 desde tu billetera registrada para evitar cualquier incidencia.
+            </p>
+          </div>
+
+          {/* Support CTA */}
+          <a
+            href={SUPPORT_WA_PAGOS}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center gap-2 w-full py-3 rounded-xl font-bold text-sm transition-all hover:opacity-90 active:scale-95"
+            style={{ background: 'linear-gradient(135deg, #25D366, #128C7E)', color: '#fff' }}
+          >
+            <MessageCircle className="w-4 h-4" />
+            Tengo un problema con mi pago — Contactar soporte
+          </a>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ── Payments Section ─────────────────────────────────────────────────────────
 function PagosSection() {
   const { user, refetch } = useAuth();
@@ -497,6 +597,9 @@ function PagosSection() {
         </div>
         <p className="text-xs text-muted-foreground">Monto exacto: <span className="font-bold text-foreground">$10 USDT</span></p>
       </div>
+
+      {/* Block 3b: Payment amount warnings accordion */}
+      <PaymentWarningAccordion />
 
       {/* Block 4: How it works */}
       <div className="rounded-2xl p-5" style={{ background: 'rgba(14,10,5,0.85)', border: '1px solid rgba(201,162,39,0.15)' }}>
