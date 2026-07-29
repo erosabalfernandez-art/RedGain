@@ -158,6 +158,7 @@ router.post("/register", async (req, res) => {
 
   req.session.userId = user.id;
   return res.status(201).json({ user: userToResponse(user) });
+});
 
 // POST /api/auth/login
 router.post("/login", async (req, res) => {

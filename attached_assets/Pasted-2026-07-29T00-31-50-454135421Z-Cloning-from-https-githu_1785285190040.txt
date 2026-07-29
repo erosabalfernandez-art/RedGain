@@ -1,0 +1,50 @@
+2026-07-29T00:31:50.454135421Z ==> Cloning from https://github.com/erosabalfernandez-art/RedGain
+2026-07-29T00:31:56.69160819Z ==> Checking out commit c7183d393fa839cd4fb8345b199f090eb6a9a8bd in branch main
+2026-07-29T00:32:03.480992701Z ==> Downloaded 184MB in 9s. Extraction took 4s.
+2026-07-29T00:32:04.083885293Z ==> Using Node.js version 24.14.1 (default)
+2026-07-29T00:32:04.083897008Z ==> Docs on specifying a Node.js version: https://render.com/docs/node-version
+2026-07-29T00:32:04.112417491Z ==> Running build command 'pnpm install --frozen-lockfile && PORT=3000 BASE_PATH=/ pnpm --filter @workspace/redgain run build && pnpm --filter @workspace/api-server run build'...
+2026-07-29T00:32:05.755735392Z 
+2026-07-29T00:32:05.755744438Z > @workspace/redgain@0.0.0 build /opt/render/project/src/artifacts/redgain
+2026-07-29T00:32:05.755746702Z > vite build --config vite.config.ts
+2026-07-29T00:32:05.755747461Z 
+2026-07-29T00:32:05.949594303Z vite v7.3.6 building client environment for production...
+2026-07-29T00:32:05.997102186Z transforming...
+2026-07-29T00:32:06.249730095Z src/components/ui/tooltip.tsx (2:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+2026-07-29T00:32:08.126670463Z ✓ 3014 modules transformed.
+2026-07-29T00:32:08.615431626Z rendering chunks...
+2026-07-29T00:32:08.62367477Z computing gzip size...
+2026-07-29T00:32:08.639856545Z dist/public/index.html                   1.35 kB │ gzip:   0.54 kB
+2026-07-29T00:32:08.639898156Z dist/public/assets/index-D_Cu9kZH.css  152.51 kB │ gzip:  22.59 kB
+2026-07-29T00:32:08.639902856Z dist/public/assets/index-CQ5tdFiv.js   677.49 kB │ gzip: 202.02 kB
+2026-07-29T00:32:08.639964514Z 
+2026-07-29T00:32:08.639976778Z (!) Some chunks are larger than 500 kB after minification. Consider:
+2026-07-29T00:32:08.639978729Z - Using dynamic import() to code-split the application
+2026-07-29T00:32:08.639980054Z - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+2026-07-29T00:32:08.639980886Z - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+2026-07-29T00:32:08.640098603Z ✓ built in 2.67s
+2026-07-29T00:32:08.964550831Z 
+2026-07-29T00:32:08.964572663Z > @workspace/api-server@0.0.0 build /opt/render/project/src/artifacts/api-server
+2026-07-29T00:32:08.964574141Z > node ./build.mjs
+2026-07-29T00:32:08.964575335Z 
+2026-07-29T00:32:09.038498764Z ✘ [ERROR] Unexpected "export"
+2026-07-29T00:32:09.038513232Z 
+2026-07-29T00:32:09.038514788Z     src/routes/auth.ts:203:0:
+2026-07-29T00:32:09.038516366Z       203 │ export default router;
+2026-07-29T00:32:09.038517964Z           ╵ ~~~~~~
+2026-07-29T00:32:09.038519171Z 
+2026-07-29T00:32:09.317518478Z 1 error
+2026-07-29T00:32:09.319070615Z Error: Build failed with 1 error:
+2026-07-29T00:32:09.319081592Z src/routes/auth.ts:203:0: ERROR: Unexpected "export"
+2026-07-29T00:32:09.319083223Z     at failureErrorWithLog (/opt/render/project/src/node_modules/.pnpm/esbuild@0.27.3/node_modules/esbuild/lib/main.js:1467:15)
+2026-07-29T00:32:09.319084905Z     at /opt/render/project/src/node_modules/.pnpm/esbuild@0.27.3/node_modules/esbuild/lib/main.js:926:25
+2026-07-29T00:32:09.319085653Z     at /opt/render/project/src/node_modules/.pnpm/esbuild@0.27.3/node_modules/esbuild/lib/main.js:1345:9
+2026-07-29T00:32:09.31909789Z     at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {
+2026-07-29T00:32:09.31909931Z   errors: [Getter/Setter],
+2026-07-29T00:32:09.319100517Z   warnings: [Getter/Setter]
+2026-07-29T00:32:09.319101348Z }
+2026-07-29T00:32:09.335449048Z /opt/render/project/src/artifacts/api-server:
+2026-07-29T00:32:09.335456748Z  ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @workspace/api-server@0.0.0 build: `node ./build.mjs`
+2026-07-29T00:32:09.335465263Z Exit status 1
+2026-07-29T00:32:09.373859386Z ==> Build failed 😞
+2026-07-29T00:32:09.373872515Z ==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
