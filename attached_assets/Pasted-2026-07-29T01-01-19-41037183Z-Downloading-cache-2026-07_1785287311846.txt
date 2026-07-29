@@ -1,0 +1,68 @@
+2026-07-29T01:01:19.41037183Z ==> Downloading cache...
+2026-07-29T01:01:19.435729339Z ==> Cloning from https://github.com/erosabalfernandez-art/RedGain
+2026-07-29T01:01:24.999652973Z ==> Checking out commit ab529155a5f35abfd1deffcb415b164e92511b36 in branch main
+2026-07-29T01:01:31.996839577Z ==> Downloaded 184MB in 8s. Extraction took 4s.
+2026-07-29T01:01:32.647314125Z ==> Using Node.js version 24.14.1 (default)
+2026-07-29T01:01:32.647327532Z ==> Docs on specifying a Node.js version: https://render.com/docs/node-version
+2026-07-29T01:01:32.677598567Z ==> Running build command 'pnpm install --frozen-lockfile && PORT=3000 BASE_PATH=/ pnpm --filter @workspace/redgain run build && pnpm --filter @workspace/api-server run build'...
+2026-07-29T01:01:34.341139903Z 
+2026-07-29T01:01:34.341152526Z > @workspace/redgain@0.0.0 build /opt/render/project/src/artifacts/redgain
+2026-07-29T01:01:34.341155438Z > vite build --config vite.config.ts
+2026-07-29T01:01:34.341156255Z 
+2026-07-29T01:01:34.538177891Z vite v7.3.6 building client environment for production...
+2026-07-29T01:01:34.582340491Z transforming...
+2026-07-29T01:01:34.86886197Z src/components/ui/tooltip.tsx (2:0): Error when using sourcemap for reporting an error: Can't resolve original location of error.
+2026-07-29T01:01:37.612753081Z ✓ 3014 modules transformed.
+2026-07-29T01:01:37.928761844Z rendering chunks...
+2026-07-29T01:01:37.936880785Z computing gzip size...
+2026-07-29T01:01:37.953425492Z dist/public/index.html                   1.35 kB │ gzip:   0.54 kB
+2026-07-29T01:01:37.953446388Z dist/public/assets/index-D845jaWj.css  153.87 kB │ gzip:  22.76 kB
+2026-07-29T01:01:37.953468904Z dist/public/assets/index-BaMID7uH.js   687.89 kB │ gzip: 204.23 kB
+2026-07-29T01:01:37.953529126Z 
+2026-07-29T01:01:37.953538104Z (!) Some chunks are larger than 500 kB after minification. Consider:
+2026-07-29T01:01:37.953539806Z - Using dynamic import() to code-split the application
+2026-07-29T01:01:37.953541109Z - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+2026-07-29T01:01:37.95354205Z - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+2026-07-29T01:01:37.953735928Z ✓ built in 3.40s
+2026-07-29T01:01:38.302800037Z 
+2026-07-29T01:01:38.30281805Z > @workspace/api-server@0.0.0 build /opt/render/project/src/artifacts/api-server
+2026-07-29T01:01:38.302820468Z > node ./build.mjs
+2026-07-29T01:01:38.302821267Z 
+2026-07-29T01:01:38.979927888Z 
+2026-07-29T01:01:38.979945064Z   dist/index.mjs                       3.7mb ⚠️
+2026-07-29T01:01:38.979946902Z   dist/pino-worker.mjs               153.4kb
+2026-07-29T01:01:38.979947821Z   dist/pino-file.mjs                 142.1kb
+2026-07-29T01:01:38.97994856Z   dist/pino-pretty.mjs               114.4kb
+2026-07-29T01:01:38.979949347Z   dist/thread-stream-worker.mjs        7.3kb
+2026-07-29T01:01:38.979950091Z   dist/index.mjs.map                   6.6mb
+2026-07-29T01:01:38.979950826Z   dist/pino-worker.mjs.map           256.9kb
+2026-07-29T01:01:38.979951738Z   dist/pino-file.mjs.map             229.0kb
+2026-07-29T01:01:38.979952557Z   dist/pino-pretty.mjs.map           203.6kb
+2026-07-29T01:01:38.979953305Z   dist/thread-stream-worker.mjs.map   12.0kb
+2026-07-29T01:01:38.979954033Z 
+2026-07-29T01:01:38.979955152Z ⚡ Done in 635ms
+2026-07-29T01:01:39.91821526Z ==> Uploading build...
+2026-07-29T01:01:46.334571172Z ==> Uploaded in 4.0s. Compression took 2.4s
+2026-07-29T01:01:46.336553835Z ==> Build successful 🎉
+2026-07-29T01:01:48.688427473Z ==> Deploying...
+2026-07-29T01:01:48.762217019Z ==> Setting WEB_CONCURRENCY=1 by default, based on available CPUs in the instance
+2026-07-29T01:02:09.022893531Z ==> Running 'node --enable-source-maps artifacts/api-server/dist/index.mjs'
+2026-07-29T01:02:11.675401921Z {"level":30,"time":1785286931674,"pid":70,"hostname":"srv-d9j3ddrtqb8s739n75b0-hibernate-79f75fc744-hd2w6","msg":"initDb: commission_distributions table ready"}
+2026-07-29T01:02:11.987647935Z {"level":30,"time":1785286931987,"pid":70,"hostname":"srv-d9j3ddrtqb8s739n75b0-hibernate-79f75fc744-hd2w6","msg":"initDb: blockchain tables and columns ready"}
+2026-07-29T01:02:12.110490869Z {"level":30,"time":1785286932110,"pid":70,"hostname":"srv-d9j3ddrtqb8s739n75b0-hibernate-79f75fc744-hd2w6","msg":"initDb: commission_events table ready"}
+2026-07-29T01:02:12.233112966Z {"level":30,"time":1785286932232,"pid":70,"hostname":"srv-d9j3ddrtqb8s739n75b0-hibernate-79f75fc744-hd2w6","msg":"initDb: notifications table ready"}
+2026-07-29T01:02:12.321745747Z {"level":30,"time":1785286932235,"pid":70,"hostname":"srv-d9j3ddrtqb8s739n75b0-hibernate-79f75fc744-hd2w6","port":10000,"msg":"Server listening"}
+2026-07-29T01:02:12.321766388Z {"level":30,"time":1785286932235,"pid":70,"hostname":"srv-d9j3ddrtqb8s739n75b0-hibernate-79f75fc744-hd2w6","msg":"Iniciando poller BSC via eth_getBlockByNumber (cada 30 segundos)"}
+2026-07-29T01:02:12.588118251Z {"level":30,"time":1785286932587,"pid":70,"hostname":"srv-d9j3ddrtqb8s739n75b0-hibernate-79f75fc744-hd2w6","fromBlock":112726207,"currentBlock":112726507,"msg":"Poller: escaneando bloques BSC en busca de pagos USDT"}
+2026-07-29T01:02:13.320091264Z {"level":30,"time":1785286933319,"pid":70,"hostname":"srv-d9j3ddrtqb8s739n75b0-hibernate-79f75fc744-hd2w6","req":{"id":1,"method":"HEAD","url":"/"},"res":{"statusCode":200},"responseTime":202,"msg":"request completed"}
+2026-07-29T01:02:19.732788952Z ==> Your service is live 🎉
+2026-07-29T01:02:19.753803121Z {"level":30,"time":1785286939753,"pid":70,"hostname":"srv-d9j3ddrtqb8s739n75b0-hibernate-79f75fc744-hd2w6","req":{"id":2,"method":"GET","url":"/"},"res":{"statusCode":200},"responseTime":3,"msg":"request completed"}
+2026-07-29T01:02:19.800465293Z ==> 
+2026-07-29T01:02:19.803024102Z ==> ///////////////////////////////////////////////////////////
+2026-07-29T01:02:19.807090817Z ==> 
+2026-07-29T01:02:19.809700398Z ==> Available at your primary URL https://redgain-suite.onrender.com
+2026-07-29T01:02:19.812061723Z ==> 
+2026-07-29T01:02:19.8153631Z ==> ///////////////////////////////////////////////////////////
+2026-07-29T01:02:41.662345712Z {"level":30,"time":1785286961662,"pid":70,"hostname":"srv-d9j3ddrtqb8s739n75b0-hibernate-79f75fc744-hd2w6","req":{"id":3,"method":"HEAD","url":"/"},"res":{"statusCode":200},"responseTime":1,"msg":"request completed"}
+2026-07-29T01:02:42.500637411Z {"level":30,"time":1785286962500,"pid":70,"hostname":"srv-d9j3ddrtqb8s739n75b0-hibernate-79f75fc744-hd2w6","fromBlock":112726508,"currentBlock":112726574,"msg":"Poller: escaneando bloques BSC en busca de pagos USDT"}
+2026-07-29T01:03:12.539659713Z {"level":30,"time":1785286992539,"pid":70,"hostname":"srv-d9j3ddrtqb8s739n75b0-hibernate-79f75fc744-hd2w6","fromBlock":112726575,"currentBlock":112726640,"msg":"Poller: escaneando bloques BSC en busca de pagos USDT"}
