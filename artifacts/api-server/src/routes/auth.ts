@@ -4,6 +4,7 @@ import { db, usersTable, notificationsTable } from "@workspace/db";
 import { eq } from "drizzle-orm";
 import { randomBytes } from "crypto";
 import { sendVerificationEmail } from "../lib/email";
+import { logger } from "../lib/logger";
 
 declare module "express-session" {
   interface SessionData {
@@ -166,7 +167,7 @@ router.post("/register", async (req, res) => {
 
   // Send verification email — don't block registration if it fails
   sendVerificationEmail(email, name, verificationToken).catch((err) => {
-    console.error("Registration: failed to send verification email", err);
+    logger.error({ err: err?.message ?? err, to: email }, "Registration: failed to send verification email");
   });
 
   // Set session so user is "logged in" (but dashboard will prompt to verify)
@@ -230,7 +231,9 @@ router.post("/resend-verification", async (req, res) => {
     .set({ emailVerificationToken: token, emailVerificationTokenExpires: expires, updatedAt: new Date() })
     .where(eq(usersTable.id, user.id));
 
-  sendVerificationEmail(email, user.name, token).catch(() => {});
+  sendVerificationEmail(email, user.name, token).catch((err) => {
+    logger.error({ err: err?.message ?? err, to: email }, "ResendVerification: failed to send email");
+  });
 
   return res.json({ success: true });
 });
