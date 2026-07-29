@@ -204,6 +204,8 @@ export interface MembershipStatus {
   graceEndsInDays?: number | null;
   /** Whether the referral code can be used to invite people */
   referralCodeActive?: boolean;
+  /** True when membership is active and expires in ≤2 days (renewal window open) */
+  canRenewEarly?: boolean;
 }
 
 export interface EarningsSummary {

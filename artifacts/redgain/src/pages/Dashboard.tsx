@@ -190,10 +190,26 @@ function OverviewSection() {
               <p className="text-xs text-muted-foreground mt-3">
                 Vence el {format(new Date(membership.membershipExpiresAt), "d 'de' MMMM yyyy", { locale: es })}
               </p>
-              {(membership.daysRemaining ?? 99) <= 10 && (
+              {/* Ventana de renovación — días 29 y 30 */}
+              {(membership as any).canRenewEarly && (
+                <div className="mt-3 p-4 rounded-xl border border-red-500/40 bg-red-500/10 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <RefreshCw className="w-4 h-4 text-red-400 shrink-0 animate-spin" style={{ animationDuration: '3s' }} />
+                    <p className="text-sm font-extrabold text-red-400">⚡ Ventana de renovación abierta</p>
+                  </div>
+                  <p className="text-xs text-red-300 leading-relaxed">
+                    Tu membresía vence en <strong>{membership.daysRemaining} día{membership.daysRemaining !== 1 ? 's' : ''}</strong>. Este es el momento exacto para renovar:{' '}
+                    si pagas ahora y el equipo aprueba antes de que venza, tu nuevo ciclo de 30 días comenzará sin ningún segundo de interrupción.
+                    Tus referidos no dejan de generarte comisiones ni un instante.
+                  </p>
+                  <p className="text-xs font-semibold text-red-400">👉 Ve a la sección <strong>Pagos</strong> y envía tu renovación ahora.</p>
+                </div>
+              )}
+              {/* Aviso temprano — quedan menos de 10 días */}
+              {!((membership as any).canRenewEarly) && (membership.daysRemaining ?? 99) <= 10 && (
                 <div className="mt-3 p-3 rounded-lg bg-orange-500/10 border border-orange-500/20 flex items-center gap-2">
                   <AlertTriangle className="w-4 h-4 text-orange-400 shrink-0" />
-                  <p className="text-xs text-orange-400 font-medium">¡Quedan menos de 10 días! Renueva antes del día 10 del mes para no perder tus comisiones.</p>
+                  <p className="text-xs text-orange-400 font-medium">Quedan menos de 10 días. La <strong>ventana de renovación</strong> se abre en los días 29 y 30 — renueva en esos días para evitar cualquier pausa en tu cuenta.</p>
                 </div>
               )}
             </div>
@@ -674,6 +690,32 @@ function MembresiaSectionContent() {
         </div>
       </div>
 
+      {/* Renewal window banner — days 29-30 */}
+      {membership?.canRenewEarly && (
+        <div className="rounded-2xl p-5 border-2 border-red-500/50" style={{ background: 'rgba(220,38,38,0.08)' }}>
+          <div className="flex items-center gap-2 mb-3">
+            <RefreshCw className="w-5 h-5 text-red-400 animate-spin" style={{ animationDuration: '3s' }} />
+            <p className="text-base font-extrabold text-red-400">⚡ Ventana de renovación abierta</p>
+          </div>
+          <p className="text-sm text-red-300 leading-relaxed mb-3">
+            Tu membresía vence en <strong>{membership.daysRemaining} día{membership.daysRemaining !== 1 ? 's' : ''}</strong>.
+            Estos son los días 29 y 30 de tu ciclo — el momento exacto para renovar.
+          </p>
+          <div className="space-y-2 mb-4">
+            {[
+              { icon: '✅', text: 'Pagas ahora → el equipo aprueba antes de que venza → tu nuevo ciclo de 30 días comienza justo donde termina el actual. Sin interrupciones.' },
+              { icon: '🔴', text: 'Si no pagas hoy, tu cuenta pasará a pausada mañana y dejarás de recibir comisiones hasta que el equipo apruebe tu renovación.' },
+            ].map(({ icon, text }) => (
+              <div key={icon} className="flex items-start gap-2">
+                <span className="text-base shrink-0 mt-0.5">{icon}</span>
+                <p className="text-xs text-red-200 leading-relaxed">{text}</p>
+              </div>
+            ))}
+          </div>
+          <p className="text-xs font-bold text-red-400">👉 Ve a la sección <strong>Pagos</strong> y envía tu renovación ahora.</p>
+        </div>
+      )}
+
       {/* Main timer card */}
       <div className="rounded-2xl p-6" style={{ background: 'rgba(14,10,5,0.85)', border: '1px solid rgba(201,162,39,0.15)' }}>
         {membership?.timerStarted && membership.membershipExpiresAt ? (
@@ -704,15 +746,36 @@ function MembresiaSectionContent() {
         )}
       </div>
 
+      {/* How the cycle works — visual timeline */}
+      <div className="rounded-2xl p-5 space-y-4" style={{ background: 'rgba(14,10,5,0.85)', border: '1px solid rgba(201,162,39,0.15)' }}>
+        <p className="text-sm font-bold" style={{ color: '#E8C547' }}>Tu ciclo de 30 días — cómo funciona</p>
+        <div className="relative pl-5 border-l border-border space-y-5">
+          {[
+            { day: 'Días 1-28', color: 'text-emerald-400', dotColor: 'bg-emerald-400', title: 'Cuenta activa — cobra sin límite', desc: 'Tu código funciona, tus referidos generan comisiones y todo sigue en marcha.' },
+            { day: 'Días 29-30', color: 'text-red-400', dotColor: 'bg-red-400', title: '🔴 Ventana de renovación — paga AHORA', desc: 'El sistema te habilita para renovar. Si pagas y el equipo aprueba antes del vencimiento, tu nuevo ciclo comienza justo donde termina el actual: cero segundos de pausa, cero comisiones perdidas.' },
+            { day: 'Día 31+', color: 'text-orange-400', dotColor: 'bg-orange-400', title: 'Sin renovación → cuenta pausada', desc: 'Tu código queda inutilizado y dejas de cobrar comisiones. Tienes 14 días de gracia para renovar sin perder tu árbol.' },
+            { day: 'Día 45+', color: 'text-red-500', dotColor: 'bg-red-500', title: 'Sin gracia → todo perdido', desc: 'Si no renuevas en las 2 semanas de gracia, pierdes todo tu árbol de referidos y debes empezar de cero.' },
+          ].map(({ day, color, dotColor, title, desc }) => (
+            <div key={day} className="relative">
+              <div className={`absolute -left-[22px] top-1 w-3 h-3 rounded-full border-2 border-background ${dotColor}`} />
+              <p className={`text-[10px] font-extrabold uppercase tracking-wider ${color} mb-0.5`}>{day}</p>
+              <p className="text-sm font-semibold text-foreground">{title}</p>
+              <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">{desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* Rules */}
       <div className="rounded-2xl p-5 space-y-4" style={{ background: 'rgba(14,10,5,0.85)', border: '1px solid rgba(201,162,39,0.15)' }}>
         <p className="text-sm font-bold" style={{ color: '#E8C547' }}>Reglas de membresía</p>
         <div className="space-y-3">
           {[
             { icon: CheckCircle2, color: 'text-emerald-400', title: 'Membresía activa', desc: 'Puedes referir personas, tu código funciona y cobras comisiones el día 15.' },
-            { icon: Clock, color: 'text-yellow-400', title: 'Período de gracia (2 semanas)', desc: 'Cuando vence tu mes, tienes 14 días para renovar. Tu código queda inutilizado pero no pierdes tu árbol. No cobras comisiones durante este tiempo.' },
+            { icon: RefreshCw, color: 'text-red-400', title: 'Ventana de renovación (días 29-30)', desc: 'En los últimos 2 días de tu ciclo puedes renovar anticipadamente. Si el equipo aprueba antes de que venza, el nuevo ciclo empieza justo donde termina el actual sin ningún segundo de pausa.' },
+            { icon: Clock, color: 'text-yellow-400', title: 'Período de gracia (2 semanas)', desc: 'Si vence sin renovar, tienes 14 días para pagar. Tu código queda inutilizado y no cobras comisiones durante este tiempo, pero no pierdes tu árbol.' },
             { icon: XCircle, color: 'text-red-400', title: 'Sin renovación = Todo perdido', desc: 'Si no renuevas en las 2 semanas de gracia, pierdes tu árbol completo y debes empezar de cero.' },
-            { icon: AlertTriangle, color: 'text-orange-400', title: 'Renovar antes del día 10', desc: 'Para que tus referidores cobren comisión por tu renovación en el ciclo actual, debes renovar antes del día 10 del mes. Después del 10, cobran el mes siguiente.' },
+            { icon: AlertTriangle, color: 'text-orange-400', title: 'Corte de renovaciones — día 10 del mes', desc: 'Para que tus referidores cobren comisión por tu renovación en el ciclo actual, debes renovar antes del día 10 del mes. Después del 10, cobran el mes siguiente.' },
           ].map(({ icon: Icon, color, title, desc }) => (
             <div key={title} className="flex gap-3">
               <Icon className={`w-5 h-5 ${color} mt-0.5 shrink-0`} />

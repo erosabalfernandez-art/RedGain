@@ -128,6 +128,13 @@ router.get("/me/membership", requireAuth, async (req: any, res) => {
     expiresAt !== null && Date.now() > expiresAt.getTime() && gracePeriodEndsAt !== null && Date.now() < gracePeriodEndsAt.getTime();
   const graceEndsInDays = gracePeriodEndsAt ? calcDaysRemaining(gracePeriodEndsAt) : null;
   const referralCodeActive = user.accountStatus === "active";
+  // Renewal window: last 2 days of active membership (days 29-30). User should pay now so
+  // the admin can approve before expiry and the new period extends seamlessly from the current one.
+  const canRenewEarly =
+    user.accountStatus === "active" &&
+    daysRemaining !== null &&
+    daysRemaining <= 2 &&
+    daysRemaining > 0;
 
   return res.json({
     accountStatus: user.accountStatus,
@@ -140,6 +147,7 @@ router.get("/me/membership", requireAuth, async (req: any, res) => {
     inGracePeriod,
     graceEndsInDays,
     referralCodeActive,
+    canRenewEarly,
   });
 });
 

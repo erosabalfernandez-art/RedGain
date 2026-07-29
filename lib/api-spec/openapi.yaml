@@ -678,6 +678,9 @@ components:
         referralCodeActive:
           type: boolean
           description: Whether the referral code can be used to invite people
+        canRenewEarly:
+          type: boolean
+          description: True when membership is active and expires in ≤2 days (renewal window open)
 
     EarningsSummary:
       type: object

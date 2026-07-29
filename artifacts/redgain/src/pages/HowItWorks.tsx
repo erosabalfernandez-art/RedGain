@@ -3,7 +3,7 @@ import { Link, useSearch } from 'wouter';
 import { motion } from 'framer-motion';
 import {
   ArrowRight, ArrowLeft, Users, Clock, AlertTriangle,
-  XCircle, Wallet, Phone, Shield, Zap, Quote
+  XCircle, Wallet, Phone, Shield, Zap, Quote, RefreshCw, CheckCircle
 } from 'lucide-react';
 import { Logo } from '@/components/ui/logo';
 
@@ -298,13 +298,96 @@ export default function HowItWorks() {
       </SectionBg>
 
       {/* ══════════════════════════════════════════════
+          05 · VENTANA DE RENOVACIÓN
+      ══════════════════════════════════════════════ */}
+      <PlainSection>
+        <div className="max-w-4xl mx-auto px-6 py-24">
+          <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
+            <motion.div variants={fade} className="flex items-center gap-3 mb-10">
+              <StepBadge n={5} />
+              <h2 className="text-2xl font-bold text-white">Cómo renovar sin perder ni un segundo</h2>
+            </motion.div>
+            <motion.div variants={fade} className="space-y-6">
+              <div className="rounded-3xl border border-[#C9A227]/25 p-6 md:p-8 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, rgba(201,162,39,0.08) 0%, rgba(14,10,5,0.95) 100%)' }}>
+                <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#C9A227]/50 to-transparent" />
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-[#C9A227]/15 border border-[#C9A227]/30 flex items-center justify-center shrink-0">
+                    <RefreshCw className="w-6 h-6 text-[#E8C547]" />
+                  </div>
+                  <div>
+                    <p className="text-lg font-extrabold text-white mb-2">La ventana de renovación: días 29 y 30</p>
+                    <p className="text-white/60 leading-relaxed">
+                      En los últimos 2 días de tu ciclo (días 29 y 30 de los 30), el sistema te habilita para renovar.
+                      Si pagas en esos días y el equipo aprueba tu pago antes de que venza tu membresía,
+                      el nuevo ciclo de 30 días comienza exactamente donde termina el actual.{' '}
+                      <strong className="text-[#E8C547]">Cero segundos de pausa. Cero comisiones perdidas.</strong>
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="rounded-3xl bg-[#1A1208]/80 border border-[#C9A227]/15 p-6 md:p-8 backdrop-blur-md">
+                <p className="text-xs font-bold text-white/40 uppercase tracking-wider mb-6">Tu ciclo de 30 días</p>
+                <div className="h-3 rounded-full overflow-hidden flex mb-2">
+                  <div className="flex-[28] bg-emerald-500/40 border-r border-[#0E0C09]" />
+                  <div className="flex-[2] bg-red-500/70" />
+                </div>
+                <div className="flex justify-between text-xs text-white/40 mb-6">
+                  <span>Día 1</span>
+                  <span className="text-red-400 font-bold">Días 29-30</span>
+                  <span>Día 30</span>
+                </div>
+                <div className="grid md:grid-cols-3 gap-4">
+                  {[
+                    { label: 'Días 1–28', icon: CheckCircle, color: 'text-emerald-400', border: 'border-emerald-500/20 bg-emerald-500/5', title: 'Zona segura', desc: 'Tu cuenta está activa. Ganas comisiones, tu código funciona.' },
+                    { label: 'Días 29–30', icon: RefreshCw, color: 'text-red-400', border: 'border-red-500/40 bg-red-500/8', title: '🔴 Renueva AHORA', desc: 'Ventana de renovación abierta. Paga aquí. El equipo aprueba antes del vencimiento y tu nuevo ciclo empieza sin interrupciones.' },
+                    { label: 'Día 31+', icon: XCircle, color: 'text-orange-400', border: 'border-orange-500/20 bg-orange-500/5', title: 'Cuenta pausada', desc: 'La cuenta se pausa. 14 días de gracia para recuperarla, pero sin comisiones durante ese tiempo.' },
+                  ].map(({ label, icon: Icon, color, border, title, desc }) => (
+                    <div key={label} className={`rounded-2xl border p-4 ${border}`}>
+                      <p className={`text-[10px] font-extrabold uppercase tracking-wider ${color} mb-2`}>{label}</p>
+                      <Icon className={`w-5 h-5 ${color} mb-2`} />
+                      <p className={`text-sm font-bold ${color}`}>{title}</p>
+                      <p className="text-xs text-white/40 mt-1.5 leading-relaxed">{desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="rounded-3xl bg-[#1A1208]/80 border border-[#C9A227]/15 p-6 md:p-8 backdrop-blur-md">
+                <p className="text-sm font-bold text-white mb-5">Paso a paso en los días 29-30:</p>
+                <ol className="space-y-4">
+                  {[
+                    'Tu dashboard muestra el aviso de "Ventana de renovación abierta" con el contador en rojo.',
+                    'Vas a la sección Pagos y envías $10 USDT desde tu billetera registrada.',
+                    'El sistema detecta el pago automáticamente (o el equipo lo verifica).',
+                    'El equipo aprueba mientras tu cuenta sigue activa. Tu nuevo ciclo empieza donde termina el actual.',
+                    'Tu cuenta jamás pasa a "Pausada". Tu código sigue activo, tus comisiones siguen fluyendo.',
+                  ].map((text, i) => (
+                    <li key={i} className="flex items-start gap-3">
+                      <span className="w-6 h-6 rounded-full bg-[#C9A227]/15 border border-[#C9A227]/30 text-[#E8C547] font-extrabold text-xs flex items-center justify-center shrink-0 mt-0.5">{i + 1}</span>
+                      <p className="text-sm text-white/55 leading-relaxed">{text}</p>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+              <div className="p-4 rounded-2xl bg-[#C9A227]/5 border border-[#C9A227]/25 flex items-start gap-3">
+                <Zap className="w-5 h-5 text-[#E8C547] shrink-0 mt-0.5" />
+                <p className="text-sm text-[#E8C547]/80 leading-relaxed">
+                  <strong className="text-[#E8C547]">La clave:</strong> no esperes hasta después del vencimiento.
+                  Los días 29 y 30 son tu ventana segura. Actúa en esos días y tu árbol de referidos jamás se interrumpe.
+                </p>
+              </div>
+            </motion.div>
+          </motion.section>
+        </div>
+      </PlainSection>
+
+      {/* ══════════════════════════════════════════════
           06 · CICLO DE PAGOS — forum / dash-forum
       ══════════════════════════════════════════════ */}
       <SectionBg src="/dash-forum.jpg" brightness={0.18}>
         <div className="max-w-4xl mx-auto px-6 py-24">
           <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
             <motion.div variants={fade} className="flex items-center gap-3 mb-10">
-              <StepBadge n={5} />
+              <StepBadge n={6} />
               <h2 className="text-2xl font-bold text-white">Ciclo de pagos y comisiones</h2>
             </motion.div>
             <motion.div variants={fade} className="space-y-4">
@@ -361,7 +444,7 @@ export default function HowItWorks() {
         <div className="max-w-4xl mx-auto px-6 py-24">
           <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
             <motion.div variants={fade} className="flex items-center gap-3 mb-10">
-              <StepBadge n={6} />
+              <StepBadge n={7} />
               <h2 className="text-2xl font-bold text-white">Cómo funciona el pago</h2>
             </motion.div>
             <motion.div variants={fade}>

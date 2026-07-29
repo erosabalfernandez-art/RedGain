@@ -621,8 +621,16 @@ router.post("/process-tx", requireAdmin, async (req, res) => {
     if (isFirstPayment) {
       updates.membershipStartedAt = now;
     } else {
-      updates.membershipTimerStartedAt = now;
-      updates.membershipExpiresAt = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+      // If the user renews while still active (days 29-30), extend from the current
+      // expiry date so the new period starts seamlessly with no gap.
+      const baseDate =
+        user.membershipExpiresAt &&
+        user.membershipExpiresAt > now &&
+        user.accountStatus === "active"
+          ? user.membershipExpiresAt
+          : now;
+      updates.membershipTimerStartedAt = baseDate;
+      updates.membershipExpiresAt = new Date(baseDate.getTime() + 30 * 24 * 60 * 60 * 1000);
     }
     await db.update(usersTable).set(updates as any).where(eq(usersTable.id, user.id));
 
