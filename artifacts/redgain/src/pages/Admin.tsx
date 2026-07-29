@@ -215,6 +215,7 @@ function UsuariosSection() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedUser, setSelectedUser] = useState<any>(null);
+  const [, navigate] = useLocation();
 
   const filtered = useMemo(() => {
     return (users ?? []).filter((u: any) => {
@@ -303,10 +304,21 @@ function UsuariosSection() {
                     </p>
                   )}
                 </div>
-                <div className="text-right shrink-0">
+                <div className="text-right shrink-0 flex flex-col items-end gap-1.5">
                   <p className="text-xs text-muted-foreground">{u.totalReferrals} ref.</p>
                   {u.membershipExpiresAt && u.timerStarted && <SmallCountdown expiresAt={u.membershipExpiresAt} />}
                   {!u.timerStarted && u.accountStatus === 'active' && <span className="text-[10px] text-yellow-400">⏳ Sin timer</span>}
+                  <span
+                    role="button"
+                    onClick={e => { e.stopPropagation(); navigate(`/admin/arbol?highlight=${u.id}`); }}
+                    className="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-semibold transition-colors cursor-pointer select-none"
+                    style={{ background: 'rgba(201,162,39,0.1)', border: '1px solid rgba(201,162,39,0.25)', color: '#C9A227' }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(201,162,39,0.2)'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(201,162,39,0.1)'; }}
+                  >
+                    <GitBranch className="w-3 h-3" />
+                    Ver en árbol
+                  </span>
                 </div>
               </button>
             );
