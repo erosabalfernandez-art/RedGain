@@ -263,28 +263,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ── STATS STRIP ── */}
-        <section className="py-16 border-y border-[#C9A227]/15 bg-[#0E0C09]/80 relative z-10">
-          {/* Subtle gold line top */}
-          <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#C9A227]/40 to-transparent" />
-          <div className="container mx-auto max-w-7xl px-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-0 md:divide-x divide-[#C9A227]/15">
-              {[
-                { label: 'Miembros Activos', value: 10,  suffix: 'k+', prefix: '' },
-                { label: 'Pagados este año', value: 500, suffix: 'k+', prefix: '$' },
-                { label: 'Países Operando',  value: 15,  suffix: '+',  prefix: '' },
-              ].map((stat, i) => (
-                <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className="flex flex-col items-center text-center px-8">
-                  <div className="text-4xl md:text-5xl font-extrabold text-white mb-3 tracking-tight">
-                    <AnimatedCounter from={0} to={stat.value} prefix={stat.prefix} suffix={stat.suffix} />
-                  </div>
-                  <div className="text-sm font-medium text-[#E8C547] uppercase tracking-wider">{stat.label}</div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-          <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#C9A227]/30 to-transparent" />
-        </section>
 
         {/* ── PAIN POINTS — Stoic columns background ── */}
         <section className="py-24 px-6 relative z-10 overflow-hidden">
