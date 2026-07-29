@@ -65,15 +65,46 @@ export default function Home() {
   ];
 
   const faqs = [
-    { q: '¿Cómo se distribuyen los $10 de membresía?', a: 'Es matemática pura y 100% transparente. Cada suscripción de $10 se distribuye en 4 partes: $6 van al referidor directo (Nivel 1), $2 al referidor de ese referidor (Nivel 2), $1 al nivel superior (Nivel 3), y $1 financia la operación y mejora continua de la plataforma. No existe dinero fantasma: cada $10 pagado tiene un destino claro y verificable.' },
-    { q: '¿Es esto una pirámide o un esquema ilegal?', a: 'No. Las pirámides colapsan porque dependen exclusivamente del reclutamiento infinito para funcionar. RedGain es un programa de referidos multinivel con distribución transparente. Si mañana no refieres a nadie más, sigues ganando de quienes ya tienes activos en los 3 niveles.' },
-    { q: '¿Necesito experiencia en ventas o marketing para tener éxito?', a: 'Para nada. La propuesta de valor se explica sola: pagas $10 y puedes ganar $6 por cada persona que invites directamente, más $2 y $1 de sus redes. La mayoría de nuestros miembros exitosos simplemente comparten su experiencia real con personas de confianza.' },
-    { q: '¿Cuándo y cómo puedo retirar mis ganancias?', a: 'No necesitas solicitar nada. Las comisiones se envían automáticamente a tu billetera BSC en el mismo momento en que alguien de tu red realiza su pago: $6 si es tu referido directo (Nivel 1), $2 si es un referido de tu Nivel 1, o $1 si es de Nivel 3. El único requisito es tener tu billetera USDT BEP-20 registrada en tu perfil. Una vez configurada, cada pago de tu red llega directamente a tu billetera — sin intermediarios, sin esperas, sin solicitudes.' },
-    { q: '¿Qué pasa si uno de mis referidos cancela su membresía?', a: 'Solo dejas de recibir la comisión de esa persona específica desde ese mes en adelante. El resto de tu red en los 3 niveles sigue generando ingresos sin interrupción.' },
-    { q: '¿Hay un límite de cuánto puedo ganar?', a: 'No existe ningún tope. Con 5 referidos directos activos ganas $30 al mes solo de Nivel 1. Con 50 referidos directos son $300/mes, más lo que suman sus propias redes en Nivel 2 y Nivel 3. La plataforma no limita tu crecimiento.' },
-    { q: '¿Es seguro ingresar mis datos en la plataforma?', a: 'Sí. Toda la comunicación está cifrada con TLS. Las contraseñas se almacenan con hashing seguro. Los pagos se realizan en USDT BSC BEP-20 a una billetera verificable en blockchain — transparencia total.' },
-    { q: '¿Puedo cancelar mi membresía en cualquier momento?', a: 'Sí, sin contratos ni penalidades. Si en algún momento decides que RedGain no es para ti, simplemente dejas de pagar. No hay cargos ocultos ni tarifas de cancelación.' },
-    { q: '¿En qué países está disponible RedGain?', a: 'Operamos en toda Latinoamérica y el mundo. Al usar USDT BSC BEP-20 como método de pago y cobro, no hay restricciones geográficas: cualquier persona con acceso a una billetera de criptomonedas puede unirse.' },
+    {
+      q: '¿Puedo perder mi dinero?',
+      a: 'Sí, es posible. Si te unes y no logras referir a nadie, pagarás $10 al mes sin recibir comisiones a cambio. Ese es el riesgo real y te lo decimos de frente. RedGain no es una inversión pasiva ni un esquema donde el dinero llega solo: es un programa de referidos. Si no invitas a nadie, no ganas nada de comisiones. Lo que sí obtienes con tu membresía es acceso a la plataforma y la posibilidad de construir una red. El riesgo máximo es $10 al mes mientras no tengas referidos activos.',
+    },
+    {
+      q: '¿Qué pasa si no consigo ningún referido?',
+      a: 'Tu cuenta permanece activa mientras pagues, pero no recibirás comisiones. No hay un mínimo de referidos obligatorio ni una penalización — simplemente, sin red no hay ingresos de comisiones. Muchos miembros empiezan con 1 o 2 personas de confianza en su círculo cercano. Si después de intentarlo sientes que no es para ti, dejas de pagar y listo, sin contratos ni deudas.',
+    },
+    {
+      q: '¿Es esto una estafa?',
+      a: 'Entendemos la pregunta y es completamente válida. La respuesta corta: no, pero tienes todo el derecho de investigarlo antes de entrar. Los pagos se hacen directamente en blockchain USDT BEP-20 — cualquier transacción es pública y verificable en bscscan.com. No hay un fondo central que "administre" tu dinero: el sistema distribuye automáticamente cada $10 entre los referidores en el mismo instante del pago. No existe promesa de rendimiento garantizado ni retorno fijo. Si alguien te prometió eso, no fue de nuestra parte.',
+    },
+    {
+      q: '¿Es esto una pirámide ilegal?',
+      a: 'Las pirámides ilegales colapsan porque el dinero de los nuevos paga a los anteriores sin ningún servicio real de por medio. En RedGain, cada $10 va directamente a los referidores que realmente construyeron esa conexión (Nivel 1, 2 y 3) y $1 a la operación de la plataforma. No hay un "pozo" central. Si mañana nadie nuevo se une, los miembros con redes activas siguen recibiendo las comisiones de sus referidos cuando estos renuevan. La distribución es automática, transparente y verificable en blockchain.',
+    },
+    {
+      q: '¿Cuánto tiempo tarda en verse el primer resultado?',
+      a: 'Depende completamente de ti y de tu red. Hay personas que refieren a su primer contacto en el primer día y reciben su primera comisión de $6 en minutos. Otras tardan semanas. No existe una garantía de tiempo. Lo que sí es inmediato: en el momento en que tu primer referido paga, la comisión llega automáticamente a tu billetera BSC — sin esperas, sin solicitudes.',
+    },
+    {
+      q: '¿Cómo sé que las comisiones realmente llegan?',
+      a: 'Cada comisión que el sistema envía genera una transacción real en la blockchain de BSC. Desde tu panel puedes ver el hash de cada transacción y verificarla tú mismo en bscscan.com en segundos. No hay intermediarios que "aprueben" el pago: el sistema lo ejecuta automáticamente y la blockchain lo registra de forma permanente e inmutable.',
+    },
+    {
+      q: '¿Cómo se distribuyen los $10 de membresía?',
+      a: '$6 van al referidor directo (Nivel 1), $2 al referidor de ese referidor (Nivel 2), $1 al siguiente nivel (Nivel 3), y $1 cubre la operación de la plataforma. No existe dinero fantasma: cada $10 tiene un destino claro, inmediato y verificable en blockchain.',
+    },
+    {
+      q: '¿Cuándo y cómo recibo mis comisiones?',
+      a: 'Automáticamente, en el instante en que alguien de tu red realiza su pago. No necesitas solicitar nada. El único requisito es tener tu billetera USDT BEP-20 registrada en tu perfil. Sin billetera registrada, el sistema no puede enviarte nada.',
+    },
+    {
+      q: '¿Puedo cancelar en cualquier momento?',
+      a: 'Sí. No hay contratos, ni permanencias mínimas, ni penalidades. Simplemente dejas de pagar. Tu cuenta pasa a pausada y tu red permanece intacta durante el período de gracia de 14 días.',
+    },
+    {
+      q: '¿En qué países está disponible?',
+      a: 'En todo el mundo. Al operar con USDT BEP-20 en blockchain, no hay restricciones geográficas ni bancarias. Cualquier persona con una billetera de criptomonedas puede unirse.',
+    },
   ];
 
   return (
