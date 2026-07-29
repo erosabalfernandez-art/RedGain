@@ -166,9 +166,7 @@ export function DashboardLayout({ children, topbar }: { children: React.ReactNod
 
         {/* Logo */}
         <div className="relative h-16 flex items-center px-6 gap-3" style={{ borderBottom: '1px solid rgba(201,162,39,0.15)' }}>
-          <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #8B6914, #C9A227)', boxShadow: '0 0 16px -4px rgba(201,162,39,0.6)' }}>
-            <Logo className="w-4 h-4 text-[#0E0A04]" />
-          </div>
+          <Logo className="w-9 h-9" />
           <span className="font-bold text-base tracking-tight" style={{ color: '#E8C547' }}>RedGain</span>
         </div>
 
@@ -260,9 +258,7 @@ export function DashboardLayout({ children, topbar }: { children: React.ReactNod
             <button onClick={() => setMobileMenuOpen(true)} className="p-2 -ml-2 mr-2 text-muted-foreground hover:text-foreground rounded-md hover:bg-muted">
               <Menu className="w-5 h-5" />
             </button>
-            <div className="w-6 h-6 rounded-md flex items-center justify-center mr-1.5" style={{ background: 'linear-gradient(135deg, #8B6914, #C9A227)' }}>
-              <Logo className="w-3.5 h-3.5 text-[#0E0A04]" />
-            </div>
+            <Logo className="w-7 h-7 mr-1.5" />
           </div>
 
           <div className="hidden md:flex flex-1" />
