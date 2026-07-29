@@ -148,7 +148,6 @@ function OverviewSection() {
         {[
           { label: 'Referidos totales', value: earnings?.totalReferrals ?? 0, icon: Users, color: 'text-[#C9A227]', bg: 'bg-[#C9A227]/10' },
           { label: 'Referidos activos', value: earnings?.activeReferrals ?? 0, icon: Activity, color: 'text-emerald-400', bg: 'bg-emerald-400/10' },
-          { label: 'Esperado el día 15', value: `$${earnings?.projectedDay15 ?? 0}`, icon: DollarSign, color: 'text-yellow-400', bg: 'bg-yellow-400/10' },
           { label: 'Total histórico', value: `$${earnings?.totalHistorical ?? 0}`, icon: Wallet, color: 'text-purple-400', bg: 'bg-purple-400/10' },
         ].map(({ label, value, icon: Icon, color, bg }) => (
           <div key={label} className="rounded-2xl p-4" style={{ background: 'rgba(14,10,5,0.8)', border: '1px solid rgba(201,162,39,0.15)' }}>
@@ -159,24 +158,6 @@ function OverviewSection() {
             <p className="text-xs text-muted-foreground mt-0.5">{label}</p>
           </div>
         ))}
-      </div>
-
-      {/* Level breakdown */}
-      <div className="rounded-2xl p-5" style={{ background: 'rgba(14,10,5,0.8)', border: '1px solid rgba(201,162,39,0.15)' }}>
-        <p className="text-sm font-bold mb-4" style={{ color: '#E8C547' }}>Ingresos esperados por nivel (día 15)</p>
-        <div className="grid grid-cols-3 gap-3">
-          {[
-            { level: 'Nivel 1', count: earnings?.level1Count ?? 0, rate: 6, color: 'text-[#C9A227]', bg: 'bg-[#C9A227]/5 border-[#C9A227]/20' },
-            { level: 'Nivel 2', count: earnings?.level2Count ?? 0, rate: 2, color: 'text-amber-300', bg: 'bg-amber-300/5 border-amber-300/20' },
-            { level: 'Nivel 3', count: earnings?.level3Count ?? 0, rate: 1, color: 'text-amber-200', bg: 'bg-amber-200/5 border-amber-200/20' },
-          ].map(({ level, count, rate, color, bg }) => (
-            <div key={level} className={`border rounded-xl p-3 ${bg}`}>
-              <p className={`text-xs font-bold ${color}`}>{level}</p>
-              <p className="text-lg font-extrabold text-foreground mt-1">${(count * rate).toFixed(0)}</p>
-              <p className="text-xs text-muted-foreground">{count} × ${rate}</p>
-            </div>
-          ))}
-        </div>
       </div>
 
       {/* Membership timer */}
@@ -199,10 +180,10 @@ function OverviewSection() {
                   </div>
                   <p className="text-xs text-red-300 leading-relaxed">
                     Tu membresía vence en <strong>{membership.daysRemaining} día{membership.daysRemaining !== 1 ? 's' : ''}</strong>. Este es el momento exacto para renovar:{' '}
-                    si pagas ahora y el equipo aprueba antes de que venza, tu nuevo ciclo de 30 días comenzará sin ningún segundo de interrupción.
+                    si envías el pago ahora, el sistema lo detecta automáticamente en la blockchain y tu nuevo ciclo de 30 días comienza sin ningún segundo de interrupción.
                     Tus referidos no dejan de generarte comisiones ni un instante.
                   </p>
-                  <p className="text-xs font-semibold text-red-400">👉 Ve a la sección <strong>Pagos</strong> y envía tu renovación ahora.</p>
+                  <p className="text-xs font-semibold text-red-400">👉 Envía tu pago de renovación ahora para continuar sin pausas.</p>
                 </div>
               )}
               {/* Aviso temprano — quedan menos de 10 días */}
@@ -274,7 +255,7 @@ function OverviewSection() {
             </div>
           ))}
         </div>
-        <p className="text-xs text-muted-foreground mt-3">El día 10 de cada mes es el corte. El día 15 el equipo distribuye todas las comisiones.</p>
+        <p className="text-xs text-muted-foreground mt-3">Las comisiones se distribuyen automáticamente en el momento en que cada pago es confirmado en la blockchain.</p>
       </div>
     </div>
   );
