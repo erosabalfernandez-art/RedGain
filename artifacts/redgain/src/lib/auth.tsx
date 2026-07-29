@@ -6,7 +6,6 @@ export interface AuthUser {
   email: string;
   role: 'user' | 'admin';
   accountStatus: 'pending' | 'active' | 'paused' | 'lost';
-  emailVerified: boolean;
   referralCode: string;
   membershipExpiresAt: string | null;
   createdAt: string;

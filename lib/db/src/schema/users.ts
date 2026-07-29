@@ -16,9 +16,6 @@ export const usersTable = pgTable("users", {
   referrerId: integer("referrer_id"),                 // self-ref to usersTable.id
   referralCode: text("referral_code").notNull().unique(),
   bscWallet: text("bsc_wallet"),                          // BSC wallet address para detección automática de pagos (guardada en lowercase)
-  emailVerified: boolean("email_verified").notNull().default(false),
-  emailVerificationToken: text("email_verification_token"),
-  emailVerificationTokenExpires: timestamp("email_verification_token_expires"),
   membershipStartedAt: timestamp("membership_started_at"),      // when admin first activated their payment
   membershipTimerStartedAt: timestamp("membership_timer_started_at"), // when timer actually starts (first referral activates)
   membershipExpiresAt: timestamp("membership_expires_at"),      // membershipTimerStartedAt + 30 days

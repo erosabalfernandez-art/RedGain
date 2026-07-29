@@ -53,10 +53,6 @@ export interface LoginInput {
   password: string;
 }
 
-export interface ResendVerificationInput {
-  email: string;
-}
-
 export type UserRole = typeof UserRole[keyof typeof UserRole];
 
 
@@ -83,7 +79,6 @@ export interface User {
   phone?: string | null;
   role: UserRole;
   accountStatus: UserAccountStatus;
-  emailVerified: boolean;
   referralCode: string;
   /**
      * BSC wallet address for automatic payment detection
@@ -499,8 +494,4 @@ export interface AdminStats {
   /** Number of memberships expiring in the next 7 days */
   expiringThisWeek: number;
 }
-
-export type VerifyEmailParams = {
-token: string;
-};
 

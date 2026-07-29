@@ -40,7 +40,6 @@ export const RegisterResponse = zod.object({
   "phone": zod.string().nullish(),
   "role": zod.enum(['user', 'admin']),
   "accountStatus": zod.enum(['pending', 'active', 'paused', 'lost']),
-  "emailVerified": zod.boolean(),
   "referralCode": zod.string(),
   "bscWallet": zod.string().nullish().describe('BSC wallet address for automatic payment detection'),
   "membershipStartedAt": zod.string().nullish(),
@@ -67,7 +66,6 @@ export const LoginResponse = zod.object({
   "phone": zod.string().nullish(),
   "role": zod.enum(['user', 'admin']),
   "accountStatus": zod.enum(['pending', 'active', 'paused', 'lost']),
-  "emailVerified": zod.boolean(),
   "referralCode": zod.string(),
   "bscWallet": zod.string().nullish().describe('BSC wallet address for automatic payment detection'),
   "membershipStartedAt": zod.string().nullish(),
@@ -87,44 +85,6 @@ export const LogoutResponse = zod.object({
 
 
 /**
- * @summary Verify email address with token
- */
-export const VerifyEmailQueryParams = zod.object({
-  "token": zod.coerce.string()
-})
-
-export const VerifyEmailResponse = zod.object({
-  "user": zod.object({
-  "id": zod.number().int(),
-  "name": zod.string(),
-  "email": zod.string(),
-  "phone": zod.string().nullish(),
-  "role": zod.enum(['user', 'admin']),
-  "accountStatus": zod.enum(['pending', 'active', 'paused', 'lost']),
-  "emailVerified": zod.boolean(),
-  "referralCode": zod.string(),
-  "bscWallet": zod.string().nullish().describe('BSC wallet address for automatic payment detection'),
-  "membershipStartedAt": zod.string().nullish(),
-  "membershipTimerStartedAt": zod.string().nullish(),
-  "membershipExpiresAt": zod.string().nullish(),
-  "createdAt": zod.string()
-})
-})
-
-
-/**
- * @summary Resend verification email
- */
-export const ResendVerificationBody = zod.object({
-  "email": zod.string()
-})
-
-export const ResendVerificationResponse = zod.object({
-  "success": zod.boolean()
-})
-
-
-/**
  * @summary Get current authenticated user
  */
 export const GetMeResponse = zod.object({
@@ -134,7 +94,6 @@ export const GetMeResponse = zod.object({
   "phone": zod.string().nullish(),
   "role": zod.enum(['user', 'admin']),
   "accountStatus": zod.enum(['pending', 'active', 'paused', 'lost']),
-  "emailVerified": zod.boolean(),
   "referralCode": zod.string(),
   "bscWallet": zod.string().nullish().describe('BSC wallet address for automatic payment detection'),
   "membershipStartedAt": zod.string().nullish(),

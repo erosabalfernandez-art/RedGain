@@ -16,7 +16,6 @@ export interface User {
   phone?: string | null;
   role: UserRole;
   accountStatus: UserAccountStatus;
-  emailVerified: boolean;
   referralCode: string;
   /**
      * BSC wallet address for automatic payment detection

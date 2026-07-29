@@ -95,21 +95,6 @@ export async function initDb(): Promise<void> {
     `);
     logger.info("initDb: notifications table ready");
 
-    // ── Email verification columns ───────────────────────────────────────────
-    // DEFAULT true so existing users are not locked out on deploy
-    await client.query(`
-      ALTER TABLE users
-        ADD COLUMN IF NOT EXISTS email_verified BOOLEAN NOT NULL DEFAULT true;
-    `);
-    await client.query(`
-      ALTER TABLE users
-        ADD COLUMN IF NOT EXISTS email_verification_token TEXT;
-    `);
-    await client.query(`
-      ALTER TABLE users
-        ADD COLUMN IF NOT EXISTS email_verification_token_expires TIMESTAMP;
-    `);
-    logger.info("initDb: email verification columns ready");
   } catch (err) {
     logger.error({ err }, "initDb: failed to ensure tables");
     throw err;
