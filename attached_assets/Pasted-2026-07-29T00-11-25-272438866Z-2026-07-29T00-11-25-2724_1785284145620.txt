@@ -1,0 +1,50 @@
+2026-07-29T00:11:25.272438866Z 
+2026-07-29T00:11:25.272440495Z (!) Some chunks are larger than 500 kB after minification. Consider:
+2026-07-29T00:11:25.272442347Z - Using dynamic import() to code-split the application
+2026-07-29T00:11:25.272444316Z - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+2026-07-29T00:11:25.272445433Z - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+2026-07-29T00:11:25.272619716Z ✓ built in 3.10s
+2026-07-29T00:11:25.614461017Z 
+2026-07-29T00:11:25.614486269Z > @workspace/api-server@0.0.0 build /opt/render/project/src/artifacts/api-server
+2026-07-29T00:11:25.614487949Z > node ./build.mjs
+2026-07-29T00:11:25.614488722Z 
+2026-07-29T00:11:26.130828593Z ▲ [WARNING] Import "int" will always be undefined because there is no matching export in "../../node_modules/.pnpm/zod@3.25.76/node_modules/zod/index.js" [import-is-undefined]
+2026-07-29T00:11:26.130850426Z 
+2026-07-29T00:11:26.130853683Z     ../../lib/api-zod/src/generated/api.ts:37:12:
+2026-07-29T00:11:26.130855963Z       37 │   "id": zod.int(),
+2026-07-29T00:11:26.13085686Z          ╵             ~~~
+2026-07-29T00:11:26.130857731Z 
+2026-07-29T00:11:26.24387913Z 1 warning
+2026-07-29T00:11:26.243896909Z 
+2026-07-29T00:11:26.243899031Z   dist/index.mjs                       3.9mb ⚠️
+2026-07-29T00:11:26.243900295Z   dist/pino-worker.mjs               153.4kb
+2026-07-29T00:11:26.243901256Z   dist/pino-file.mjs                 142.1kb
+2026-07-29T00:11:26.243901987Z   dist/pino-pretty.mjs               114.4kb
+2026-07-29T00:11:26.243902715Z   dist/thread-stream-worker.mjs        7.3kb
+2026-07-29T00:11:26.243908083Z   dist/index.mjs.map                   6.9mb
+2026-07-29T00:11:26.243909125Z   dist/pino-worker.mjs.map           256.9kb
+2026-07-29T00:11:26.243909856Z   dist/pino-file.mjs.map             229.0kb
+2026-07-29T00:11:26.243910659Z   dist/pino-pretty.mjs.map           203.6kb
+2026-07-29T00:11:26.243911463Z   dist/thread-stream-worker.mjs.map   12.0kb
+2026-07-29T00:11:26.243916389Z 
+2026-07-29T00:11:26.243917858Z ⚡ Done in 589ms
+2026-07-29T00:11:27.197329766Z ==> Uploading build...
+2026-07-29T00:11:34.064376761Z ==> Uploaded in 4.3s. Compression took 2.6s
+2026-07-29T00:11:34.066288371Z ==> Build successful 🎉
+2026-07-29T00:11:36.874776528Z ==> Deploying...
+2026-07-29T00:11:36.944546387Z ==> Setting WEB_CONCURRENCY=1 by default, based on available CPUs in the instance
+2026-07-29T00:11:57.028102473Z ==> Running 'node --enable-source-maps artifacts/api-server/dist/index.mjs'
+2026-07-29T00:12:01.529564468Z /opt/render/project/src/lib/api-zod/src/generated/api.ts:37
+2026-07-29T00:12:01.529584708Z   "id": zod.int(),
+2026-07-29T00:12:01.529587798Z             ^
+2026-07-29T00:12:01.529590028Z 
+2026-07-29T00:12:01.529593008Z TypeError: (void 0) is not a function
+2026-07-29T00:12:01.529596139Z     at <anonymous> (/opt/render/project/src/lib/api-zod/src/generated/api.ts:37:13)
+2026-07-29T00:12:01.529599029Z     at ModuleJob.run (node:internal/modules/esm/module_job:430:25)
+2026-07-29T00:12:01.529601169Z     at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:661:26)
+2026-07-29T00:12:01.529603599Z     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+2026-07-29T00:12:01.529605819Z 
+2026-07-29T00:12:01.529607969Z Node.js v24.14.1
+2026-07-29T00:12:06.054289331Z ==> Exited with status 1
+2026-07-29T00:12:06.056176524Z ==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
+2026-07-29T00:12:11.183216406Z ==> Running 'node --enable-source-maps artifacts/api-server/dist/index.mjs'
