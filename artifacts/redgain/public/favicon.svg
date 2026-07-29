@@ -1,34 +1,33 @@
 <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="logo-grad-primary" x1="0" y1="100" x2="100" y2="0" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#1A3EBF" />
-      <stop offset="100%" stop-color="#3B82F6" />
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#E8C547"/>
+      <stop offset="100%" stop-color="#A07820"/>
     </linearGradient>
-    <linearGradient id="logo-grad-accent" x1="0" y1="100" x2="100" y2="0" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#3B82F6" />
-      <stop offset="100%" stop-color="#60A5FA" />
-    </linearGradient>
+    <clipPath id="circle-clip">
+      <circle cx="50" cy="50" r="48"/>
+    </clipPath>
   </defs>
-  <circle cx="28" cy="72" r="8" fill="url(#logo-grad-primary)" opacity="0.9" />
-  <path
-    d="M28 72 V28 H58 C72 28 78 36 78 46 C78 54 72 62 60 62 H44"
-    stroke="url(#logo-grad-primary)"
-    stroke-width="12"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  />
-  <path
-    d="M50 62 L78 90"
-    stroke="url(#logo-grad-accent)"
-    stroke-width="12"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  />
-  <path
-    d="M78 90 L78 70 M78 90 L58 90"
-    stroke="url(#logo-grad-accent)"
-    stroke-width="12"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  />
+
+  <!-- Background circle -->
+  <circle cx="50" cy="50" r="48" fill="#0E0A04"/>
+  <circle cx="50" cy="50" r="48" fill="none" stroke="url(#gold)" stroke-width="2.5"/>
+
+  <!-- Stoic profile silhouette (right-facing) -->
+  <g clip-path="url(#circle-clip)" fill="url(#gold)">
+    <!-- Head -->
+    <ellipse cx="52" cy="33" rx="15" ry="17"/>
+    <!-- Curly hair / laurel suggestion — raised bump at top -->
+    <ellipse cx="52" cy="18" rx="13" ry="6"/>
+    <!-- Neck -->
+    <rect x="45" y="48" width="14" height="9" rx="3"/>
+    <!-- Shoulders / toga bust -->
+    <path d="M28 100 Q28 68 40 62 Q47 58 52 58 Q57 58 64 62 Q76 68 76 100 Z"/>
+    <!-- Nose protrusion (profile detail) -->
+    <ellipse cx="66" cy="36" rx="3.5" ry="2.5"/>
+    <!-- Chin protrusion -->
+    <ellipse cx="65" cy="44" rx="2.5" ry="2"/>
+    <!-- Beard suggestion -->
+    <ellipse cx="58" cy="46" rx="7" ry="4" opacity="0.6"/>
+  </g>
 </svg>
