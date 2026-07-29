@@ -69,7 +69,7 @@ export default function Home() {
   const faqs = [
     {
       q: '¿Puedo perder mi dinero?',
-      a: 'Sí, es posible. Si te unes y no logras referir a nadie, pagarás $10 al mes sin recibir comisiones a cambio. Ese es el riesgo real y te lo decimos de frente. RedGain no es una inversión pasiva ni un esquema donde el dinero llega solo: es un programa de referidos. Si no invitas a nadie, no ganas nada de comisiones. Lo que sí obtienes con tu membresía es acceso a la plataforma y la posibilidad de construir una red. El riesgo máximo es $10 al mes mientras no tengas referidos activos.',
+      a: 'El riesgo máximo es exactamente $10 — una sola vez. Así funciona: pagas $10 para activar tu cuenta, pero el reloj de 30 días NO arranca en ese momento. El temporizador solo empieza cuando tu primer referido realiza su pago. Si no consigues ningún referido, tu tiempo queda congelado indefinidamente: no hay renovación automática, no hay cobro adicional, no hay deuda. Solo perdiste los $10 iniciales de activación. En el momento en que alguien de tu red paga, ahí sí empieza tu cuenta regresiva de 30 días y empiezas a recibir comisiones. El sistema está diseñado así a propósito: no tienes que apresurarte ni sentir presión de tiempo desde el primer día.',
     },
     {
       q: '¿Qué pasa si no consigo ningún referido?',
