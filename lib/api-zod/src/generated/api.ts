@@ -34,7 +34,7 @@ export const RegisterBody = zod.object({
 
 export const RegisterResponse = zod.object({
   "user": zod.object({
-  "id": zod.int(),
+  "id": zod.number().int(),
   "name": zod.string(),
   "email": zod.string(),
   "phone": zod.string().nullish(),
@@ -61,7 +61,7 @@ export const LoginBody = zod.object({
 
 export const LoginResponse = zod.object({
   "user": zod.object({
-  "id": zod.int(),
+  "id": zod.number().int(),
   "name": zod.string(),
   "email": zod.string(),
   "phone": zod.string().nullish(),
@@ -95,7 +95,7 @@ export const VerifyEmailQueryParams = zod.object({
 
 export const VerifyEmailResponse = zod.object({
   "user": zod.object({
-  "id": zod.int(),
+  "id": zod.number().int(),
   "name": zod.string(),
   "email": zod.string(),
   "phone": zod.string().nullish(),
@@ -128,7 +128,7 @@ export const ResendVerificationResponse = zod.object({
  * @summary Get current authenticated user
  */
 export const GetMeResponse = zod.object({
-  "id": zod.int(),
+  "id": zod.number().int(),
   "name": zod.string(),
   "email": zod.string(),
   "phone": zod.string().nullish(),
@@ -149,44 +149,44 @@ export const GetMeResponse = zod.object({
  */
 export const GetMyReferralsResponse = zod.object({
   "level1": zod.array(zod.object({
-  "id": zod.int(),
+  "id": zod.number().int(),
   "name": zod.string(),
   "phone": zod.string().nullish(),
   "whatsappUrl": zod.string().nullish(),
   "accountStatus": zod.enum(['pending', 'active', 'paused', 'lost']),
   "joinedAt": zod.string(),
-  "level": zod.int().describe('1, 2, or 3'),
+  "level": zod.number().int().describe('1, 2, or 3'),
   "commissionAmount": zod.number().describe('Commission earned per renewal: $6 (L1), $2 (L2), $1 (L3)'),
   "membershipExpiresAt": zod.string().nullish(),
   "membershipTimerStartedAt": zod.string().nullish()
 })),
   "level2": zod.array(zod.object({
-  "id": zod.int(),
+  "id": zod.number().int(),
   "name": zod.string(),
   "phone": zod.string().nullish(),
   "whatsappUrl": zod.string().nullish(),
   "accountStatus": zod.enum(['pending', 'active', 'paused', 'lost']),
   "joinedAt": zod.string(),
-  "level": zod.int().describe('1, 2, or 3'),
+  "level": zod.number().int().describe('1, 2, or 3'),
   "commissionAmount": zod.number().describe('Commission earned per renewal: $6 (L1), $2 (L2), $1 (L3)'),
   "membershipExpiresAt": zod.string().nullish(),
   "membershipTimerStartedAt": zod.string().nullish()
 })),
   "level3": zod.array(zod.object({
-  "id": zod.int(),
+  "id": zod.number().int(),
   "name": zod.string(),
   "phone": zod.string().nullish(),
   "whatsappUrl": zod.string().nullish(),
   "accountStatus": zod.enum(['pending', 'active', 'paused', 'lost']),
   "joinedAt": zod.string(),
-  "level": zod.int().describe('1, 2, or 3'),
+  "level": zod.number().int().describe('1, 2, or 3'),
   "commissionAmount": zod.number().describe('Commission earned per renewal: $6 (L1), $2 (L2), $1 (L3)'),
   "membershipExpiresAt": zod.string().nullish(),
   "membershipTimerStartedAt": zod.string().nullish()
 })),
   "totals": zod.object({
-  "count": zod.int().optional(),
-  "active": zod.int().optional(),
+  "count": zod.number().int().optional(),
+  "active": zod.number().int().optional(),
   "projectedMonthly": zod.number().optional()
 })
 })
@@ -197,17 +197,17 @@ export const GetMyReferralsResponse = zod.object({
  */
 export const GetMyTreeResponse = zod.object({
   "root": zod.object({
-  "id": zod.int(),
+  "id": zod.number().int(),
   "name": zod.string(),
   "phone": zod.string().nullish(),
   "whatsappUrl": zod.string().nullish(),
   "accountStatus": zod.enum(['pending', 'active', 'paused', 'lost']),
-  "level": zod.int(),
+  "level": zod.number().int(),
   "membershipExpiresAt": zod.string().nullish(),
   "membershipTimerStartedAt": zod.string().nullish(),
   "children": zod.array(zod.unknown()).optional()
 }),
-  "nodes": zod.int().describe('Total number of nodes in the tree')
+  "nodes": zod.number().int().describe('Total number of nodes in the tree')
 })
 
 
@@ -221,9 +221,9 @@ export const GetMyMembershipResponse = zod.object({
   "membershipTimerStartedAt": zod.string().nullish(),
   "membershipExpiresAt": zod.string().nullish(),
   "gracePeriodEndsAt": zod.string().nullish().describe('membershipExpiresAt + 14 days'),
-  "daysRemaining": zod.int().nullish(),
+  "daysRemaining": zod.number().int().nullish(),
   "inGracePeriod": zod.boolean().optional(),
-  "graceEndsInDays": zod.int().nullish(),
+  "graceEndsInDays": zod.number().int().nullish(),
   "referralCodeActive": zod.boolean().optional().describe('Whether the referral code can be used to invite people')
 })
 
@@ -232,11 +232,11 @@ export const GetMyMembershipResponse = zod.object({
  * @summary Get earnings summary for the current user
  */
 export const GetMyEarningsResponse = zod.object({
-  "totalReferrals": zod.int(),
-  "activeReferrals": zod.int(),
-  "level1Count": zod.int(),
-  "level2Count": zod.int(),
-  "level3Count": zod.int(),
+  "totalReferrals": zod.number().int(),
+  "activeReferrals": zod.number().int(),
+  "level1Count": zod.number().int(),
+  "level2Count": zod.number().int(),
+  "level3Count": zod.number().int(),
   "projectedDay15": zod.number().describe('Expected commission on day 15 if all active referrals renew'),
   "totalHistorical": zod.number().describe('Total commissions earned historically')
 })
@@ -257,7 +257,7 @@ export const GetMyReferralCodeResponse = zod.object({
  */
 export const GetMyNotificationsResponse = zod.object({
   "notifications": zod.array(zod.object({
-  "id": zod.int(),
+  "id": zod.number().int(),
   "type": zod.string().describe('commission_sent | commission_failed | new_referral | payment_confirmed'),
   "title": zod.string(),
   "body": zod.string(),
@@ -265,7 +265,7 @@ export const GetMyNotificationsResponse = zod.object({
   "metadata": zod.record(zod.string(), zod.unknown()),
   "createdAt": zod.string()
 })),
-  "unreadCount": zod.int()
+  "unreadCount": zod.number().int()
 })
 
 
@@ -282,8 +282,8 @@ export const MarkNotificationsReadResponse = zod.object({
  */
 export const GetMyCommissionHistoryResponse = zod.object({
   "events": zod.array(zod.object({
-  "id": zod.int(),
-  "level": zod.int().describe('1, 2 or 3'),
+  "id": zod.number().int(),
+  "level": zod.number().int().describe('1, 2 or 3'),
   "amountUsdt": zod.number().describe('Amount received: $6 (L1), $2 (L2), $1 (L3)'),
   "txHash": zod.string().nullish().describe('Blockchain tx hash of the commission transfer'),
   "sourceTxHash": zod.string().nullish().describe('Blockchain tx hash of the original payment that triggered this commission'),
@@ -320,8 +320,8 @@ export const SubmitPaymentBody = zod.object({
 })
 
 export const SubmitPaymentResponse = zod.object({
-  "id": zod.int(),
-  "userId": zod.int(),
+  "id": zod.number().int(),
+  "userId": zod.number().int(),
   "amount": zod.number(),
   "paymentType": zod.enum(['initial', 'renewal']),
   "status": zod.enum(['pending', 'approved', 'rejected']),
@@ -338,8 +338,8 @@ export const SubmitPaymentResponse = zod.object({
  * @summary Get current user's payment history
  */
 export const GetMyPaymentsResponseItem = zod.object({
-  "id": zod.int(),
-  "userId": zod.int(),
+  "id": zod.number().int(),
+  "userId": zod.number().int(),
   "amount": zod.number(),
   "paymentType": zod.enum(['initial', 'renewal']),
   "status": zod.enum(['pending', 'approved', 'rejected']),
@@ -357,7 +357,7 @@ export const GetMyPaymentsResponse = zod.array(GetMyPaymentsResponseItem)
  * @summary List all users (admin only)
  */
 export const AdminListUsersResponseItem = zod.object({
-  "id": zod.int(),
+  "id": zod.number().int(),
   "name": zod.string(),
   "email": zod.string(),
   "phone": zod.string().nullish(),
@@ -366,14 +366,14 @@ export const AdminListUsersResponseItem = zod.object({
   "accountStatus": zod.enum(['pending', 'active', 'paused', 'lost']),
   "referralCode": zod.string(),
   "referrerName": zod.string().nullish(),
-  "referrerId": zod.int().nullish(),
-  "totalReferrals": zod.int(),
-  "activeReferrals": zod.int(),
+  "referrerId": zod.number().int().nullish(),
+  "totalReferrals": zod.number().int(),
+  "activeReferrals": zod.number().int(),
   "membershipStartedAt": zod.string().nullish(),
   "membershipTimerStartedAt": zod.string().nullish(),
   "membershipExpiresAt": zod.string().nullish(),
   "gracePeriodEndsAt": zod.string().nullish(),
-  "daysRemaining": zod.int().nullish(),
+  "daysRemaining": zod.number().int().nullish(),
   "inGracePeriod": zod.boolean().optional(),
   "timerStarted": zod.boolean().optional(),
   "joinedAt": zod.string()
@@ -394,7 +394,7 @@ export const AdminUpdateUserBody = zod.object({
 })
 
 export const AdminUpdateUserResponse = zod.object({
-  "id": zod.int(),
+  "id": zod.number().int(),
   "name": zod.string(),
   "email": zod.string(),
   "phone": zod.string().nullish(),
@@ -403,14 +403,14 @@ export const AdminUpdateUserResponse = zod.object({
   "accountStatus": zod.enum(['pending', 'active', 'paused', 'lost']),
   "referralCode": zod.string(),
   "referrerName": zod.string().nullish(),
-  "referrerId": zod.int().nullish(),
-  "totalReferrals": zod.int(),
-  "activeReferrals": zod.int(),
+  "referrerId": zod.number().int().nullish(),
+  "totalReferrals": zod.number().int(),
+  "activeReferrals": zod.number().int(),
   "membershipStartedAt": zod.string().nullish(),
   "membershipTimerStartedAt": zod.string().nullish(),
   "membershipExpiresAt": zod.string().nullish(),
   "gracePeriodEndsAt": zod.string().nullish(),
-  "daysRemaining": zod.int().nullish(),
+  "daysRemaining": zod.number().int().nullish(),
   "inGracePeriod": zod.boolean().optional(),
   "timerStarted": zod.boolean().optional(),
   "joinedAt": zod.string()
@@ -433,8 +433,8 @@ export const AdminDeleteUserResponse = zod.object({
  * @summary List all payments (admin only)
  */
 export const AdminListPaymentsResponseItem = zod.object({
-  "id": zod.int(),
-  "userId": zod.int(),
+  "id": zod.number().int(),
+  "userId": zod.number().int(),
   "userName": zod.string(),
   "userEmail": zod.string(),
   "userPhone": zod.string().nullish(),
@@ -463,8 +463,8 @@ export const AdminReviewPaymentBody = zod.object({
 })
 
 export const AdminReviewPaymentResponse = zod.object({
-  "id": zod.int(),
-  "userId": zod.int(),
+  "id": zod.number().int(),
+  "userId": zod.number().int(),
   "userName": zod.string(),
   "userEmail": zod.string(),
   "userPhone": zod.string().nullish(),
@@ -483,12 +483,12 @@ export const AdminReviewPaymentResponse = zod.object({
  * @summary Get global genealogy tree of all users (admin only)
  */
 export const AdminGetTreeResponseItem = zod.object({
-  "id": zod.int(),
+  "id": zod.number().int(),
   "name": zod.string(),
   "phone": zod.string().nullish(),
   "whatsappUrl": zod.string().nullish(),
   "accountStatus": zod.enum(['pending', 'active', 'paused', 'lost']),
-  "level": zod.int(),
+  "level": zod.number().int(),
   "membershipExpiresAt": zod.string().nullish(),
   "membershipTimerStartedAt": zod.string().nullish(),
   "children": zod.array(zod.unknown()).optional()
@@ -505,9 +505,9 @@ export const AdminGetCommissionsResponse = zod.object({
   "distributionDate": zod.string().describe('Day 15 of current month'),
   "totalToDistribute": zod.number(),
   "platformFee": zod.number().describe('$1 per renewal stays with platform'),
-  "totalRenewals": zod.int().optional(),
+  "totalRenewals": zod.number().int().optional(),
   "recipients": zod.array(zod.object({
-  "userId": zod.int(),
+  "userId": zod.number().int(),
   "name": zod.string(),
   "phone": zod.string().nullish(),
   "whatsappUrl": zod.string().nullish(),
@@ -516,9 +516,9 @@ export const AdminGetCommissionsResponse = zod.object({
   "fromLevel1": zod.number().optional().describe('$6 per L1 renewal'),
   "fromLevel2": zod.number().optional().describe('$2 per L2 renewal'),
   "fromLevel3": zod.number().optional().describe('$1 per L3 renewal'),
-  "level1Renewals": zod.int().optional(),
-  "level2Renewals": zod.int().optional(),
-  "level3Renewals": zod.int().optional()
+  "level1Renewals": zod.number().int().optional(),
+  "level2Renewals": zod.number().int().optional(),
+  "level3Renewals": zod.number().int().optional()
 })
 }))
 })
@@ -528,15 +528,15 @@ export const AdminGetCommissionsResponse = zod.object({
  * @summary Platform-wide stats (admin only)
  */
 export const AdminGetStatsResponse = zod.object({
-  "totalUsers": zod.int(),
-  "activeUsers": zod.int(),
-  "pendingUsers": zod.int(),
-  "pausedUsers": zod.int(),
-  "lostUsers": zod.int(),
-  "pendingPayments": zod.int(),
+  "totalUsers": zod.number().int(),
+  "activeUsers": zod.number().int(),
+  "pendingUsers": zod.number().int(),
+  "pausedUsers": zod.number().int(),
+  "lostUsers": zod.number().int(),
+  "pendingPayments": zod.number().int(),
   "totalRevenue": zod.number(),
   "monthlyRevenue": zod.number(),
-  "expiringThisWeek": zod.int().describe('Number of memberships expiring in the next 7 days')
+  "expiringThisWeek": zod.number().int().describe('Number of memberships expiring in the next 7 days')
 })
 
 
