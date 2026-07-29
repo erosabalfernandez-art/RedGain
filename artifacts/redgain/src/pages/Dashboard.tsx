@@ -338,22 +338,77 @@ function ReferidosSection() {
 // ── Payment Warning Accordion ────────────────────────────────────────────────
 const SUPPORT_WA_PAGOS = 'https://wa.me/5588992543996';
 
+const RECOMMENDED_WALLETS = [
+  {
+    name: 'Trust Wallet',
+    tag: 'La más recomendada',
+    tagColor: 'text-emerald-400',
+    tagBg: 'bg-emerald-400/10 border-emerald-400/20',
+    desc: 'Diseñada para BSC. Fácil, rápida y completamente gratuita. Disponible en iOS y Android.',
+    url: 'https://trustwallet.com',
+    icon: '🔵',
+  },
+  {
+    name: 'MetaMask',
+    tag: 'La más conocida',
+    tagColor: 'text-orange-400',
+    tagBg: 'bg-orange-400/10 border-orange-400/20',
+    desc: 'Compatible con BSC. App móvil y extensión de navegador. Millones de usuarios en todo el mundo.',
+    url: 'https://metamask.io',
+    icon: '🦊',
+  },
+  {
+    name: 'SafePal',
+    tag: 'Muy segura',
+    tagColor: 'text-blue-400',
+    tagBg: 'bg-blue-400/10 border-blue-400/20',
+    desc: 'Excelente para BSC. Aplicación gratuita con opciones de billetera de hardware para mayor seguridad.',
+    url: 'https://safepal.com',
+    icon: '🛡️',
+  },
+  {
+    name: 'TokenPocket',
+    tag: 'Popular en Latinoamérica',
+    tagColor: 'text-purple-400',
+    tagBg: 'bg-purple-400/10 border-purple-400/20',
+    desc: 'Multi-cadena, soporta BSC perfectamente. Interfaz en español y muy intuitiva.',
+    url: 'https://tokenpocket.pro',
+    icon: '💜',
+  },
+];
+
+function SubAccordion({ title, icon, borderColor, bgColor, children }: {
+  title: string; icon: React.ReactNode; borderColor: string; bgColor: string; children: React.ReactNode;
+}) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="rounded-xl overflow-hidden" style={{ border: borderColor, background: bgColor }}>
+      <button onClick={() => setOpen(v => !v)} className="w-full flex items-center gap-3 px-4 py-3 text-left">
+        <span className="shrink-0">{icon}</span>
+        <span className="flex-1 text-xs font-bold text-foreground">{title}</span>
+        <ChevronDown className="w-3.5 h-3.5 text-muted-foreground shrink-0 transition-transform duration-200" style={{ transform: open ? 'rotate(180deg)' : 'rotate(0deg)' }} />
+      </button>
+      {open && <div className="px-4 pb-4 space-y-2 border-t border-white/5">{children}</div>}
+    </div>
+  );
+}
+
 function PaymentWarningAccordion() {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(239,68,68,0.35)', background: 'rgba(14,10,5,0.9)' }}>
+    <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(239,68,68,0.35)', background: 'rgba(14,10,5,0.95)' }}>
       {/* Header — always visible */}
       <button
         onClick={() => setOpen(v => !v)}
         className="w-full flex items-center gap-3 px-5 py-4 text-left transition-colors hover:bg-red-500/5"
       >
-        <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.3)' }}>
+        <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.3)' }}>
           <AlertTriangle className="w-4 h-4 text-red-400" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-bold text-red-400">Advertencias importantes sobre montos de pago</p>
-          <p className="text-xs text-muted-foreground mt-0.5">Qué ocurre si envías un monto incorrecto — lee antes de pagar</p>
+          <p className="text-sm font-bold text-red-400">Advertencias importantes antes de pagar</p>
+          <p className="text-xs text-muted-foreground mt-0.5">Montos incorrectos · Cambio de billetera · Exchanges — lee antes de enviar</p>
         </div>
         <ChevronDown
           className="w-4 h-4 text-red-400 shrink-0 transition-transform duration-200"
@@ -363,59 +418,169 @@ function PaymentWarningAccordion() {
 
       {/* Body — collapsible */}
       {open && (
-        <div className="px-5 pb-5 space-y-4 border-t border-red-500/20">
+        <div className="px-5 pb-6 space-y-5 border-t border-red-500/15">
+
           <p className="text-xs text-muted-foreground pt-4 leading-relaxed">
-            Nuestro sistema detecta pagos automáticamente en la blockchain. Enviar un monto distinto a <strong className="text-foreground">exactamente $10 USDT</strong> genera incidencias que el equipo debe resolver manualmente, con las siguientes consecuencias en ambos casos:
+            Nuestro sistema detecta pagos en la blockchain de forma <strong className="text-foreground">completamente automática</strong>. Para que funcione sin errores, cada pago debe cumplir tres condiciones sin excepción. Lee cada punto con atención.
           </p>
 
-          {/* Case 1 — Less than 10 */}
-          <div className="rounded-xl p-4 space-y-3" style={{ background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.2)' }}>
-            <div className="flex items-center gap-2">
-              <XCircle className="w-4 h-4 text-red-400 shrink-0" />
-              <p className="text-sm font-bold text-red-400">Si envías MENOS de $10 USDT</p>
+          {/* ── SECCIÓN 1: Monto exacto ── */}
+          <SubAccordion
+            title="① Envía siempre exactamente $10.00 USDT — ni más, ni menos"
+            icon={<XCircle className="w-4 h-4 text-red-400" />}
+            borderColor="1px solid rgba(239,68,68,0.2)"
+            bgColor="rgba(239,68,68,0.04)"
+          >
+            <div className="pt-2 space-y-3">
+              <div className="space-y-2">
+                <p className="text-[11px] font-bold text-red-400 uppercase tracking-wide">Si envías MENOS de $10 USDT</p>
+                {[
+                  { icon: '❌', text: 'El sistema ignora el pago y tu cuenta NO se activa.' },
+                  { icon: '🔄', text: 'El equipo te devuelve el dinero a tu billetera de origen.' },
+                  { icon: '⚠️', text: <span>Pierdes la <strong className="text-red-300">comisión de red</strong> que el equipo paga al devolverte el dinero. Ese costo corre por tu cuenta.</span> },
+                  { icon: '🔁', text: 'Deberás reenviar los $10 USDT completos desde cero para activar tu cuenta.' },
+                ].map(({ icon, text }, i) => (
+                  <div key={i} className="flex items-start gap-2">
+                    <span className="text-xs shrink-0 mt-0.5">{icon}</span>
+                    <p className="text-xs text-red-200 leading-relaxed">{text}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="h-px bg-red-500/10" />
+              <div className="space-y-2">
+                <p className="text-[11px] font-bold text-yellow-400 uppercase tracking-wide">Si envías MÁS de $10 USDT</p>
+                {[
+                  { icon: '✅', text: 'Tu cuenta SÍ se activa normalmente.' },
+                  { icon: '💰', text: 'El excedente queda retenido. Contáctanos y te lo devolvemos.' },
+                  { icon: '⚠️', text: <span>Igual que el caso anterior, pierdes la <strong className="text-yellow-300">comisión de red</strong> de la devolución.</span> },
+                ].map(({ icon, text }, i) => (
+                  <div key={i} className="flex items-start gap-2">
+                    <span className="text-xs shrink-0 mt-0.5">{icon}</span>
+                    <p className="text-xs text-yellow-200 leading-relaxed">{text}</p>
+                  </div>
+                ))}
+              </div>
             </div>
-            <div className="space-y-2 pl-1">
+          </SubAccordion>
+
+          {/* ── SECCIÓN 2: Misma billetera ── */}
+          <SubAccordion
+            title="② Usa siempre la misma billetera que registraste — no la cambies sin seguir los pasos"
+            icon={<Wallet className="w-4 h-4 text-orange-400" />}
+            borderColor="1px solid rgba(234,88,12,0.25)"
+            bgColor="rgba(234,88,12,0.04)"
+          >
+            <div className="pt-2 space-y-4">
+              <p className="text-xs text-orange-200 leading-relaxed">
+                El sistema identifica tu pago por la dirección desde la que envías. Si envías desde una billetera diferente a la que tienes registrada, el pago <strong className="text-orange-300">no se asocia a tu cuenta</strong> y se pierde sin activar nada. Mantén siempre la misma billetera registrada para pagar.
+              </p>
+
+              <div className="rounded-lg p-3 space-y-2" style={{ background: 'rgba(234,179,8,0.06)', border: '1px solid rgba(234,179,8,0.2)' }}>
+                <p className="text-[11px] font-bold text-yellow-400 uppercase tracking-wide">¿Quieres cambiar de billetera? Sigue estos pasos para no perder nada:</p>
+                {[
+                  'Primero asegúrate de que NO tienes ningún pago en tránsito en ese momento.',
+                  'Ve a "Tu billetera BSC de origen" (arriba en esta misma página) y actualiza la dirección.',
+                  'Espera a que el sistema confirme el cambio antes de enviar cualquier pago.',
+                  'Haz tu próximo pago solo desde la nueva billetera registrada — nunca desde la anterior.',
+                  'Si tienes dudas sobre si el cambio fue exitoso, escríbenos al soporte antes de pagar.',
+                ].map((tip, i) => (
+                  <div key={i} className="flex items-start gap-2">
+                    <div className="w-4 h-4 rounded-full flex items-center justify-center shrink-0 mt-0.5" style={{ background: 'rgba(234,179,8,0.15)', border: '1px solid rgba(234,179,8,0.3)' }}>
+                      <span className="text-[9px] font-extrabold text-yellow-400">{i + 1}</span>
+                    </div>
+                    <p className="text-xs text-yellow-200 leading-relaxed">{tip}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex items-start gap-2 p-3 rounded-lg" style={{ background: 'rgba(234,88,12,0.08)', border: '1px solid rgba(234,88,12,0.2)' }}>
+                <AlertTriangle className="w-3.5 h-3.5 text-orange-400 shrink-0 mt-0.5" />
+                <p className="text-xs text-orange-300 leading-relaxed">
+                  <strong>Regla clave:</strong> una billetera, una cuenta. Cada dirección BSC solo puede estar registrada en un usuario del sistema. No intentes usar la misma billetera en dos cuentas distintas.
+                </p>
+              </div>
+            </div>
+          </SubAccordion>
+
+          {/* ── SECCIÓN 3: No exchanges ── */}
+          <SubAccordion
+            title="③ No pagues desde exchanges (Binance, Bybit, OKX…) — solo desde billetera personal"
+            icon={<XCircle className="w-4 h-4 text-red-500" />}
+            borderColor="1px solid rgba(239,68,68,0.25)"
+            bgColor="rgba(239,68,68,0.04)"
+          >
+            <div className="pt-2 space-y-4">
+              <div className="rounded-lg p-3" style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)' }}>
+                <p className="text-xs text-red-200 leading-relaxed">
+                  Los exchanges como Binance, Bybit, OKX o Coinbase <strong className="text-red-300">no envían fondos desde tu dirección personal</strong> — los envían desde las billeteras internas del exchange. Esto significa que cuando retiras desde un exchange directo a nuestra billetera, el pago llega al sistema <strong className="text-red-300">sin ningún dato que lo relacione contigo</strong>. Tu cuenta no se activa y el dinero queda en el limbo.
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <p className="text-[11px] font-bold text-white/60 uppercase tracking-wide">El flujo correcto si tienes tus USDT en un exchange:</p>
+                {[
+                  { step: '1', text: 'Retira tus USDT del exchange a tu billetera personal (Trust Wallet, MetaMask, etc.).' },
+                  { step: '2', text: 'Desde esa billetera personal — que debe estar registrada en tu cuenta — envía los $10 USDT a la dirección de pago.' },
+                  { step: '3', text: 'El sistema detecta el pago y activa tu cuenta automáticamente.' },
+                ].map(({ step, text }) => (
+                  <div key={step} className="flex items-start gap-2">
+                    <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5" style={{ background: 'rgba(201,162,39,0.1)', border: '1px solid rgba(201,162,39,0.3)' }}>
+                      <span className="text-[9px] font-extrabold" style={{ color: '#C9A227' }}>{step}</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground leading-relaxed">{text}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Wallet recommendations */}
+              <div className="space-y-3">
+                <p className="text-[11px] font-bold uppercase tracking-wide" style={{ color: '#E8C547' }}>Billeteras personales que recomendamos — son gratuitas y fáciles de usar:</p>
+                <div className="space-y-2">
+                  {RECOMMENDED_WALLETS.map((w) => (
+                    <a
+                      key={w.name}
+                      href={w.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-start gap-3 p-3 rounded-xl border border-border hover:border-[rgba(201,162,39,0.3)] hover:bg-[rgba(201,162,39,0.03)] transition-all group"
+                    >
+                      <span className="text-lg shrink-0 mt-0.5">{w.icon}</span>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-xs font-bold text-foreground group-hover:text-white">{w.name}</span>
+                          <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full border ${w.tagBg} ${w.tagColor}`}>{w.tag}</span>
+                        </div>
+                        <p className="text-[11px] text-muted-foreground mt-0.5 leading-relaxed">{w.desc}</p>
+                      </div>
+                      <ExternalLink className="w-3 h-3 text-muted-foreground/40 group-hover:text-[#C9A227] shrink-0 mt-1 transition-colors" />
+                    </a>
+                  ))}
+                </div>
+                <div className="flex items-start gap-2 p-3 rounded-xl" style={{ background: 'rgba(201,162,39,0.05)', border: '1px solid rgba(201,162,39,0.15)' }}>
+                  <MessageCircle className="w-3.5 h-3.5 text-[#C9A227] shrink-0 mt-0.5" />
+                  <p className="text-xs leading-relaxed" style={{ color: 'rgba(201,162,39,0.8)' }}>
+                    ¿No puedes instalar ninguna de estas billeteras o tienes dudas sobre cómo configurarla? <strong className="text-[#E8C547]">Escríbenos al soporte antes de pagar.</strong> Estamos para ayudarte — no te quedes con la duda, un mensaje a tiempo evita perder dinero.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </SubAccordion>
+
+          {/* ── Regla de oro ── */}
+          <div className="rounded-xl p-4 space-y-1" style={{ background: 'linear-gradient(135deg, rgba(201,162,39,0.08), rgba(14,10,5,0.6))', border: '1px solid rgba(201,162,39,0.25)' }}>
+            <p className="text-xs font-extrabold" style={{ color: '#E8C547' }}>✅ Las 3 reglas de oro</p>
+            <div className="space-y-1 mt-2">
               {[
-                { icon: '❌', text: 'El sistema no reconoce el pago y tu cuenta NO se activa.' },
-                { icon: '🔄', text: 'El equipo te devolverá el dinero a tu billetera de origen.' },
-                { icon: '⚠️', text: <span>Perderás la <strong className="text-red-300">comisión de red</strong> (gas fee) que el equipo paga al enviarte el dinero de vuelta. Ese costo corre por tu cuenta.</span> },
-                { icon: '🔁', text: 'Una vez recibida la devolución, deberás reenviar el monto íntegro de $10 USDT para activar tu cuenta.' },
-              ].map(({ icon, text }, i) => (
+                'Envía exactamente $10.00 USDT BEP20 — sin centavos de más ni de menos.',
+                'Envía siempre desde tu billetera personal registrada — la misma cada vez.',
+                'Nunca pagues directo desde un exchange — primero pasa los fondos a tu billetera personal.',
+              ].map((rule, i) => (
                 <div key={i} className="flex items-start gap-2">
-                  <span className="text-sm shrink-0 mt-0.5">{icon}</span>
-                  <p className="text-xs text-red-200 leading-relaxed">{text}</p>
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#C9A227] shrink-0 mt-0.5" />
+                  <p className="text-xs leading-relaxed" style={{ color: 'rgba(201,162,39,0.85)' }}>{rule}</p>
                 </div>
               ))}
             </div>
-          </div>
-
-          {/* Case 2 — More than 10 */}
-          <div className="rounded-xl p-4 space-y-3" style={{ background: 'rgba(234,179,8,0.06)', border: '1px solid rgba(234,179,8,0.2)' }}>
-            <div className="flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4 text-yellow-400 shrink-0" />
-              <p className="text-sm font-bold text-yellow-400">Si envías MÁS de $10 USDT</p>
-            </div>
-            <div className="space-y-2 pl-1">
-              {[
-                { icon: '✅', text: 'El sistema detecta el pago y tu cuenta SÍ se activa normalmente.' },
-                { icon: '💰', text: 'El excedente (lo que enviaste de más) queda retenido en la billetera del sistema.' },
-                { icon: '📩', text: 'Puedes reclamar el excedente escribiendo al soporte. El equipo lo revisará y te lo devolverá.' },
-                { icon: '⚠️', text: <span>Perderás la <strong className="text-yellow-300">comisión de red</strong> (gas fee) que el equipo paga al devolverte el excedente. Ese costo corre por tu cuenta.</span> },
-              ].map(({ icon, text }, i) => (
-                <div key={i} className="flex items-start gap-2">
-                  <span className="text-sm shrink-0 mt-0.5">{icon}</span>
-                  <p className="text-xs text-yellow-200 leading-relaxed">{text}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Summary rule */}
-          <div className="rounded-xl p-3 flex items-start gap-3" style={{ background: 'rgba(201,162,39,0.05)', border: '1px solid rgba(201,162,39,0.2)' }}>
-            <CheckCircle2 className="w-4 h-4 text-[#C9A227] shrink-0 mt-0.5" />
-            <p className="text-xs leading-relaxed" style={{ color: 'rgba(201,162,39,0.85)' }}>
-              <strong className="text-[#E8C547]">Regla de oro:</strong> envía siempre exactamente <strong className="text-[#E8C547]">$10.00 USDT</strong> en la red BEP20 desde tu billetera registrada para evitar cualquier incidencia.
-            </p>
           </div>
 
           {/* Support CTA */}
@@ -427,7 +592,7 @@ function PaymentWarningAccordion() {
             style={{ background: 'linear-gradient(135deg, #25D366, #128C7E)', color: '#fff' }}
           >
             <MessageCircle className="w-4 h-4" />
-            Tengo un problema con mi pago — Contactar soporte
+            Tengo dudas o un problema con mi pago — Contactar soporte
           </a>
         </div>
       )}
