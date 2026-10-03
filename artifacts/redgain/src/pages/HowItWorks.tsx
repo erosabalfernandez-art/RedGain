@@ -233,7 +233,7 @@ export default function HowItWorks() {
                 <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#C9A227]/50 to-transparent" />
                 <div className="space-y-6">
                   {[
-                    { icon: Wallet, title: 'Pagas los $10',             desc: 'El equipo confirma tu pago. Tu cuenta queda activa, pero el temporizador de 30 días aún NO empieza. Tienes tiempo para buscar a tu primera persona sin presión.',          color: 'text-[#E8C547] bg-[#C9A227]/12 border-[#C9A227]/20' },
+                    { icon: Wallet, title: 'Pagas los $10',             desc: 'El sistema detecta y confirma tu pago en la red BSC. Tu cuenta queda activa, pero el temporizador de 30 días aún NO empieza. Tienes tiempo para buscar a tu primera persona sin presión.',          color: 'text-[#E8C547] bg-[#C9A227]/12 border-[#C9A227]/20' },
                     { icon: Users,  title: 'Unes a tu primera persona', desc: 'En cuanto tu primer referido activa su cuenta, TU temporizador empieza a correr. A partir de ese momento tienes exactamente 30 días de membresía activa.',              color: 'text-[#C9A227] bg-[#8B6914]/12 border-[#8B6914]/20' },
                     { icon: Clock,  title: 'Temporizador visible',      desc: 'En tu dashboard verás una cuenta regresiva en tiempo real mostrando cuántos días te quedan antes de que venza tu membresía.',                                              color: 'text-white/60 bg-white/5 border-white/10' },
                   ].map(({ icon: Icon, title, desc, color }) => (
@@ -318,9 +318,9 @@ export default function HowItWorks() {
                     <p className="text-lg font-extrabold text-white mb-2">La ventana de renovación: días 29 y 30</p>
                     <p className="text-white/60 leading-relaxed">
                       En los últimos 2 días de tu ciclo (días 29 y 30 de los 30), el sistema te habilita para renovar.
-                      Si pagas en esos días y el equipo aprueba tu pago antes de que venza tu membresía,
+                      Si el sistema confirma tu pago antes de que venza tu membresía,
                       el nuevo ciclo de 30 días comienza exactamente donde termina el actual.{' '}
-                      <strong className="text-[#E8C547]">Cero segundos de pausa. Cero comisiones perdidas.</strong>
+                      <strong className="text-[#E8C547]">La renovación se procesa automáticamente al confirmarse el pago.</strong>
                     </p>
                   </div>
                 </div>
@@ -339,7 +339,7 @@ export default function HowItWorks() {
                 <div className="grid md:grid-cols-3 gap-4">
                   {[
                     { label: 'Días 1–28', icon: CheckCircle, color: 'text-emerald-400', border: 'border-emerald-500/20 bg-emerald-500/5', title: 'Zona segura', desc: 'Tu cuenta está activa. Ganas comisiones, tu código funciona.' },
-                    { label: 'Días 29–30', icon: RefreshCw, color: 'text-red-400', border: 'border-red-500/40 bg-red-500/8', title: '🔴 Renueva AHORA', desc: 'Ventana de renovación abierta. Paga aquí. El equipo aprueba antes del vencimiento y tu nuevo ciclo empieza sin interrupciones.' },
+                    { label: 'Días 29–30', icon: RefreshCw, color: 'text-red-400', border: 'border-red-500/40 bg-red-500/8', title: '🔴 Renueva AHORA', desc: 'Ventana de renovación abierta. Si el sistema confirma el pago antes del vencimiento, el nuevo ciclo empieza sin interrupciones.' },
                     { label: 'Día 31+', icon: XCircle, color: 'text-orange-400', border: 'border-orange-500/20 bg-orange-500/5', title: 'Cuenta pausada', desc: 'La cuenta se pausa. 14 días de gracia para recuperarla, pero sin comisiones durante ese tiempo.' },
                   ].map(({ label, icon: Icon, color, border, title, desc }) => (
                     <div key={label} className={`rounded-2xl border p-4 ${border}`}>
@@ -357,9 +357,9 @@ export default function HowItWorks() {
                   {[
                     'Tu dashboard muestra el aviso de "Ventana de renovación abierta" con el contador en rojo.',
                     'Vas a la sección Pagos y envías $10 USDT desde tu billetera registrada.',
-                    'El sistema detecta el pago automáticamente (o el equipo lo verifica).',
-                    'El equipo aprueba mientras tu cuenta sigue activa. Tu nuevo ciclo empieza donde termina el actual.',
-                    'Tu cuenta jamás pasa a "Pausada". Tu código sigue activo, tus comisiones siguen fluyendo.',
+                    'El sistema detecta y confirma automáticamente el pago en la blockchain.',
+                    'Al confirmarse antes del vencimiento, el sistema extiende automáticamente tu membresía.',
+                    'Si renuevas a tiempo, tu cuenta sigue activa y tu código no se interrumpe.',
                   ].map((text, i) => (
                     <li key={i} className="flex items-start gap-3">
                       <span className="w-6 h-6 rounded-full bg-[#C9A227]/15 border border-[#C9A227]/30 text-[#E8C547] font-extrabold text-xs flex items-center justify-center shrink-0 mt-0.5">{i + 1}</span>
@@ -381,70 +381,13 @@ export default function HowItWorks() {
       </PlainSection>
 
       {/* ══════════════════════════════════════════════
-          06 · CICLO DE PAGOS — forum / dash-forum
-      ══════════════════════════════════════════════ */}
-      <SectionBg src="/dash-forum.jpg" brightness={0.18}>
-        <div className="max-w-4xl mx-auto px-6 py-24">
-          <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
-            <motion.div variants={fade} className="flex items-center gap-3 mb-10">
-              <StepBadge n={6} />
-              <h2 className="text-2xl font-bold text-white">Ciclo de pagos y comisiones</h2>
-            </motion.div>
-            <motion.div variants={fade} className="space-y-4">
-              <div className="rounded-3xl bg-[#1A1208]/80 border border-[#C9A227]/20 p-6 md:p-8 backdrop-blur-md relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#C9A227]/50 to-transparent" />
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <p className="text-sm font-bold text-white mb-1">Comisiones inmediatas</p>
-                    <p className="text-sm text-white/50 leading-relaxed">
-                      Cuando alguien nuevo se une, las comisiones de los referidores de nivel 1, 2 y 3 se calculan <strong className="text-white">al instante</strong>. El equipo procesa el pago tan pronto confirma el ingreso.
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-bold text-white mb-1">Comisiones de renovación</p>
-                    <p className="text-sm text-white/50 leading-relaxed">
-                      Las renovaciones mensuales se procesan en ciclo fijo: <strong className="text-white">día 10</strong> es el corte y el <strong className="text-white">día 15</strong> el equipo distribuye las comisiones.
-                    </p>
-                  </div>
-                </div>
-                <div className="mt-6 border-t border-[#C9A227]/12 pt-6">
-                  <p className="text-xs font-bold text-white/50 uppercase tracking-wider mb-4">Ciclo mensual de renovaciones</p>
-                  <div className="flex items-center gap-0 overflow-x-auto pb-2">
-                    {[
-                      { day: 'Día 1',  label: 'Inicio del ciclo',                 color: 'bg-[#C9A227]/10 border-[#C9A227]/30 text-[#E8C547]' },
-                      { day: 'Día 10', label: 'Corte: último día para renovar',   color: 'bg-orange-500/10 border-orange-500/30 text-orange-400' },
-                      { day: 'Día 15', label: 'Distribución de comisiones',       color: 'bg-[#8B6914]/15 border-[#8B6914]/30 text-[#C9A227]' },
-                    ].map((step, i) => (
-                      <React.Fragment key={step.day}>
-                        <div className={`shrink-0 border rounded-xl px-4 py-3 text-center ${step.color}`}>
-                          <p className="text-sm font-extrabold">{step.day}</p>
-                          <p className="text-xs mt-0.5 max-w-[120px]">{step.label}</p>
-                        </div>
-                        {i < 2 && <div className="shrink-0 w-8 h-px bg-[#C9A227]/20 mx-1" />}
-                      </React.Fragment>
-                    ))}
-                  </div>
-                </div>
-              </div>
-              <div className="p-4 rounded-2xl bg-[#C9A227]/5 border border-[#C9A227]/20">
-                <p className="text-xs text-[#E8C547]/80 font-medium flex items-start gap-2">
-                  <Clock className="w-4 h-4 mt-0.5 shrink-0" />
-                  <span>¿Renuevas después del día 10? Tu cuenta se mantiene activa y no pierdes tu árbol, pero tus referidores cobrarán su comisión el día 15 del mes siguiente.</span>
-                </p>
-              </div>
-            </motion.div>
-          </motion.section>
-        </div>
-      </SectionBg>
-
-      {/* ══════════════════════════════════════════════
-          07 · CÓMO PAGAR — Marcus Aurelius
+          06 · CÓMO PAGAR — Marcus Aurelius
       ══════════════════════════════════════════════ */}
       <SectionBg src="/dash-aurelius.jpg" brightness={0.22}>
         <div className="max-w-4xl mx-auto px-6 py-24">
           <motion.section initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
             <motion.div variants={fade} className="flex items-center gap-3 mb-10">
-              <StepBadge n={7} />
+              <StepBadge n={6} />
               <h2 className="text-2xl font-bold text-white">Cómo funciona el pago</h2>
             </motion.div>
             <motion.div variants={fade}>
@@ -460,7 +403,7 @@ export default function HowItWorks() {
                       <Wallet className="w-5 h-5 text-[#E8C547] shrink-0" />
                       <div>
                         <p className="text-xs text-white/40">Billetera USDT BSC BEP20</p>
-                        <p className="text-xs font-mono text-white/80 break-all">0x2E5321848a874f5d43C9B0f59caE3e07DFC8D449</p>
+                        <p className="text-xs font-mono text-white/80 break-all">0xd9FAFA7af1B691638315931235858745Ce6b2f73</p>
                       </div>
                     </div>
                   </div>
@@ -469,10 +412,10 @@ export default function HowItWorks() {
                     <p className="text-sm font-bold text-white mb-3">Flujo del pago</p>
                     <ol className="space-y-3">
                       {[
-                        'Envías $10 USDT a la billetera del equipo.',
-                        'Subes tu comprobante de pago en tu dashboard.',
-                        'El equipo verifica el pago y activa tu cuenta manualmente.',
-                        'Una vez activo, el equipo envía las comisiones a cada referidor en el árbol.',
+                        'Envías $10 USDT a la billetera indicada desde tu billetera registrada en la red BSC (BEP20).',
+                        'El sistema detecta y confirma automáticamente el pago en la blockchain.',
+                        'Una vez confirmado, el sistema activa tu cuenta automáticamente.',
+                        'Si hay referidores elegibles, el sistema distribuye automáticamente las comisiones correspondientes.',
                       ].map((step, i) => (
                         <li key={i} className="flex items-start gap-3 text-sm text-white/55">
                           <span className="w-5 h-5 rounded-full bg-[#C9A227]/15 text-[#E8C547] font-bold text-xs flex items-center justify-center shrink-0 mt-0.5 border border-[#C9A227]/25">{i + 1}</span>
