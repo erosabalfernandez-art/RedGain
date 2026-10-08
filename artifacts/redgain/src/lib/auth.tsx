@@ -9,6 +9,7 @@ export interface AuthUser {
   referralCode: string;
   membershipExpiresAt: string | null;
   createdAt: string;
+  bscWallet?: string | null;
 }
 
 interface AuthContextValue {

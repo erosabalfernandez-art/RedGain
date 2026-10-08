@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Menu, LayoutDashboard, LogOut, Users, CreditCard, Clock, BookOpen, Bell, MessageCircle } from 'lucide-react';
+import { Menu, LayoutDashboard, LogOut, Users, Wallet, BookOpen, Bell, MessageCircle } from 'lucide-react';
 import { Logo } from '@/components/ui/logo';
 import { useAuth } from '@/lib/auth';
 import { Link, useLocation } from 'wouter';
@@ -131,6 +131,7 @@ export function DashboardLayout({ children, topbar }: { children: React.ReactNod
   const navItems = [
     { label: 'Inicio', icon: LayoutDashboard, href: '/dashboard' },
     { label: 'Mis Referidos', icon: Users, href: '/dashboard/referidos' },
+    { label: 'Billetera USDT', icon: Wallet, href: '/dashboard/billetera' },
     { label: 'Cómo Funciona', icon: BookOpen, href: '/como-funciona?from=dashboard' },
     { label: 'Soporte', icon: MessageCircle, href: '/dashboard/soporte' },
   ];
