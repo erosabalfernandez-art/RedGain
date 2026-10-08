@@ -1,7 +1,10 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import express, { type Express, type Request, type Response, type NextFunction } from "express";
+import crypto from "node:crypto";
 import cors from "cors";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
 import pinoHttp from "pino-http";
 import session from "express-session";
 import connectPgSimple from "connect-pg-simple";
@@ -11,6 +14,14 @@ import { logger } from "./lib/logger";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PgSession = connectPgSimple(session);
+
+// Nunca usar un secreto público por defecto: si falta SESSION_SECRET se genera uno aleatorio
+// (las sesiones se cierran en cada reinicio hasta que se configure la variable en Render).
+let sessionSecret = process.env.SESSION_SECRET;
+if (!sessionSecret) {
+  sessionSecret = crypto.randomBytes(48).toString("hex");
+  logger.error("SESSION_SECRET no está configurado: se usa un secreto temporal. Configúralo en las variables de entorno.");
+}
 
 const app: Express = express();
 
@@ -37,14 +48,22 @@ app.use(
   }),
 );
 
-app.use(cors({ origin: true, credentials: true }));
-app.use(express.json());
+// Seguridad: cabeceras básicas (sin CSP para no romper la web) y CORS cerrado.
+// La web se sirve desde este mismo servidor, así que no necesita CORS en producción.
+app.use(helmet({ contentSecurityPolicy: false, crossOriginEmbedderPolicy: false }));
+app.use(
+  cors({
+    origin: process.env.NODE_ENV === "production" ? (process.env.APP_URL ? [process.env.APP_URL.replace(/\/$/, "")] : false) : true,
+    credentials: true,
+  }),
+);
+app.use(express.json({ limit: "100kb" }));
 app.use(express.urlencoded({ extended: true }));
 
 app.use(
   session({
     store: new PgSession({ pool }),
-    secret: process.env.SESSION_SECRET ?? "redgain-secret-change-me",
+    secret: sessionSecret,
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -55,6 +74,12 @@ app.use(
     },
   }),
 );
+
+// Límite de intentos para frenar fuerza bruta y registros masivos
+const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, limit: 20, standardHeaders: true, legacyHeaders: false, message: { error: "Demasiados intentos. Espera unos minutos e inténtalo de nuevo." } });
+const registerLimiter = rateLimit({ windowMs: 60 * 60 * 1000, limit: 15, standardHeaders: true, legacyHeaders: false, message: { error: "Demasiados registros desde esta conexión. Inténtalo más tarde." } });
+app.use("/api/auth/login", authLimiter);
+app.use("/api/auth/register", registerLimiter);
 
 app.use("/api", router);
 
@@ -85,12 +110,8 @@ app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
 
   if (res.headersSent) return;
   const status = typeof error.status === "number" ? error.status : 500;
-  const causeMsg = cause instanceof Error ? (cause as Error).message : String(cause ?? "");
-  const causeCode = cause instanceof Error ? (cause as Error & { code?: string }).code : undefined;
   res.status(status).json({
-    error: error.message ?? "Internal Server Error",
-    cause: causeMsg || undefined,
-    causeCode: causeCode || undefined,
+    error: status >= 500 ? "Error interno del servidor" : (error.message ?? "Error"),
   });
 });
 
