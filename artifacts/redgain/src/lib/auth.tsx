@@ -7,7 +7,6 @@ export interface AuthUser {
   role: 'user' | 'admin';
   accountStatus: 'pending' | 'active' | 'paused' | 'lost';
   referralCode: string;
-  membershipExpiresAt: string | null;
   createdAt: string;
   bscWallet?: string | null;
 }

@@ -33,9 +33,6 @@ function userToResponse(user: typeof usersTable.$inferSelect) {
     emailVerified: user.emailVerified,
     referralCode: user.referralCode,
     bscWallet: user.bscWallet ?? null,
-    membershipStartedAt: user.membershipStartedAt?.toISOString() ?? null,
-    membershipTimerStartedAt: user.membershipTimerStartedAt?.toISOString() ?? null,
-    membershipExpiresAt: user.membershipExpiresAt?.toISOString() ?? null,
     createdAt: user.createdAt.toISOString(),
   };
 }

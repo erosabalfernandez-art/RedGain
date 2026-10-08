@@ -103,6 +103,5 @@ router.patch("/me/notifications/mark-read", requireAuth, async (req: any, res) =
   return res.json({ success: true });
 });
 
-// ── Historial de comisiones ───────────────────────────────────────────────────
 
 export default router;

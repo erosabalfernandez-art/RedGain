@@ -2,10 +2,7 @@ import { pgTable, serial, integer, text, boolean, timestamp } from "drizzle-orm/
 import { usersTable } from "./users";
 
 // type values:
-//   "commission_sent"    — comisión recibida en tu billetera
-//   "commission_failed"  — error al enviar comisión (contacta soporte)
 //   "new_referral"       — alguien se registró con tu código
-//   "payment_confirmed"  — tu pago fue detectado y tu cuenta está activa
 
 export const notificationsTable = pgTable("notifications", {
   id: serial("id").primaryKey(),

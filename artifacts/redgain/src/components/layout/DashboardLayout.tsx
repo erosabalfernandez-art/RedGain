@@ -47,10 +47,7 @@ function NotificationBell() {
   };
 
   const iconColor: Record<string, string> = {
-    commission_sent:    'text-emerald-400',
-    commission_failed:  'text-red-400',
     new_referral:       'text-[#E10613]',
-    payment_confirmed:  'text-emerald-400',
   };
 
   return (
