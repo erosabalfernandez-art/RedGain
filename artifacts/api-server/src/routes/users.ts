@@ -26,7 +26,7 @@ function calcDaysRemaining(expiresAt: Date | null): number | null {
 }
 
 function formatReferralPerson(user: typeof usersTable.$inferSelect, level: number) {
-  const commissionMap: Record<number, number> = { 1: 6, 2: 2, 3: 1 };
+  const commissionMap: Record<number, number> = { 1: 0, 2: 0, 3: 0 };
   return {
     id: user.id,
     name: user.name,
@@ -166,7 +166,7 @@ router.get("/me/earnings", requireAuth, async (req: any, res) => {
   const activeL2 = level2.filter((u) => u.accountStatus === "active").length;
   const activeL3 = level3.filter((u) => u.accountStatus === "active").length;
 
-  const projectedDay15 = activeL1 * 6 + activeL2 * 2 + activeL3 * 1;
+  const projectedDay15 = 0; // sin comisiones por membresía; las de referidos vendrán del offerwall
   const totalReferrals = level1.length + level2.length + level3.length;
   const activeReferrals = activeL1 + activeL2 + activeL3;
 

@@ -11,32 +11,8 @@ declare module "express-session" {
 }
 
 
-// Auto-expire: check if a user's membership has expired and update their status
+// Acceso gratuito: ya no hay membresía que expire. Se conserva la función para no romper /me.
 async function checkAndExpireUser(user: typeof usersTable.$inferSelect): Promise<typeof usersTable.$inferSelect> {
-  if (!user.membershipExpiresAt || user.role === "admin") return user;
-  const now = new Date();
-
-  // Active but expired → paused
-  if (user.accountStatus === "active" && user.membershipExpiresAt < now) {
-    const [updated] = await db
-      .update(usersTable)
-      .set({ accountStatus: "paused", updatedAt: now })
-      .where(eq(usersTable.id, user.id))
-      .returning();
-    return updated ?? user;
-  }
-
-  // Paused and grace period (14 days) ended → lost
-  const gracePeriodEnd = new Date(user.membershipExpiresAt.getTime() + 14 * 24 * 60 * 60 * 1000);
-  if (user.accountStatus === "paused" && gracePeriodEnd < now) {
-    const [updated] = await db
-      .update(usersTable)
-      .set({ accountStatus: "lost", updatedAt: now })
-      .where(eq(usersTable.id, user.id))
-      .returning();
-    return updated ?? user;
-  }
-
   return user;
 }
 
@@ -138,7 +114,7 @@ router.post("/register", async (req, res) => {
       passwordHash,
       referrerId,
       referralCode: code,
-      accountStatus: "pending",
+      accountStatus: "active",
       role: "user",
       bscWallet: normalizedWallet ?? undefined,
     })
@@ -150,7 +126,7 @@ router.post("/register", async (req, res) => {
       userId: referrerId,
       type: "new_referral",
       title: "🎉 Nuevo referido",
-      body: `${name} se registró usando tu código de referido. ¡Cuando realice su pago recibirás $6 USDT!`,
+      body: `${name} se registró usando tu código de referido.`,
       read: false,
       metadata: JSON.stringify({ newUserId: user.id, newUserName: name }),
     }).catch(() => {});

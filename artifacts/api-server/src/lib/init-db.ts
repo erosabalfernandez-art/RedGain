@@ -95,6 +95,30 @@ export async function initDb(): Promise<void> {
     `);
     logger.info("initDb: notifications table ready");
 
+    // ── Acceso gratuito: migración única ─────────────────────────────────────
+    // Activa a todos los usuarios existentes y limpia expiraciones (una sola vez,
+    // para no pisar pausas manuales hechas por el admin después).
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS app_flags (
+        key        TEXT PRIMARY KEY,
+        created_at TIMESTAMP NOT NULL DEFAULT NOW()
+      );
+    `);
+    await client.query(`
+      DO $$
+      BEGIN
+        IF NOT EXISTS (SELECT 1 FROM app_flags WHERE key = 'free_access_v1') THEN
+          UPDATE users
+             SET account_status = 'active',
+                 membership_expires_at = NULL,
+                 updated_at = NOW()
+           WHERE account_status <> 'active' OR membership_expires_at IS NOT NULL;
+          INSERT INTO app_flags (key) VALUES ('free_access_v1');
+        END IF;
+      END$$;
+    `);
+    logger.info("initDb: free access migration ready");
+
   } catch (err) {
     logger.error({ err }, "initDb: failed to ensure tables");
     throw err;

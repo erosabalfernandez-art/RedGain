@@ -1,7 +1,6 @@
 import app from "./app";
 import { logger } from "./lib/logger";
 import { initDb } from "./lib/init-db";
-import { startBlockchainPoller } from "./lib/blockchain-poller";
 
 const rawPort = process.env["PORT"];
 
@@ -25,7 +24,6 @@ initDb()
         process.exit(1);
       }
       logger.info({ port }, "Server listening");
-      startBlockchainPoller();
     });
   })
   .catch((err) => {
