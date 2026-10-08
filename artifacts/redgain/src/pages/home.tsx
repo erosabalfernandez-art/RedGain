@@ -240,7 +240,7 @@ export default function Home() {
                         {init}
                       </div>
                     ))}
-                    <div className="w-10 h-10 rounded-full border-2 border-[#0A0A0A] bg-[#2A1D08] flex items-center justify-center text-xs font-bold text-[#FF4D57]">+1k</div>
+                    <div className="w-10 h-10 rounded-full border-2 border-[#0A0A0A] bg-[#2A0A0D] flex items-center justify-center text-xs font-bold text-[#FF4D57]">+1k</div>
                   </div>
                   <div className="flex flex-col">
                     <div className="flex text-[#E10613]">{[1,2,3,4,5].map(i => <Star key={i} className="w-4 h-4 fill-current" />)}</div>
@@ -546,7 +546,7 @@ export default function Home() {
           <div className="absolute inset-0 z-0">
             <img src="/stoic-steps.jpg" alt="" className="w-full h-full object-cover object-center" style={{ filter: 'brightness(0.13) saturate(0.55)' }} />
             <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0A] via-[#0A0A0A]/50 to-[#0A0A0A]" />
-            <div className="absolute inset-0 bg-[#1A0900]/40 mix-blend-multiply" />
+            <div className="absolute inset-0 bg-[#1A0A0C]/40 mix-blend-multiply" />
           </div>
           <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#E10613]/30 to-transparent z-10" />
           <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#E10613]/15 to-transparent z-10" />
@@ -760,7 +760,7 @@ export default function Home() {
 
             {/* Honestidad sobre lo que no somos */}
             <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="mb-16">
-              <div className="rounded-[2rem] border border-white/8 bg-[#120D05]/60 backdrop-blur-sm p-10 lg:p-14 relative overflow-hidden">
+              <div className="rounded-[2rem] border border-white/8 bg-[#0F0F0F]/60 backdrop-blur-sm p-10 lg:p-14 relative overflow-hidden">
                 <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/15 to-transparent" />
                 <div className="grid lg:grid-cols-2 gap-12">
                   <div>

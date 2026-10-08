@@ -8,8 +8,8 @@ import { useQueryClient } from '@tanstack/react-query';
 import { formatDistanceToNow } from 'date-fns';
 import { es } from 'date-fns/locale';
 
-const STOIC_SIDEBAR_QUOTE = '"Concentra tus pensamientos en lo que haces ahora."';
-const STOIC_SIDEBAR_AUTHOR = '— Marco Aurelio';
+const STOIC_SIDEBAR_QUOTE = 'Completa ofertas. Recibe recompensas.';
+const STOIC_SIDEBAR_AUTHOR = '';
 
 // ── Notification bell ────────────────────────────────────────────────────────
 function NotificationBell() {
@@ -131,8 +131,6 @@ export function DashboardLayout({ children, topbar }: { children: React.ReactNod
   const navItems = [
     { label: 'Inicio', icon: LayoutDashboard, href: '/dashboard' },
     { label: 'Mis Referidos', icon: Users, href: '/dashboard/referidos' },
-    { label: 'Pagos', icon: CreditCard, href: '/dashboard/pagos' },
-    { label: 'Membresía', icon: Clock, href: '/dashboard/membresia' },
     { label: 'Cómo Funciona', icon: BookOpen, href: '/como-funciona?from=dashboard' },
     { label: 'Soporte', icon: MessageCircle, href: '/dashboard/soporte' },
   ];
@@ -151,18 +149,7 @@ export function DashboardLayout({ children, topbar }: { children: React.ReactNod
         flex flex-col border-r
         ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
         md:translate-x-0 md:static md:flex-shrink-0
-      `} style={{ background: 'linear-gradient(180deg, #100C05 0%, #0A0A0A 60%, #0C0802 100%)', borderColor: 'rgba(225, 6, 19,0.12)' }}>
-
-        {/* Sidebar background image */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-none">
-          <img
-            src="/stoic-columns.jpg"
-            alt=""
-            className="w-full h-full object-cover object-center"
-            style={{ opacity: 0.06, filter: 'saturate(0.4) brightness(1.2)' }}
-          />
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent 0%, #0A0A0A 80%)' }} />
-        </div>
+      `} style={{ background: 'linear-gradient(180deg, #0A0A0A 0%, #0A0A0A 60%, #0A0A0A 100%)', borderColor: 'rgba(225, 6, 19,0.12)' }}>
 
         {/* Logo */}
         <div className="relative h-16 flex items-center px-6 gap-3" style={{ borderBottom: '1px solid rgba(225, 6, 19,0.15)' }}>

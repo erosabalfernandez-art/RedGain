@@ -273,18 +273,18 @@ export default function Register() {
             </Link>
 
             <h3 className="text-4xl font-black text-white leading-tight">
-              Deja de vivir de{' '}
+              Completa ofertas y{' '}
               <span className="bg-gradient-to-r from-[#7A0A12] via-[#E10613] to-[#FF4D57] bg-clip-text text-transparent">
-                quincena en quincena.
+                recibe recompensas.
               </span>
             </h3>
 
             <ul className="space-y-4 mt-4">
               {[
-                'Ingresos recurrentes todos los meses',
-                'Sin inversiones de riesgo ni promesas falsas',
-                'Sistema de 3 niveles: $6/$2/$1 por referido',
-                'Transparencia total en cada pago',
+                'Registro 100% gratuito, sin pagos de entrada',
+                'Completa ofertas y acumula saldo en la plataforma',
+                'Referidos de un solo nivel, financiados por anunciantes',
+                'Las recompensas varían y no están garantizadas',
               ].map((item, i) => (
                 <motion.li
                   key={i}
@@ -301,13 +301,6 @@ export default function Register() {
               ))}
             </ul>
 
-            {/* Stoic quote */}
-            <div className="border-l-2 border-[#E10613]/50 pl-5 mt-6">
-              <p className="text-white/55 italic text-sm leading-relaxed">
-                "No desees que los eventos sean como tú quieres. Desea que sean como son, y encontrarás paz."
-              </p>
-              <p className="text-[#E10613]/60 text-xs font-bold mt-2 uppercase tracking-wider">— Epicteto</p>
-            </div>
           </motion.div>
         </div>
       </div>
@@ -334,17 +327,17 @@ export default function Register() {
             <span className="font-black text-2xl text-white">RedGain</span>
           </div>
 
-          {/* Stoic badge */}
+          {/* Badge */}
           <div className="mb-4">
             <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#E10613]/30 bg-[#E10613]/8 text-[#FF4D57] text-xs font-medium">
               <Quote className="w-3 h-3" />
-              "La virtud es el único bien verdadero." — Marco Aurelio
+              Acceso 100% gratuito
             </span>
           </div>
 
           <div className="mb-6">
             <h1 className="text-3xl font-black text-white">Únete hoy</h1>
-            <p className="mt-2 text-white/50 font-medium">Crea tu cuenta y empieza a construir tu árbol de ingresos.</p>
+            <p className="mt-2 text-white/50 font-medium">Crea tu cuenta gratis y empieza a completar ofertas.</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -394,7 +387,7 @@ export default function Register() {
             {/* BSC Wallet */}
             <div className="space-y-2">
               <label htmlFor="bscWallet" className="text-white/70 font-bold text-sm block">
-                Billetera BSC BEP20 <span className="text-[#FF4D57]">(para pagos automáticos)</span>
+                Billetera BSC BEP20 <span className="text-[#FF4D57]">(opcional, para retiros)</span>
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-white/30">

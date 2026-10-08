@@ -59,52 +59,51 @@ export default function Terminos() {
               <span className="text-xs font-bold uppercase tracking-widest" style={{ color: GOLD }}>Documento legal</span>
             </div>
             <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-3">Términos y Condiciones</h1>
-            <p className="text-sm text-white/35">Última actualización: julio 2025 · Al registrarte o usar RedGain aceptas estos términos en su totalidad.</p>
+            <p className="text-sm text-white/35">Última actualización: octubre 2026 · Al registrarte o usar RedGain aceptas estos términos.</p>
           </motion.div>
 
           {/* 1. El servicio */}
           <Section icon={ShieldCheck} title="1. El servicio">
-            <Item>RedGain es una plataforma de membresía por referidos. Al registrarte aceptas que tu participación es voluntaria y que comprendes el modelo de funcionamiento.</Item>
-            <Item>RedGain no es un esquema de inversión, no garantiza ingresos fijos ni rendimientos. Las ganancias dependen exclusivamente de la actividad de tu red de referidos.</Item>
-            <Item>El equipo de RedGain se reserva el derecho de modificar, suspender o discontinuar cualquier parte del servicio con notificación previa dentro de la plataforma.</Item>
+            <Item>RedGain es una plataforma de recompensas: puedes completar ofertas patrocinadas (aplicaciones, juegos, encuestas, registros) y recibir recompensas dentro de la plataforma.</Item>
+            <Item>El acceso a RedGain es <strong className="text-white/80">gratuito</strong>. No cobramos por registrarte ni por usar la plataforma.</Item>
+            <Item>RedGain <strong className="text-white/80">no garantiza ingresos</strong>. Las recompensas dependen de las ofertas disponibles en tu país y dispositivo, de que las completes correctamente y de que el anunciante las valide.</Item>
+            <Item>El equipo de RedGain puede modificar, suspender o discontinuar cualquier parte del servicio con notificación previa dentro de la plataforma.</Item>
           </Section>
 
-          {/* 2. Membresía */}
-          <Section icon={RefreshCw} title="2. Membresía">
-            <Item>El costo de membresía es de <strong className="text-white/80">$10 USDT</strong> por ciclo de 30 días.</Item>
-            <Item>Tu membresía vence automáticamente al finalizar el ciclo. Si no renuevas, entras en un período de gracia de <strong className="text-white/80">14 días</strong> durante los cuales tu código queda inutilizado y no generas comisiones, pero conservas tu árbol.</Item>
-            <Item>Si no renuevas dentro del período de gracia, pierdes tu árbol de referidos completo y debes empezar de cero.</Item>
-            <Item>Puedes renovar en los <strong className="text-white/80">días 29 y 30</strong> de tu ciclo activo. Si el equipo aprueba el pago antes del vencimiento, tu nuevo ciclo de 30 días comienza exactamente donde termina el actual, sin ninguna interrupción.</Item>
+          {/* 2. Cuenta */}
+          <Section icon={RefreshCw} title="2. Tu cuenta">
+            <Item>Debes proporcionar datos reales y mantener una sola cuenta por persona.</Item>
+            <Item>Tu cuenta no vence ni requiere renovación. Eres responsable de mantener la confidencialidad de tu contraseña.</Item>
+            <Item>Puedes dejar de usar RedGain cuando quieras.</Item>
           </Section>
 
-          {/* 3. Pagos */}
-          <Section icon={Coins} title="3. Pagos">
-            <Item>Todos los pagos se realizan en <strong className="text-white/80">USDT (BEP-20, red BSC)</strong> a la dirección indicada en la plataforma.</Item>
-            <Item>Los pagos son verificados automáticamente en la blockchain y revisados por el equipo. RedGain no se hace responsable por pagos enviados a direcciones incorrectas, desde redes equivocadas (no BSC) o desde billeteras no registradas en tu perfil.</Item>
-            <Item><strong className="text-white/80">No hay reembolsos</strong> una vez que un pago ha sido aprobado y la membresía activada.</Item>
-            <Item>RedGain se queda con <strong className="text-white/80">$1 por pago</strong> como comisión de plataforma. Los $9 restantes se distribuyen entre los referidores de los 3 niveles ($6, $2, $1).</Item>
+          {/* 3. Recompensas */}
+          <Section icon={Coins} title="3. Recompensas por ofertas">
+            <Item>Las recompensas se acreditan en tu saldo interno únicamente cuando el anunciante confirma que la oferta fue completada de forma válida.</Item>
+            <Item>Si el anunciante anula o revierte una conversión (por ejemplo, por fraude o incumplimiento de requisitos), la recompensa correspondiente se descuenta de tu saldo.</Item>
+            <Item>La cantidad de recompensa por oferta puede variar y se muestra antes de que decidas realizarla.</Item>
+            <Item>Los retiros, cuando estén habilitados, pueden estar sujetos a un monto mínimo, a verificación de cuenta y a un periodo de espera para cubrir posibles reversiones.</Item>
           </Section>
 
-          {/* 4. Comisiones */}
-          <Section icon={Users} title="4. Comisiones">
-            <Item>Las comisiones se distribuyen <strong className="text-white/80">automáticamente en USDT</strong> a tu billetera registrada en el momento en que el pago de tu referido es verificado en la red BSC.</Item>
-            <Item>Para recibir una comisión debes tener <strong className="text-white/80">membresía activa</strong> y una <strong className="text-white/80">billetera BSC (USDT BEP-20)</strong> registrada en tu perfil en el momento del pago. Si no cumples alguna de estas condiciones, esa comisión no se recupera.</Item>
-            <Item>La estructura es: Nivel 1 (referido directo) → <strong className="text-white/80">$6</strong>, Nivel 2 → <strong className="text-white/80">$2</strong>, Nivel 3 → <strong className="text-white/80">$1</strong>.</Item>
-            <Item>RedGain no garantiza ingresos. Las comisiones dependen exclusivamente de la actividad de tus referidos.</Item>
+          {/* 4. Referidos */}
+          <Section icon={Users} title="4. Programa de referidos">
+            <Item>Puedes invitar a otras personas con tu código personal. Registrarse con un código no tiene ningún costo.</Item>
+            <Item>Como agradecimiento, puedes recibir un <strong className="text-white/80">porcentaje de las recompensas que tus referidos directos obtengan en ofertas</strong>. Ese porcentaje lo financian los anunciantes y no sale de ningún pago de los usuarios.</Item>
+            <Item>El programa tiene un solo nivel: solo se tienen en cuenta tus referidos directos.</Item>
+            <Item>Las ganancias por referidos dependen de la actividad real de tus referidos y no están garantizadas.</Item>
           </Section>
 
           {/* 5. Código de referido */}
-          <Section icon={AlertTriangle} title="5. Código de referido y árbol">
-            <Item>Tu código de referido es personal e intransferible. No puedes ceder tu árbol de referidos a otra persona.</Item>
-            <Item>Si pierdes tu membresía por no renovar en el período de gracia, pierdes tu árbol de referidos y debes iniciar desde cero.</Item>
-            <Item>No se permite crear cuentas con datos falsos o duplicadas para manipular el árbol de referidos.</Item>
+          <Section icon={AlertTriangle} title="5. Código de referido">
+            <Item>Tu código de referido es personal e intransferible.</Item>
+            <Item>No se permite crear cuentas con datos falsos, duplicadas o referirte a ti mismo para obtener beneficios.</Item>
           </Section>
 
           {/* 6. Conducta */}
           <Section icon={Ban} title="6. Conducta prohibida">
             <Item>Queda prohibido crear cuentas falsas, manipular el sistema de referidos o usar métodos fraudulentos para generar comisiones artificiales.</Item>
             <Item>Queda prohibido el uso de bots, scripts automatizados o cualquier mecanismo no autorizado para interactuar con la plataforma.</Item>
-            <Item>El equipo se reserva el derecho de suspender o eliminar cuentas que violen estas reglas <strong className="text-white/80">sin previo aviso ni reembolso</strong>.</Item>
+            <Item>El equipo se reserva el derecho de suspender o eliminar cuentas que violen estas reglas <strong className="text-white/80">sin previo aviso</strong>.</Item>
           </Section>
 
           {/* 7. Modificaciones */}

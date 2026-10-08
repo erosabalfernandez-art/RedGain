@@ -56,14 +56,14 @@ export default function Login() {
               <span>RedGain</span>
             </Link>
 
-            {/* Stoic quote badge */}
+            {/* Badge */}
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#E10613]/30 bg-[#E10613]/8 text-[#FF4D57] text-xs font-medium mb-4">
               <Quote className="w-3 h-3" />
-              "La disciplina es la madre de la libertad." — Epicteto
+              Acceso 100% gratuito
             </div>
 
             <h2 className="text-3xl font-black tracking-tight text-white">Tu futuro comienza aquí</h2>
-            <p className="mt-2 text-white/50 font-medium">Ingresa para ver el crecimiento de tu red y tus ganancias.</p>
+            <p className="mt-2 text-white/50 font-medium">Ingresa para ver tus ofertas, tu saldo y tus referidos.</p>
           </div>
 
           <div className="mt-8 bg-[#141414]/70 border border-[#E10613]/15 backdrop-blur-xl p-8 rounded-3xl relative shadow-2xl">
@@ -172,37 +172,16 @@ export default function Login() {
             </div>
 
             <h3 className="text-4xl font-black text-white leading-tight">
-              El dinero que mereces,{' '}
+              Completa ofertas,{' '}
               <span className="bg-gradient-to-r from-[#7A0A12] via-[#E10613] to-[#FF4D57] bg-clip-text text-transparent">
-                trabajando para ti.
+                recibe recompensas.
               </span>
             </h3>
 
             <p className="text-lg font-medium text-white/55 leading-relaxed">
-              Miles de personas en Latinoamérica ya están construyendo ingresos reales, recurrentes y predecibles. Bienvenido a la nueva economía.
+              Una plataforma de recompensas: completa ofertas patrocinadas y acumula saldo dentro de RedGain. Las recompensas varían según tu país y no están garantizadas.
             </p>
 
-            {/* Stoic quote */}
-            <div className="border-l-2 border-[#E10613]/50 pl-5">
-              <p className="text-white/60 italic text-sm leading-relaxed">
-                "Ocupa tu mente con buenos pensamientos, o el enemigo llenará ese espacio."
-              </p>
-              <p className="text-[#E10613]/60 text-xs font-bold mt-2 uppercase tracking-wider">— Marco Aurelio</p>
-            </div>
-
-            {/* Stats */}
-            <div className="grid grid-cols-3 gap-4 pt-4 border-t border-[#E10613]/15">
-              {[
-                { value: '10k+', label: 'Miembros' },
-                { value: '$500k+', label: 'Pagados' },
-                { value: '15+', label: 'Países' },
-              ].map(({ value, label }) => (
-                <div key={label} className="text-center">
-                  <div className="text-xl font-extrabold text-[#FF4D57]">{value}</div>
-                  <div className="text-xs text-white/40 font-medium mt-0.5">{label}</div>
-                </div>
-              ))}
-            </div>
           </motion.div>
         </div>
       </div>

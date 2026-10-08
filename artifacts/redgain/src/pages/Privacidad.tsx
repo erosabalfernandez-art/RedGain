@@ -64,25 +64,25 @@ export default function Privacidad() {
 
           {/* 1. Datos que recopilamos */}
           <Section icon={Database} title="1. Datos que recopilamos">
-            <Item><strong className="text-white/80">Datos de cuenta:</strong> nombre, correo electrónico, número de teléfono (WhatsApp) y dirección de billetera USDT (BEP-20).</Item>
-            <Item><strong className="text-white/80">Datos de actividad:</strong> historial de pagos, comisiones recibidas, árbol de referidos y estado de membresía.</Item>
+            <Item><strong className="text-white/80">Datos de cuenta:</strong> nombre, correo electrónico, número de teléfono (WhatsApp) y, si decides registrarla para retiros, tu dirección de billetera.</Item>
+            <Item><strong className="text-white/80">Datos de actividad:</strong> ofertas completadas, recompensas acreditadas, saldo, referidos directos y notificaciones.</Item>
             <Item><strong className="text-white/80">Datos técnicos:</strong> información básica de sesión y navegador, necesaria para el funcionamiento seguro de la plataforma.</Item>
           </Section>
 
           {/* 2. Para qué usamos tus datos */}
           <Section icon={Eye} title="2. Para qué usamos tus datos">
-            <Item>Gestionar tu cuenta, membresía y ciclos de renovación.</Item>
-            <Item>Verificar y aprobar pagos realizados en la red BSC.</Item>
-            <Item>Calcular y distribuir comisiones automáticamente a las billeteras de los referidores.</Item>
-            <Item>Enviarte notificaciones sobre tu cuenta (comisiones recibidas, vencimientos, alertas de renovación).</Item>
+            <Item>Gestionar tu cuenta y tu saldo de recompensas.</Item>
+            <Item>Validar las conversiones de ofertas informadas por nuestros proveedores y prevenir fraude.</Item>
+            <Item>Calcular el porcentaje de recompensas que corresponde a quien te refirió.</Item>
+            <Item>Enviarte notificaciones sobre tu cuenta (recompensas acreditadas, nuevos referidos, avisos importantes).</Item>
             <Item>Resolver disputas, detectar fraudes y mantener la integridad del sistema.</Item>
           </Section>
 
           {/* 3. Compartir datos */}
           <Section icon={Share2} title="3. Con quién compartimos tus datos">
             <Item>No vendemos ni compartimos tus datos personales con terceros con fines comerciales.</Item>
-            <Item>Los datos de transacciones en la blockchain (dirección de billetera y montos) son <strong className="text-white/80">públicos por naturaleza</strong> de la red BSC y están fuera de nuestro control una vez ejecutada la transacción.</Item>
-            <Item>Tu nombre y código de referido son visibles para las personas que forman parte de tu árbol dentro de la plataforma.</Item>
+            <Item>Compartimos con los proveedores de ofertas (como Offerwall.GG) solo lo necesario para validar conversiones, por ejemplo tu identificador interno de usuario. No les enviamos tu contraseña ni datos de pago.</Item>
+            <Item>Tu nombre y código de referido son visibles para la persona que te refirió dentro de la plataforma.</Item>
             <Item>Podemos compartir información si es requerida por ley o por una autoridad competente.</Item>
           </Section>
 
@@ -91,14 +91,14 @@ export default function Privacidad() {
             <Item>Tus datos se almacenan en servidores protegidos con cifrado estándar de la industria.</Item>
             <Item>Las sesiones están protegidas mediante tokens seguros y caducan automáticamente.</Item>
             <Item>Ningún sistema es 100% seguro. Recomendamos no compartir tus credenciales de acceso con nadie.</Item>
-            <Item>RedGain nunca te pedirá tu clave privada de billetera por ningún canal.</Item>
+            <Item>RedGain nunca te pedirá tu clave privada de billetera ni tu contraseña por ningún canal.</Item>
           </Section>
 
           {/* 5. Tus derechos */}
           <Section icon={UserX} title="5. Tus derechos">
             <Item>Puedes solicitar la <strong className="text-white/80">eliminación de tu cuenta y datos personales</strong> en cualquier momento contactándonos directamente.</Item>
-            <Item>La eliminación de cuenta implica la pérdida irreversible de tu historial, árbol de referidos y comisiones pendientes.</Item>
-            <Item>Puedes actualizar tus datos de contacto y billetera desde tu perfil dentro de la plataforma.</Item>
+            <Item>La eliminación de cuenta implica la pérdida irreversible de tu historial y de tu saldo pendiente.</Item>
+            <Item>Puedes actualizar tus datos de contacto desde tu perfil dentro de la plataforma.</Item>
           </Section>
 
           {/* 6. Contacto */}

@@ -74,7 +74,7 @@
   --elevate-1: rgba(225, 6, 19, 0.04);
   --elevate-2: rgba(225, 6, 19, 0.09);
 
-  /* Warm deep brown / black — #0E0A05 */
+  /* Warm deep brown / black — #0A0A0A */
   --background: 0 0% 4%;
   --foreground: 0 0% 98%;
 
@@ -100,7 +100,7 @@
   --sidebar-accent-foreground: 0 0% 92%;
   --sidebar-ring: 356 95% 45%;
 
-  /* Stoic gold primary — #C9A227 */
+  /* Stoic gold primary — #E10613 */
   --primary: 356 95% 45%;
   --primary-foreground: 0 0% 100%;
 
@@ -204,7 +204,7 @@
     border-color: rgba(225, 6, 19, 0.3);
   }
   .gold-text {
-    background: linear-gradient(90deg, #8B6914, #C9A227, #E8C547);
+    background: linear-gradient(90deg, #7A0A12, #E10613, #FF4D57);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;

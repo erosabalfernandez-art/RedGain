@@ -29,7 +29,7 @@ export function AdminLayout({ children, topbar }: { children: React.ReactNode; t
         flex flex-col border-r
         ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
         md:translate-x-0 md:static md:flex-shrink-0
-      `} style={{ background: 'linear-gradient(180deg, #0F0B04 0%, #0A0A0A 100%)', borderColor: 'rgba(225, 6, 19,0.12)' }}>
+      `} style={{ background: 'linear-gradient(180deg, #0A0A0A 0%, #0A0A0A 100%)', borderColor: 'rgba(225, 6, 19,0.12)' }}>
 
         {/* Sidebar bg image */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -51,12 +51,6 @@ export function AdminLayout({ children, topbar }: { children: React.ReactNode; t
               <Shield className="w-2.5 h-2.5" />Panel Admin
             </span>
           </div>
-        </div>
-
-        {/* Stoic quote */}
-        <div className="relative px-5 pt-4 pb-2">
-          <p className="text-[10px] leading-relaxed italic" style={{ color: 'rgba(225, 6, 19,0.45)' }}>"El que gobierna a otros debe primero gobernarse a sí mismo."</p>
-          <p className="text-[10px] mt-0.5" style={{ color: 'rgba(225, 6, 19,0.3)' }}>— Séneca</p>
         </div>
 
         {/* Nav */}
