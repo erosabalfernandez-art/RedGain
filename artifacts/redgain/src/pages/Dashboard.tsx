@@ -119,6 +119,16 @@ function GanarSection() {
         <span className="text-sm text-white/55">Tu saldo</span>
         <span className="text-2xl font-black">{wallet ? money(wallet.balanceUsd) : '…'}</span>
       </div>
+      <div className="rounded-2xl p-5 space-y-3" style={card}>
+        <p className="font-bold" style={{ color: RED_LIGHT }}>Cómo completar una oferta</p>
+        <ol className="text-sm text-white/60 space-y-1.5 list-decimal list-inside leading-relaxed">
+          <li>Elige una oferta y toca la tarjeta para ver los pasos.</li>
+          <li>Haz exactamente lo que pide (instalar, registrarte, llegar a un nivel…).</li>
+          <li>Espera la confirmación: puede tardar de minutos a horas.</li>
+          <li>Tu saldo se acredita solo y lo ves en el historial.</li>
+        </ol>
+        <p className="text-xs text-white/45 leading-relaxed">Las ofertas las publican anunciantes de todo el mundo, por eso muchas están en inglés. <strong className="text-white/65">Coins</strong> = monedas · <strong className="text-white/65">Multi-reward</strong> = varias recompensas por pasos · <strong className="text-white/65">Complete all steps</strong> = completa todos los pasos · <strong className="text-white/65">Highest payout</strong> = mayor pago · <strong className="text-white/65">Sign-ups</strong> = registros. Puedes usar la función Traducir de tu navegador.</p>
+      </div>
       <div className="rounded-2xl overflow-hidden" style={card}>
         {err ? <p className="p-6 text-sm text-white/55">{err}</p> : !url ? <div className="p-6"><Loader2 className="w-5 h-5 animate-spin text-white/40" /></div> : (
           <iframe src={url} title="Ofertas RedGain" style={{ width: '100%', height: '800px', border: 0 }} />
