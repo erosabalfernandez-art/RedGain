@@ -14,8 +14,6 @@ tags:
     description: Authentication
   - name: users
     description: User dashboard operations
-  - name: payments
-    description: Payment proof operations
   - name: admin
     description: Admin operations
 
@@ -121,53 +119,14 @@ paths:
     get:
       operationId: getMyReferrals
       tags: [users]
-      summary: Get referrals grouped by level (level1, level2, level3)
+      summary: Get my direct referrals (single level)
       responses:
         "200":
-          description: Referrals by level
+          description: Direct referrals
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ReferralsByLevel"
-
-  /users/me/tree:
-    get:
-      operationId: getMyTree
-      tags: [users]
-      summary: Get genealogy tree for current user
-      responses:
-        "200":
-          description: Genealogy tree rooted at current user
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/GenealogyTree"
-
-  /users/me/membership:
-    get:
-      operationId: getMyMembership
-      tags: [users]
-      summary: Get membership timer and status info
-      responses:
-        "200":
-          description: Membership status
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/MembershipStatus"
-
-  /users/me/earnings:
-    get:
-      operationId: getMyEarnings
-      tags: [users]
-      summary: Get earnings summary for the current user
-      responses:
-        "200":
-          description: Earnings summary
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/EarningsSummary"
+                $ref: "#/components/schemas/DirectReferrals"
 
   /users/me/referral-code:
     get:
@@ -208,19 +167,6 @@ paths:
               schema:
                 $ref: "#/components/schemas/SuccessResponse"
 
-  /users/me/commission-history:
-    get:
-      operationId: getMyCommissionHistory
-      tags: [users]
-      summary: Get the history of individual commissions received by the current user
-      responses:
-        "200":
-          description: Commission events list with total received
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CommissionHistory"
-
   /users/me/bsc-wallet:
     patch:
       operationId: updateMyBscWallet
@@ -245,41 +191,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-
-  # ── Payments ──────────────────────────────────────────────────────────────
-  /payments:
-    post:
-      operationId: submitPayment
-      tags: [payments]
-      summary: Submit a payment proof
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/PaymentInput"
-      responses:
-        "201":
-          description: Payment submitted
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PaymentRecord"
-
-  /payments/my:
-    get:
-      operationId: getMyPayments
-      tags: [payments]
-      summary: Get current user's payment history
-      responses:
-        "200":
-          description: Payments list
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/PaymentRecord"
 
   # ── Admin ─────────────────────────────────────────────────────────────────
   /admin/users:
@@ -330,7 +241,7 @@ paths:
     delete:
       operationId: adminDeleteUser
       tags: [admin]
-      summary: Delete a user and their payments (admin only)
+      summary: Delete a user (admin only)
       parameters:
         - in: path
           name: id
@@ -357,93 +268,6 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
-  /admin/payments:
-    get:
-      operationId: adminListPayments
-      tags: [admin]
-      summary: List all payments (admin only)
-      responses:
-        "200":
-          description: All payments
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/AdminPayment"
-
-  /admin/payments/{id}:
-    patch:
-      operationId: adminReviewPayment
-      tags: [admin]
-      summary: Approve or reject a payment (admin only)
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/PaymentReview"
-      responses:
-        "200":
-          description: Updated payment
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/AdminPayment"
-        "404":
-          description: Not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-
-  /admin/tree:
-    get:
-      operationId: adminGetTree
-      tags: [admin]
-      summary: Get global genealogy tree of all users (admin only)
-      responses:
-        "200":
-          description: Full genealogy tree
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/GenealogyNode"
-
-  /admin/commissions:
-    get:
-      operationId: adminGetCommissions
-      tags: [admin]
-      summary: Commission payout calculator — who to pay and how much (admin only)
-      responses:
-        "200":
-          description: Commission payouts for current cycle
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CommissionReport"
-
-  /admin/stats:
-    get:
-      operationId: adminGetStats
-      tags: [admin]
-      summary: Platform-wide stats (admin only)
-      responses:
-        "200":
-          description: Stats
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/AdminStats"
-
 components:
   schemas:
     UpdateBscWalletInput:
@@ -461,15 +285,6 @@ components:
           type: boolean
         bscWallet:
           type: ["string", "null"]
-
-    UploadResponse:
-      type: object
-      required: [urls]
-      properties:
-        urls:
-          type: array
-          items:
-            type: string
 
     HealthStatus:
       type: object
@@ -510,7 +325,7 @@ components:
           type: ["string", "null"]
         bscWallet:
           type: ["string", "null"]
-          description: BSC wallet address (0x...) from which the user will send payments
+          description: BSC wallet address (0x...) where the user receives USDT withdrawals
 
     LoginInput:
       type: object
@@ -543,13 +358,7 @@ components:
           type: string
         bscWallet:
           type: ["string", "null"]
-          description: BSC wallet address for automatic payment detection
-        membershipStartedAt:
-          type: ["string", "null"]
-        membershipTimerStartedAt:
-          type: ["string", "null"]
-        membershipExpiresAt:
-          type: ["string", "null"]
+          description: BSC wallet address (USDT withdrawals)
         createdAt:
           type: string
 
@@ -562,146 +371,29 @@ components:
 
     ReferralPerson:
       type: object
-      required: [id, name, accountStatus, joinedAt, level, commissionAmount]
+      required: [id, name, joinedAt]
       properties:
         id:
           type: integer
         name:
           type: string
-        phone:
-          type: ["string", "null"]
-        whatsappUrl:
-          type: ["string", "null"]
-        accountStatus:
-          type: string
-          enum: [pending, active, paused, lost]
         joinedAt:
           type: string
-        level:
-          type: integer
-          description: 1, 2, or 3
-        commissionAmount:
-          type: number
-          description: "Commission earned per renewal: $6 (L1), $2 (L2), $1 (L3)"
-        membershipExpiresAt:
-          type: ["string", "null"]
-        membershipTimerStartedAt:
-          type: ["string", "null"]
 
-    ReferralsByLevel:
+    DirectReferrals:
       type: object
-      required: [level1, level2, level3, totals]
+      required: [level1, totals]
       properties:
         level1:
           type: array
           items:
             $ref: "#/components/schemas/ReferralPerson"
-        level2:
-          type: array
-          items:
-            $ref: "#/components/schemas/ReferralPerson"
-        level3:
-          type: array
-          items:
-            $ref: "#/components/schemas/ReferralPerson"
         totals:
           type: object
+          required: [count]
           properties:
             count:
               type: integer
-            active:
-              type: integer
-            projectedMonthly:
-              type: number
-
-    GenealogyNode:
-      type: object
-      required: [id, name, accountStatus, level]
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        phone:
-          type: ["string", "null"]
-        whatsappUrl:
-          type: ["string", "null"]
-        accountStatus:
-          type: string
-          enum: [pending, active, paused, lost]
-        level:
-          type: integer
-        membershipExpiresAt:
-          type: ["string", "null"]
-        membershipTimerStartedAt:
-          type: ["string", "null"]
-        children:
-          type: array
-          items:
-            $ref: "#/components/schemas/GenealogyNode"
-
-    GenealogyTree:
-      type: object
-      required: [root, nodes]
-      properties:
-        root:
-          $ref: "#/components/schemas/GenealogyNode"
-        nodes:
-          type: integer
-          description: Total number of nodes in the tree
-
-    MembershipStatus:
-      type: object
-      required: [accountStatus, timerStarted]
-      properties:
-        accountStatus:
-          type: string
-          enum: [pending, active, paused, lost]
-        timerStarted:
-          type: boolean
-          description: Whether the countdown has begun (first referral activated)
-        membershipStartedAt:
-          type: ["string", "null"]
-        membershipTimerStartedAt:
-          type: ["string", "null"]
-        membershipExpiresAt:
-          type: ["string", "null"]
-        gracePeriodEndsAt:
-          type: ["string", "null"]
-          description: membershipExpiresAt + 14 days
-        daysRemaining:
-          type: ["integer", "null"]
-        inGracePeriod:
-          type: boolean
-        graceEndsInDays:
-          type: ["integer", "null"]
-        referralCodeActive:
-          type: boolean
-          description: Whether the referral code can be used to invite people
-        canRenewEarly:
-          type: boolean
-          description: True when membership is active and expires in ≤2 days (renewal window open)
-
-    EarningsSummary:
-      type: object
-      required: [totalReferrals, activeReferrals, level1Count, level2Count, level3Count, projectedDay15, totalHistorical]
-      properties:
-        totalReferrals:
-          type: integer
-        activeReferrals:
-          type: integer
-        level1Count:
-          type: integer
-        level2Count:
-          type: integer
-        level3Count:
-          type: integer
-        projectedDay15:
-          type: number
-          description: "Expected commission on day 15 if all active referrals renew"
-        totalHistorical:
-          type: number
-          description: Total commissions earned historically
 
     ReferralCode:
       type: object
@@ -715,56 +407,9 @@ components:
           type: boolean
           description: Whether the code is currently active and usable
 
-    PaymentInput:
-      type: object
-      required: [proofText, amount]
-      properties:
-        proofText:
-          type: string
-        amount:
-          type: number
-        proofImageUrl:
-          type: ["string", "null"]
-        proofImageUrls:
-          type: array
-          items:
-            type: string
-
-    PaymentRecord:
-      type: object
-      required: [id, userId, amount, paymentType, status, proofText, createdAt]
-      properties:
-        id:
-          type: integer
-        userId:
-          type: integer
-        amount:
-          type: number
-        paymentType:
-          type: string
-          enum: [initial, renewal]
-        status:
-          type: string
-          enum: [pending, approved, rejected]
-        proofText:
-          type: string
-        txHash:
-          type: ["string", "null"]
-          description: Blockchain transaction hash (for crypto payments)
-        proofImageUrl:
-          type: ["string", "null"]
-        proofImageUrls:
-          type: array
-          items:
-            type: string
-        createdAt:
-          type: string
-        reviewedAt:
-          type: ["string", "null"]
-
     AdminUser:
       type: object
-      required: [id, name, email, role, accountStatus, referralCode, totalReferrals, activeReferrals, joinedAt]
+      required: [id, name, email, role, accountStatus, referralCode, totalReferrals, joinedAt]
       properties:
         id:
           type: integer
@@ -789,22 +434,6 @@ components:
           type: ["integer", "null"]
         totalReferrals:
           type: integer
-        activeReferrals:
-          type: integer
-        membershipStartedAt:
-          type: ["string", "null"]
-        membershipTimerStartedAt:
-          type: ["string", "null"]
-        membershipExpiresAt:
-          type: ["string", "null"]
-        gracePeriodEndsAt:
-          type: ["string", "null"]
-        daysRemaining:
-          type: ["integer", "null"]
-        inGracePeriod:
-          type: boolean
-        timerStarted:
-          type: boolean
         joinedAt:
           type: string
 
@@ -818,109 +447,6 @@ components:
           type: string
           enum: [user, admin]
 
-    AdminPayment:
-      type: object
-      required: [id, userId, userName, userEmail, amount, paymentType, status, proofText, createdAt]
-      properties:
-        id:
-          type: integer
-        userId:
-          type: integer
-        userName:
-          type: string
-        userEmail:
-          type: string
-        userPhone:
-          type: ["string", "null"]
-        amount:
-          type: number
-        paymentType:
-          type: string
-          enum: [initial, renewal]
-        status:
-          type: string
-          enum: [pending, approved, rejected]
-        proofText:
-          type: string
-        proofImageUrl:
-          type: ["string", "null"]
-        proofImageUrls:
-          type: array
-          items:
-            type: string
-        createdAt:
-          type: string
-        reviewedAt:
-          type: ["string", "null"]
-
-    PaymentReview:
-      type: object
-      required: [status]
-      properties:
-        status:
-          type: string
-          enum: [approved, rejected]
-        note:
-          type: ["string", "null"]
-
-    CommissionEntry:
-      type: object
-      required: [userId, name, totalAmount, breakdown]
-      properties:
-        userId:
-          type: integer
-        name:
-          type: string
-        phone:
-          type: ["string", "null"]
-        whatsappUrl:
-          type: ["string", "null"]
-        totalAmount:
-          type: number
-        breakdown:
-          type: object
-          properties:
-            fromLevel1:
-              type: number
-              description: "$6 per L1 renewal"
-            fromLevel2:
-              type: number
-              description: "$2 per L2 renewal"
-            fromLevel3:
-              type: number
-              description: "$1 per L3 renewal"
-            level1Renewals:
-              type: integer
-            level2Renewals:
-              type: integer
-            level3Renewals:
-              type: integer
-
-    CommissionReport:
-      type: object
-      required: [cycleMonth, cutoffDate, distributionDate, totalToDistribute, platformFee, recipients]
-      properties:
-        cycleMonth:
-          type: string
-          description: "e.g. July 2026"
-        cutoffDate:
-          type: string
-          description: "Day 10 of current month"
-        distributionDate:
-          type: string
-          description: "Day 15 of current month"
-        totalToDistribute:
-          type: number
-        platformFee:
-          type: number
-          description: "$1 per renewal stays with platform"
-        totalRenewals:
-          type: integer
-        recipients:
-          type: array
-          items:
-            $ref: "#/components/schemas/CommissionEntry"
-
     Notification:
       type: object
       required: [id, type, title, body, read, metadata, createdAt]
@@ -929,7 +455,7 @@ components:
           type: integer
         type:
           type: string
-          description: "commission_sent | commission_failed | new_referral | payment_confirmed"
+          description: "new_referral | system"
         title:
           type: string
         body:
@@ -952,94 +478,3 @@ components:
             $ref: "#/components/schemas/Notification"
         unreadCount:
           type: integer
-
-    CommissionEvent:
-      type: object
-      required: [id, level, amountUsdt, status, createdAt]
-      properties:
-        id:
-          type: integer
-        level:
-          type: integer
-          description: "1, 2 or 3"
-        amountUsdt:
-          type: number
-          description: "Amount received: $6 (L1), $2 (L2), $1 (L3)"
-        txHash:
-          type: ["string", "null"]
-          description: Blockchain tx hash of the commission transfer
-        sourceTxHash:
-          type: ["string", "null"]
-          description: Blockchain tx hash of the original payment that triggered this commission
-        status:
-          type: string
-          enum: [sent, failed, skipped]
-        errorMessage:
-          type: ["string", "null"]
-        sourceName:
-          type: ["string", "null"]
-          description: Name of the user whose payment triggered this commission
-        createdAt:
-          type: string
-
-    CommissionHistory:
-      type: object
-      required: [events, totalReceived]
-      properties:
-        events:
-          type: array
-          items:
-            $ref: "#/components/schemas/CommissionEvent"
-        totalReceived:
-          type: number
-          description: Total USDT received (only sent events)
-
-    AdminStats:
-      type: object
-      required: [totalUsers, activeUsers, pendingUsers, pausedUsers, lostUsers, pendingPayments, totalRevenue, monthlyRevenue, expiringThisWeek, totalNetProfit, monthlyNetProfit, totalCommissionsSent, monthlyCommissionsSent, commissionsFailed, commissionsSkipped, totalInitialPayments, totalRenewalPayments]
-      properties:
-        totalUsers:
-          type: integer
-        activeUsers:
-          type: integer
-        pendingUsers:
-          type: integer
-        pausedUsers:
-          type: integer
-        lostUsers:
-          type: integer
-        pendingPayments:
-          type: integer
-        totalRevenue:
-          type: number
-          description: Gross total received (all approved payments × $10)
-        monthlyRevenue:
-          type: number
-          description: Gross received this month
-        expiringThisWeek:
-          type: integer
-          description: Number of memberships expiring in the next 7 days
-        totalNetProfit:
-          type: number
-          description: "Net platform profit = totalRevenue - totalCommissionsSent"
-        monthlyNetProfit:
-          type: number
-          description: "Net platform profit this month = monthlyRevenue - monthlyCommissionsSent"
-        totalCommissionsSent:
-          type: number
-          description: Total USDT actually sent to referrers (status=sent)
-        monthlyCommissionsSent:
-          type: number
-          description: USDT sent to referrers this month
-        commissionsFailed:
-          type: number
-          description: USDT that failed to send (still in operator wallet, but owed)
-        commissionsSkipped:
-          type: number
-          description: USDT legitimately kept because referrer was inactive/no wallet
-        totalInitialPayments:
-          type: integer
-          description: Count of initial membership payments
-        totalRenewalPayments:
-          type: integer
-          description: Count of renewal payments

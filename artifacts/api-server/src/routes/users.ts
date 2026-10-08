@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { db, usersTable, paymentsTable, notificationsTable, commissionEventsTable } from "@workspace/db";
+import { db, usersTable, notificationsTable } from "@workspace/db";
 import { eq, and, sql, desc } from "drizzle-orm";
 
 const router = Router();
@@ -13,189 +13,17 @@ async function requireAuth(req: any, res: any, next: any) {
   next();
 }
 
-function buildWhatsappUrl(phone: string | null): string | null {
-  if (!phone) return null;
-  const digits = phone.replace(/\D/g, "");
-  return `https://wa.me/${digits}`;
-}
-
-function calcDaysRemaining(expiresAt: Date | null): number | null {
-  if (!expiresAt) return null;
-  const diff = expiresAt.getTime() - Date.now();
-  return Math.ceil(diff / (1000 * 60 * 60 * 24));
-}
-
-function formatReferralPerson(user: typeof usersTable.$inferSelect, level: number) {
-  const commissionMap: Record<number, number> = { 1: 0, 2: 0, 3: 0 };
-  return {
-    id: user.id,
-    name: user.name,
-    phone: user.phone ?? null,
-    whatsappUrl: buildWhatsappUrl(user.phone ?? null),
-    accountStatus: user.accountStatus,
-    joinedAt: user.createdAt.toISOString(),
-    level,
-    commissionAmount: commissionMap[level] ?? 0,
-    membershipExpiresAt: user.membershipExpiresAt?.toISOString() ?? null,
-    membershipTimerStartedAt: user.membershipTimerStartedAt?.toISOString() ?? null,
-  };
-}
-
-function buildGenealogyNode(
-  user: typeof usersTable.$inferSelect,
-  allUsers: (typeof usersTable.$inferSelect)[],
-  level: number,
-  maxDepth = 3,
-): any {
-  const children =
-    level < maxDepth
-      ? allUsers
-          .filter((u) => u.referrerId === user.id)
-          .map((child) => buildGenealogyNode(child, allUsers, level + 1, maxDepth))
-      : [];
-
-  return {
-    id: user.id,
-    name: user.name,
-    phone: user.phone ?? null,
-    whatsappUrl: buildWhatsappUrl(user.phone ?? null),
-    accountStatus: user.accountStatus,
-    level,
-    membershipExpiresAt: user.membershipExpiresAt?.toISOString() ?? null,
-    membershipTimerStartedAt: user.membershipTimerStartedAt?.toISOString() ?? null,
-    children,
-  };
-}
-
-// GET /api/users/me/referrals — returns referrals grouped by level 1, 2, 3
+// GET /api/users/me/referrals — referidos directos (un solo nivel)
 router.get("/me/referrals", requireAuth, async (req: any, res) => {
   const user = req.currentUser;
-  const allUsers = await db.select().from(usersTable);
-
-  const level1 = allUsers.filter((u) => u.referrerId === user.id);
-  const level1Ids = new Set(level1.map((u) => u.id));
-
-  const level2 = allUsers.filter((u) => u.referrerId !== null && level1Ids.has(u.referrerId));
-  const level2Ids = new Set(level2.map((u) => u.id));
-
-  const level3 = allUsers.filter((u) => u.referrerId !== null && level2Ids.has(u.referrerId));
-
-  const allActive = [...level1, ...level2, ...level3].filter((u) => u.accountStatus === "active").length;
-
-  // Projected monthly = active L1 * $6 + active L2 * $2 + active L3 * $1
-  const projectedMonthly =
-    level1.filter((u) => u.accountStatus === "active").length * 6 +
-    level2.filter((u) => u.accountStatus === "active").length * 2 +
-    level3.filter((u) => u.accountStatus === "active").length * 1;
-
+  const direct = await db.select().from(usersTable).where(eq(usersTable.referrerId, user.id)).orderBy(desc(usersTable.createdAt));
   return res.json({
-    level1: level1.map((u) => formatReferralPerson(u, 1)),
-    level2: level2.map((u) => formatReferralPerson(u, 2)),
-    level3: level3.map((u) => formatReferralPerson(u, 3)),
-    totals: {
-      count: level1.length + level2.length + level3.length,
-      active: allActive,
-      projectedMonthly,
-    },
-  });
-});
-
-// GET /api/users/me/tree — genealogy tree rooted at current user (3 levels deep)
-router.get("/me/tree", requireAuth, async (req: any, res) => {
-  const user = req.currentUser;
-  const allUsers = await db.select().from(usersTable);
-
-  const root = buildGenealogyNode(user, allUsers, 0, 3);
-
-  let nodeCount = 0;
-  function countNodes(node: any) {
-    nodeCount++;
-    (node.children ?? []).forEach(countNodes);
-  }
-  (root.children ?? []).forEach(countNodes);
-
-  return res.json({ root, nodes: nodeCount });
-});
-
-// GET /api/users/me/membership — membership timer status
-router.get("/me/membership", requireAuth, async (req: any, res) => {
-  const user = req.currentUser;
-  const timerStarted = !!user.membershipTimerStartedAt;
-  const expiresAt = user.membershipExpiresAt ?? null;
-  const gracePeriodEndsAt = expiresAt ? new Date(expiresAt.getTime() + 14 * 24 * 60 * 60 * 1000) : null;
-  const daysRemaining = calcDaysRemaining(expiresAt);
-  const inGracePeriod =
-    expiresAt !== null && Date.now() > expiresAt.getTime() && gracePeriodEndsAt !== null && Date.now() < gracePeriodEndsAt.getTime();
-  const graceEndsInDays = gracePeriodEndsAt ? calcDaysRemaining(gracePeriodEndsAt) : null;
-  const referralCodeActive = user.accountStatus === "active";
-  // Renewal window: last 2 days of active membership (days 29-30). User should pay now so
-  // the admin can approve before expiry and the new period extends seamlessly from the current one.
-  const canRenewEarly =
-    user.accountStatus === "active" &&
-    daysRemaining !== null &&
-    daysRemaining <= 2 &&
-    daysRemaining > 0;
-
-  return res.json({
-    accountStatus: user.accountStatus,
-    timerStarted,
-    membershipStartedAt: user.membershipStartedAt?.toISOString() ?? null,
-    membershipTimerStartedAt: user.membershipTimerStartedAt?.toISOString() ?? null,
-    membershipExpiresAt: expiresAt?.toISOString() ?? null,
-    gracePeriodEndsAt: gracePeriodEndsAt?.toISOString() ?? null,
-    daysRemaining,
-    inGracePeriod,
-    graceEndsInDays,
-    referralCodeActive,
-    canRenewEarly,
-  });
-});
-
-// GET /api/users/me/earnings — earnings summary
-router.get("/me/earnings", requireAuth, async (req: any, res) => {
-  const user = req.currentUser;
-  const allUsers = await db.select().from(usersTable);
-
-  const level1 = allUsers.filter((u) => u.referrerId === user.id);
-  const level1Ids = new Set(level1.map((u) => u.id));
-  const level2 = allUsers.filter((u) => u.referrerId !== null && level1Ids.has(u.referrerId!));
-  const level2Ids = new Set(level2.map((u) => u.id));
-  const level3 = allUsers.filter((u) => u.referrerId !== null && level2Ids.has(u.referrerId!));
-
-  const activeL1 = level1.filter((u) => u.accountStatus === "active").length;
-  const activeL2 = level2.filter((u) => u.accountStatus === "active").length;
-  const activeL3 = level3.filter((u) => u.accountStatus === "active").length;
-
-  const projectedDay15 = 0; // sin comisiones por membresía; las de referidos vendrán del offerwall
-  const totalReferrals = level1.length + level2.length + level3.length;
-  const activeReferrals = activeL1 + activeL2 + activeL3;
-
-  // Historical total: sum all approved payments from tree members * their commission rates
-  const allTreeIds = [...level1, ...level2, ...level3].map((u) => u.id);
-  let totalHistorical = 0;
-  if (allTreeIds.length > 0) {
-    const approvedPayments = await db
-      .select({ userId: paymentsTable.userId, amount: paymentsTable.amount })
-      .from(paymentsTable)
-      .where(and(eq(paymentsTable.status, "approved"), sql`${paymentsTable.userId} = ANY(${sql.raw(`ARRAY[${allTreeIds.join(",")}]::int[]`)})`));
-
-    for (const p of approvedPayments) {
-      const isL1 = level1.some((u) => u.id === p.userId);
-      const isL2 = !isL1 && level2.some((u) => u.id === p.userId);
-      const isL3 = !isL1 && !isL2 && level3.some((u) => u.id === p.userId);
-      const rate = isL1 ? 6 : isL2 ? 2 : isL3 ? 1 : 0;
-      totalHistorical += rate;
-    }
-  }
-
-  return res.json({
-    totalReferrals,
-    activeReferrals,
-    level1Count: level1.length,
-    level2Count: level2.length,
-    level3Count: level3.length,
-    projectedDay15,
-    totalHistorical,
+    level1: direct.map((u) => ({
+      id: u.id,
+      name: u.name,
+      joinedAt: u.createdAt.toISOString(),
+    })),
+    totals: { count: direct.length },
   });
 });
 
@@ -276,47 +104,5 @@ router.patch("/me/notifications/mark-read", requireAuth, async (req: any, res) =
 });
 
 // ── Historial de comisiones ───────────────────────────────────────────────────
-
-// GET /api/users/me/commission-history — historial de comisiones recibidas
-router.get("/me/commission-history", requireAuth, async (req: any, res) => {
-  const user = req.currentUser;
-
-  const events = await db
-    .select({
-      id: commissionEventsTable.id,
-      level: commissionEventsTable.level,
-      amountUsdt: commissionEventsTable.amountUsdt,
-      txHash: commissionEventsTable.txHash,
-      sourceTxHash: commissionEventsTable.sourceTxHash,
-      status: commissionEventsTable.status,
-      errorMessage: commissionEventsTable.errorMessage,
-      createdAt: commissionEventsTable.createdAt,
-      sourceName: usersTable.name,
-    })
-    .from(commissionEventsTable)
-    .leftJoin(usersTable, eq(commissionEventsTable.sourceUserId, usersTable.id))
-    .where(eq(commissionEventsTable.recipientId, user.id))
-    .orderBy(desc(commissionEventsTable.createdAt))
-    .limit(100);
-
-  const totalReceived = events
-    .filter((e) => e.status === "sent")
-    .reduce((sum, e) => sum + parseFloat(e.amountUsdt), 0);
-
-  return res.json({
-    events: events.map((e) => ({
-      id: e.id,
-      level: e.level,
-      amountUsdt: parseFloat(e.amountUsdt),
-      txHash: e.txHash ?? null,
-      sourceTxHash: e.sourceTxHash ?? null,
-      status: e.status,
-      errorMessage: e.errorMessage ?? null,
-      sourceName: e.sourceName ?? null,
-      createdAt: e.createdAt.toISOString(),
-    })),
-    totalReceived,
-  });
-});
 
 export default router;

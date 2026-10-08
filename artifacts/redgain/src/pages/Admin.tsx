@@ -6,7 +6,7 @@ import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { useAuth } from '@/lib/auth';
 import { AdminLayout } from '@/components/layout/AdminLayout';
-import { useAdminListUsers, useAdminDeleteUser, getAdminListUsersQueryKey, getAdminGetStatsQueryKey } from '@workspace/api-client-react';
+import { useAdminListUsers, useAdminDeleteUser, getAdminListUsersQueryKey } from '@workspace/api-client-react';
 
 const RED = '#E10613';
 const RED_LIGHT = '#FF4D57';
@@ -70,7 +70,6 @@ function UsuariosSection() {
     deleteUser.mutate({ id }, {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: getAdminListUsersQueryKey() });
-        queryClient.invalidateQueries({ queryKey: getAdminGetStatsQueryKey() });
       },
     });
   };
