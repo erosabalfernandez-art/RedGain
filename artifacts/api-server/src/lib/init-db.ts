@@ -119,6 +119,40 @@ export async function initDb(): Promise<void> {
     `);
     logger.info("initDb: free access migration ready");
 
+    // ── Offerwall: conversiones recibidas y libro de saldo ─────────────────────
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS offerwall_conversions (
+        id                  SERIAL PRIMARY KEY,
+        tx_id               TEXT NOT NULL,
+        status              TEXT NOT NULL,
+        user_id             INTEGER NOT NULL,
+        offer_id            TEXT,
+        offer_name          TEXT,
+        goal_id             TEXT,
+        currency_amount     NUMERIC(18,6) NOT NULL,
+        payout_usd          NUMERIC(18,6) NOT NULL,
+        user_credit_usd     NUMERIC(18,6) NOT NULL DEFAULT 0,
+        referrer_credit_usd NUMERIC(18,6) NOT NULL DEFAULT 0,
+        created_at          TIMESTAMP NOT NULL DEFAULT NOW(),
+        UNIQUE (tx_id, status)
+      );
+    `);
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS wallet_ledger (
+        id         SERIAL PRIMARY KEY,
+        user_id    INTEGER NOT NULL,
+        type       TEXT NOT NULL,
+        amount_usd NUMERIC(18,6) NOT NULL,
+        ref_tx     TEXT,
+        note       TEXT,
+        created_at TIMESTAMP NOT NULL DEFAULT NOW()
+      );
+      CREATE INDEX IF NOT EXISTS wallet_ledger_user_idx ON wallet_ledger (user_id);
+      CREATE UNIQUE INDEX IF NOT EXISTS wallet_ledger_unique_tx ON wallet_ledger (user_id, type, ref_tx) WHERE ref_tx IS NOT NULL;
+    `);
+    logger.info("initDb: offerwall tables ready");
+
+
   } catch (err) {
     logger.error({ err }, "initDb: failed to ensure tables");
     throw err;

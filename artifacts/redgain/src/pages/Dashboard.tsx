@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'wouter';
 import { Copy, CheckCircle2, Loader2, Users, Wallet, MessageCircle, Gift, Link2 } from 'lucide-react';
 import { format } from 'date-fns';
@@ -11,6 +11,36 @@ const WA_NUMBER = '5588992543996';
 const WA_LINK = `https://wa.me/${WA_NUMBER}`;
 const RED = '#E10613';
 const RED_LIGHT = '#FF4D57';
+type WalletData = { balanceUsd: number; history: { id: number; type: string; amountUsd: number; note: string | null; createdAt: string }[] };
+const money = (n: number) => `${n < 0 ? '-' : ''}$${Math.abs(n).toFixed(2)}`;
+const typeLabel: Record<string, string> = { offer_reward: 'Oferta completada', offer_reversal: 'Oferta revertida', referral_bonus: 'Bono por referido', referral_reversal: 'Bono por referido revertido' };
+
+function useWallet() {
+  const [data, setData] = useState<WalletData | null>(null);
+  useEffect(() => {
+    fetch('/api/wallet', { credentials: 'include' }).then((r) => (r.ok ? r.json() : null)).then(setData).catch(() => setData(null));
+  }, []);
+  return data;
+}
+
+function History({ wallet }: { wallet: WalletData | null }) {
+  if (!wallet) return <Loader2 className="w-5 h-5 animate-spin text-white/40" />;
+  if (wallet.history.length === 0) return <p className="text-sm text-white/55">Aún no tienes movimientos.</p>;
+  return (
+    <ul className="divide-y divide-white/10">
+      {wallet.history.map((h) => (
+        <li key={h.id} className="py-3 flex items-center justify-between gap-4">
+          <div className="min-w-0">
+            <p className="font-semibold text-sm">{typeLabel[h.type] ?? 'Movimiento'}</p>
+            <p className="text-xs text-white/40 truncate">{h.note ? `${h.note} · ` : ''}{format(new Date(h.createdAt), "d MMM yyyy, HH:mm", { locale: es })}</p>
+          </div>
+          <span className={`font-bold text-sm ${h.amountUsd < 0 ? 'text-red-400' : 'text-green-400'}`}>{h.amountUsd > 0 ? '+' : ''}{money(h.amountUsd)}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 const card = { background: '#141414', border: '1px solid rgba(225, 6, 19, 0.18)' };
 
 function Banner({ title, subtitle }: { title: string; subtitle: string }) {
@@ -40,14 +70,15 @@ function OverviewSection() {
   const { data: code } = useGetMyReferralCode();
   const { data: referrals } = useGetMyReferrals();
   const direct = referrals?.level1?.length ?? 0;
+  const wallet = useWallet();
   return (
     <div className="space-y-6">
       <Banner title="Mi panel" subtitle="Tu saldo de recompensas y tu código para invitar." />
       <div className="grid md:grid-cols-2 gap-4">
         <div className="rounded-2xl p-6" style={card}>
           <div className="flex items-center gap-2 text-white/55 text-sm mb-2"><Gift className="w-4 h-4" style={{ color: RED_LIGHT }} /> Mi saldo de recompensas</div>
-          <p className="text-4xl font-black">0.00 <span className="text-lg text-white/40">RGC</span></p>
-          <p className="text-xs text-white/40 mt-3 leading-relaxed">Estamos habilitando las primeras ofertas. Cuando estén disponibles para tu país, verás aquí tu saldo y tu historial. Las recompensas no están garantizadas.</p>
+          <p className="text-4xl font-black">{wallet ? money(wallet.balanceUsd) : '…'} <span className="text-lg text-white/40">USD</span></p>
+          <p className="text-xs text-white/40 mt-3 leading-relaxed">Se acumula al completar ofertas en la sección Ganar. Los retiros se pagan en USDT y se habilitarán próximamente. Las recompensas no están garantizadas.</p>
         </div>
         <div className="rounded-2xl p-6" style={card}>
           <div className="flex items-center gap-2 text-white/55 text-sm mb-2"><Users className="w-4 h-4" style={{ color: RED_LIGHT }} /> Referidos directos</div>
@@ -67,6 +98,36 @@ function OverviewSection() {
             </div>
           </>
         ) : <Loader2 className="w-5 h-5 animate-spin text-white/40" />}
+      </div>
+    </div>
+  );
+}
+
+function GanarSection() {
+  const wallet = useWallet();
+  const [url, setUrl] = useState<string | null>(null);
+  const [err, setErr] = useState<string | null>(null);
+  useEffect(() => {
+    fetch('/api/offers/wall', { credentials: 'include' })
+      .then(async (r) => { const d = await r.json(); if (!r.ok) throw new Error(d.error ?? 'No se pudieron cargar las ofertas.'); setUrl(d.url); })
+      .catch((e) => setErr(e.message));
+  }, []);
+  return (
+    <div className="space-y-6">
+      <Banner title="Ganar" subtitle="Completa ofertas patrocinadas y acumula saldo. Las recompensas varían según tu país y no están garantizadas." />
+      <div className="rounded-2xl p-5 flex items-center justify-between" style={card}>
+        <span className="text-sm text-white/55">Tu saldo</span>
+        <span className="text-2xl font-black">{wallet ? money(wallet.balanceUsd) : '…'}</span>
+      </div>
+      <div className="rounded-2xl overflow-hidden" style={card}>
+        {err ? <p className="p-6 text-sm text-white/55">{err}</p> : !url ? <div className="p-6"><Loader2 className="w-5 h-5 animate-spin text-white/40" /></div> : (
+          <iframe src={url} title="Ofertas RedGain" style={{ width: '100%', height: '800px', border: 0 }} />
+        )}
+      </div>
+      <p className="text-xs text-white/40 leading-relaxed">Las ofertas son de terceros: algunas piden instalar apps, registrarte o gastar dinero real. Lee los requisitos antes de empezar. Las recompensas se acreditan cuando el anunciante las confirma y pueden revertirse si la conversión se anula. Solo mayores de 18 años.</p>
+      <div className="rounded-2xl p-6" style={card}>
+        <p className="font-bold mb-3" style={{ color: RED_LIGHT }}>Historial</p>
+        <History wallet={wallet} />
       </div>
     </div>
   );
@@ -160,6 +221,7 @@ export default function Dashboard() {
   const [location] = useLocation();
   const { user } = useAuth();
   const section = location.includes('/referidos') ? 'referidos'
+    : location.includes('/ganar') ? 'ganar'
     : location.includes('/billetera') ? 'billetera'
     : location.includes('/soporte') ? 'soporte'
     : 'inicio';
@@ -176,6 +238,7 @@ export default function Dashboard() {
   return (
     <DashboardLayout topbar={topbar}>
       {section === 'inicio' && <OverviewSection />}
+      {section === 'ganar' && <GanarSection />}
       {section === 'referidos' && <ReferidosSection />}
       {section === 'billetera' && <BilleteraSection />}
       {section === 'soporte' && <SoporteSection />}

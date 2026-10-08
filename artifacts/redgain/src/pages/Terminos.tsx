@@ -74,6 +74,7 @@ export default function Terminos() {
           <Section icon={RefreshCw} title="2. Tu cuenta">
             <Item>Debes proporcionar datos reales y mantener una sola cuenta por persona.</Item>
             <Item>Tu cuenta no vence ni requiere renovación. Eres responsable de mantener la confidencialidad de tu contraseña.</Item>
+            <Item>Debes ser <strong className="text-white/80">mayor de 18 años</strong> para usar RedGain.</Item>
             <Item>Puedes dejar de usar RedGain cuando quieras.</Item>
           </Section>
 
@@ -81,6 +82,7 @@ export default function Terminos() {
           <Section icon={Coins} title="3. Recompensas por ofertas">
             <Item>Las recompensas se acreditan en tu saldo interno únicamente cuando el anunciante confirma que la oferta fue completada de forma válida.</Item>
             <Item>Si el anunciante anula o revierte una conversión (por ejemplo, por fraude o incumplimiento de requisitos), la recompensa correspondiente se descuenta de tu saldo.</Item>
+            <Item>Las ofertas son de terceros: algunas pueden requerir instalar aplicaciones, registrarte o hacer compras o depósitos con dinero real (por ejemplo, en juegos). Lee los requisitos de cada oferta antes de empezar; RedGain no te obliga a completar ninguna.</Item>
             <Item>La cantidad de recompensa por oferta puede variar y se muestra antes de que decidas realizarla.</Item>
             <Item>Los retiros se pagan en <strong className="text-white/80">USDT (red BSC, BEP-20)</strong> a la billetera que registres en tu perfil. RedGain no se hace responsable por fondos enviados a una dirección incorrecta que hayas registrado.</Item>
             <Item>Los retiros, cuando estén habilitados, pueden estar sujetos a un monto mínimo, a verificación de cuenta y a un periodo de espera para cubrir posibles reversiones.</Item>
