@@ -186,7 +186,7 @@ const COUNTRY_CODES = [
 
 export default function Register() {
   const [formData, setFormData] = useState({
-    name: '', email: '', countryCode: '+55', phoneNumber: '', password: '', confirmPassword: '', referralCode: '', bscWallet: ''
+    name: '', email: '', countryCode: '+55', phoneNumber: '', password: '', confirmPassword: '', referralCode: (new URLSearchParams(window.location.search).get('ref') ?? '').trim().toUpperCase(), bscWallet: ''
   });
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -220,7 +220,7 @@ export default function Register() {
         email: formData.email,
         phone: fullPhone,
         password: formData.password,
-        referralCode: formData.referralCode || null,
+        referralCode: formData.referralCode.trim() || null,
         bscWallet: formData.bscWallet || undefined
       }
     }, {

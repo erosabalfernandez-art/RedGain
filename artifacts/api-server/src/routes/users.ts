@@ -30,7 +30,9 @@ router.get("/me/referrals", requireAuth, async (req: any, res) => {
 // GET /api/users/me/referral-code
 router.get("/me/referral-code", requireAuth, async (req: any, res) => {
   const user = req.currentUser;
-  const base = process.env.APP_URL ?? `https://${process.env.REPLIT_DEV_DOMAIN ?? "localhost"}`;
+  const host = req.headers["x-forwarded-host"] ?? req.get("host");
+  const proto = req.headers["x-forwarded-proto"] ?? req.protocol;
+  const base = (process.env.APP_URL ?? `${proto}://${host}`).replace(/\/$/, "");
   const active = user.accountStatus === "active";
   return res.json({
     code: user.referralCode,
