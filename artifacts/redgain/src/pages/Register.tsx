@@ -245,13 +245,8 @@ export default function Register() {
 
       {/* ── Brand / Image Side ── */}
       <div className="hidden lg:block relative w-0 flex-1 overflow-hidden z-10">
-        {/* Stoic background image */}
-        <img
-          src="/stoic-register.jpg"
-          alt=""
-          className="absolute inset-0 w-full h-full object-cover object-center"
-          style={{ filter: 'brightness(0.30) saturate(0.80)' }}
-        />
+        {/* Fondo de marca */}
+        <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 30% 20%, rgba(225,6,19,0.30), #0A0A0A 70%)' }} />
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#0A0A0A]/10 to-[#0A0A0A]" />
         <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0A]/50 via-transparent to-[#0A0A0A]/70" />
         <div className="absolute inset-0 bg-[#2A0A0D]/15 mix-blend-multiply" />

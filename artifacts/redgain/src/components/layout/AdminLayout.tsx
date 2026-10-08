@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Menu, Users, LogOut, Activity, GitBranch, LayoutDashboard, Shield } from 'lucide-react';
+import { Menu, Users, LogOut, Activity, LayoutDashboard, Shield } from 'lucide-react';
 import { Logo } from '@/components/ui/logo';
 import { useAuth } from '@/lib/auth';
 import { Link, useLocation } from 'wouter';
@@ -12,7 +12,6 @@ export function AdminLayout({ children, topbar }: { children: React.ReactNode; t
   const navItems = [
     { label: 'Resumen', icon: LayoutDashboard, href: '/admin' },
     { label: 'Usuarios', icon: Users, href: '/admin/usuarios' },
-    { label: 'Árbol Global', icon: GitBranch, href: '/admin/arbol' },
   ];
 
   const isActive = (href: string) => location === href || (href !== '/admin' && location.startsWith(href));
@@ -30,17 +29,6 @@ export function AdminLayout({ children, topbar }: { children: React.ReactNode; t
         ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
         md:translate-x-0 md:static md:flex-shrink-0
       `} style={{ background: 'linear-gradient(180deg, #0A0A0A 0%, #0A0A0A 100%)', borderColor: 'rgba(225, 6, 19,0.12)' }}>
-
-        {/* Sidebar bg image */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <img
-            src="/dash-admin.jpg"
-            alt=""
-            className="w-full h-full object-cover object-center"
-            style={{ opacity: 0.07, filter: 'saturate(0.3) brightness(1.1)' }}
-          />
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent 0%, #0A0A0A 70%)' }} />
-        </div>
 
         {/* Logo */}
         <div className="relative h-16 flex items-center px-6 gap-3" style={{ borderBottom: '1px solid rgba(225, 6, 19,0.15)' }}>
@@ -96,36 +84,6 @@ export function AdminLayout({ children, topbar }: { children: React.ReactNode; t
       {/* ── Main area ── */}
       <main className="flex-1 flex flex-col min-w-0 relative">
 
-        {/* ── Stoic background layer ── */}
-        <div className="pointer-events-none select-none" aria-hidden="true">
-          {/* Admin hero image — top right */}
-          <div className="fixed top-0 right-0 w-[55vw] h-[70vh] z-0 overflow-hidden">
-            <img
-              src="/dash-admin.jpg"
-              alt=""
-              className="w-full h-full object-cover object-top"
-              style={{ opacity: 0.09, filter: 'saturate(0.45) brightness(1.1)' }}
-            />
-            <div className="absolute inset-0" style={{ background: 'linear-gradient(to left, transparent 0%, rgba(13,9,3,0.5) 50%, rgba(13,9,3,1) 100%)' }} />
-            <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(13,9,3,1) 0%, transparent 55%)' }} />
-          </div>
-
-          {/* Network image — bottom left */}
-          <div className="fixed bottom-0 left-0 w-[50vw] h-[55vh] z-0 overflow-hidden">
-            <img
-              src="/dash-network.jpg"
-              alt=""
-              className="w-full h-full object-cover object-center"
-              style={{ opacity: 0.07, filter: 'saturate(0.4) brightness(1.2)' }}
-            />
-            <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, transparent 0%, rgba(13,9,3,0.6) 50%, rgba(13,9,3,1) 100%)' }} />
-            <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(13,9,3,1) 0%, transparent 40%)' }} />
-          </div>
-
-          {/* Ambient gold glows */}
-          <div className="fixed top-[-10%] right-[-5%] w-[35vw] h-[35vw] rounded-full z-0" style={{ background: 'radial-gradient(circle, rgba(225, 6, 19,0.06) 0%, transparent 70%)', filter: 'blur(80px)' }} />
-          <div className="fixed bottom-[-10%] left-[10%] w-[25vw] h-[25vw] rounded-full z-0" style={{ background: 'radial-gradient(circle, rgba(180,120,20,0.04) 0%, transparent 70%)', filter: 'blur(100px)' }} />
-        </div>
 
         {/* ── Header ── */}
         <header className="h-16 flex items-center justify-between px-4 md:px-8 sticky top-0 z-30 backdrop-blur-md"

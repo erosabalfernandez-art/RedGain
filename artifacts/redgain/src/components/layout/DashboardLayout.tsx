@@ -8,8 +8,6 @@ import { useQueryClient } from '@tanstack/react-query';
 import { formatDistanceToNow } from 'date-fns';
 import { es } from 'date-fns/locale';
 
-const STOIC_SIDEBAR_QUOTE = 'Completa ofertas. Recibe recompensas.';
-const STOIC_SIDEBAR_AUTHOR = '';
 
 // ── Notification bell ────────────────────────────────────────────────────────
 function NotificationBell() {
@@ -91,7 +89,7 @@ function NotificationBell() {
             <div className="flex flex-col items-center justify-center py-10 text-center px-4">
               <Bell className="w-8 h-8 text-muted-foreground mb-2 opacity-40" />
               <p className="text-sm text-muted-foreground">Sin notificaciones aún</p>
-              <p className="text-xs text-muted-foreground/60 mt-1">Te avisaremos cuando lleguen tus comisiones.</p>
+              <p className="text-xs text-muted-foreground/60 mt-1">Te avisaremos cuando tengas novedades.</p>
             </div>
           ) : (
             <div className="divide-y" style={{ borderColor: 'rgba(225, 6, 19,0.08)' }}>
@@ -158,12 +156,6 @@ export function DashboardLayout({ children, topbar }: { children: React.ReactNod
           <span className="font-bold text-base tracking-tight" style={{ color: '#FF4D57' }}>RedGain</span>
         </div>
 
-        {/* Stoic quote */}
-        <div className="relative px-5 pt-4 pb-2">
-          <p className="text-[10px] leading-relaxed italic" style={{ color: 'rgba(225, 6, 19,0.5)' }}>{STOIC_SIDEBAR_QUOTE}</p>
-          <p className="text-[10px] mt-0.5" style={{ color: 'rgba(225, 6, 19,0.35)' }}>{STOIC_SIDEBAR_AUTHOR}</p>
-        </div>
-
         {/* Nav */}
         <nav className="relative flex-1 overflow-y-auto py-4 px-3 space-y-0.5">
           {navItems.map((item) => {
@@ -207,33 +199,9 @@ export function DashboardLayout({ children, topbar }: { children: React.ReactNod
 
         {/* Atmospheric backgrounds */}
         <div className="pointer-events-none">
-          {/* Aurelius bust — top-right */}
-          <div className="fixed top-0 right-0 w-[45vw] h-[55vh] z-0 overflow-hidden">
-            <img
-              src="/dash-aurelius.jpg"
-              alt=""
-              className="w-full h-full object-cover object-top"
-              style={{ opacity: 0.07, filter: 'saturate(0.3) brightness(1.3)' }}
-            />
-            <div className="absolute inset-0" style={{ background: 'linear-gradient(to left, transparent 0%, rgba(14,10,5,0.5) 50%, rgba(14,10,5,1) 100%)' }} />
-            <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(14,10,5,1) 0%, transparent 60%)' }} />
-          </div>
-
-          {/* Roman forum — bottom-left */}
-          <div className="fixed bottom-0 left-0 w-[55vw] h-[60vh] z-0 overflow-hidden">
-            <img
-              src="/dash-forum.jpg"
-              alt=""
-              className="w-full h-full object-cover object-center"
-              style={{ opacity: 0.08, filter: 'saturate(0.45) brightness(1.2)' }}
-            />
-            <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, transparent 0%, rgba(14,10,5,0.6) 50%, rgba(14,10,5,1) 100%)' }} />
-            <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(14,10,5,1) 0%, transparent 40%)' }} />
-          </div>
-
-          {/* Gold ambient glow — top right */}
+          {/* Brillo rojo — arriba a la derecha */}
           <div className="fixed top-[-15%] right-[-8%] w-[40vw] h-[40vw] rounded-full z-0" style={{ background: 'radial-gradient(circle, rgba(225, 6, 19,0.07) 0%, transparent 70%)', filter: 'blur(80px)' }} />
-          {/* Warm glow — bottom left */}
+          {/* Brillo — abajo a la izquierda */}
           <div className="fixed bottom-[-10%] left-[5%] w-[30vw] h-[30vw] rounded-full z-0" style={{ background: 'radial-gradient(circle, rgba(180,120,20,0.05) 0%, transparent 70%)', filter: 'blur(100px)' }} />
           {/* Center ambient */}
           <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[50vw] h-[50vw] rounded-full z-0" style={{ background: 'radial-gradient(circle, rgba(225, 6, 19,0.025) 0%, transparent 70%)', filter: 'blur(120px)' }} />

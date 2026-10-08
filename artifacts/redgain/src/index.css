@@ -100,7 +100,7 @@
   --sidebar-accent-foreground: 0 0% 92%;
   --sidebar-ring: 356 95% 45%;
 
-  /* Stoic gold primary — #E10613 */
+  /* Rojo primario — #E10613 */
   --primary: 356 95% 45%;
   --primary-foreground: 0 0% 100%;
 
@@ -193,7 +193,7 @@
     background-color: var(--elevate-2);
   }
 
-  /* Stoic gold glow utility */
+  /* Brillo rojo (utilidad) */
   .gold-glow {
     box-shadow: 0 0 30px -5px rgba(225, 6, 19, 0.35);
   }
