@@ -124,6 +124,7 @@ function GanarSection() {
           <iframe src={url} title="Ofertas RedGain" style={{ width: '100%', height: '800px', border: 0 }} />
         )}
       </div>
+      <p className="text-xs text-white/55 leading-relaxed"><strong className="text-white/80">100 Coins = $1.00 USD.</strong> Tu saldo se muestra en dólares.</p>
       <p className="text-xs text-white/40 leading-relaxed">Las ofertas son de terceros: algunas piden instalar apps, registrarte o gastar dinero real. Lee los requisitos antes de empezar. Las recompensas se acreditan cuando el anunciante las confirma y pueden revertirse si la conversión se anula. Solo mayores de 18 años.</p>
       <div className="rounded-2xl p-6" style={card}>
         <p className="font-bold mb-3" style={{ color: RED_LIGHT }}>Historial</p>

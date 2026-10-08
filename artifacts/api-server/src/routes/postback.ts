@@ -6,9 +6,9 @@ import { logger } from "../lib/logger";
 const router = Router();
 
 // Reparto de cada conversión (configurable en Render). Se calcula SOLO con campos firmados.
-const COINS_PER_USD = Number(process.env.OFFERWALL_COINS_PER_USD ?? "1");
+const COINS_PER_USD = Number(process.env.OFFERWALL_COINS_PER_USD ?? "60");
 const USER_SHARE = Number(process.env.OFFERWALL_USER_SHARE ?? "0.6");
-const REFERRAL_SHARE = Number(process.env.OFFERWALL_REFERRAL_SHARE ?? "0.1");
+const REFERRAL_SHARE = Number(process.env.OFFERWALL_REFERRAL_SHARE ?? "0.2");
 const r6 = (n: number) => Math.round(n * 1e6) / 1e6;
 
 function validSignature(user: string, tx: string, amount: string, sig: string, secret: string): boolean {
