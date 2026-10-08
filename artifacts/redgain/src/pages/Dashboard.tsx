@@ -95,14 +95,14 @@ function OverviewSection() {
   return (
     <div className="space-y-6">
       {/* ── Stoic section banner ── */}
-      <div className="relative rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(201,162,39,0.2)' }}>
+      <div className="relative rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(225, 6, 19,0.2)' }}>
         <img src="/dash-aurelius.jpg" alt="" className="absolute inset-0 w-full h-full object-cover object-top" style={{ opacity: 0.18, filter: 'saturate(0.5) brightness(1.1)' }} />
         <div className="absolute inset-0" style={{ background: 'linear-gradient(90deg, rgba(14,10,5,0.92) 0%, rgba(14,10,5,0.7) 100%)' }} />
         <div className="relative px-6 py-5">
-          <h1 className="text-2xl font-extrabold" style={{ background: 'linear-gradient(90deg, #E8C547, #C9A227)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+          <h1 className="text-2xl font-extrabold" style={{ background: 'linear-gradient(90deg, #FF4D57, #E10613)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
             Hola, {user?.name?.split(' ')[0]}
           </h1>
-          <p className="text-sm mt-1" style={{ color: 'rgba(201,162,39,0.55)' }}>"Lo que hacemos ahora resuena en la eternidad." — Marco Aurelio</p>
+          <p className="text-sm mt-1" style={{ color: 'rgba(225, 6, 19,0.55)' }}>"Lo que hacemos ahora resuena en la eternidad." — Marco Aurelio</p>
         </div>
       </div>
 
@@ -146,11 +146,11 @@ function OverviewSection() {
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
-          { label: 'Referidos totales', value: earnings?.totalReferrals ?? 0, icon: Users, color: 'text-[#C9A227]', bg: 'bg-[#C9A227]/10' },
+          { label: 'Referidos totales', value: earnings?.totalReferrals ?? 0, icon: Users, color: 'text-[#E10613]', bg: 'bg-[#E10613]/10' },
           { label: 'Referidos activos', value: earnings?.activeReferrals ?? 0, icon: Activity, color: 'text-emerald-400', bg: 'bg-emerald-400/10' },
           { label: 'Total histórico', value: `$${earnings?.totalHistorical ?? 0}`, icon: Wallet, color: 'text-purple-400', bg: 'bg-purple-400/10' },
         ].map(({ label, value, icon: Icon, color, bg }) => (
-          <div key={label} className="rounded-2xl p-4" style={{ background: 'rgba(14,10,5,0.8)', border: '1px solid rgba(201,162,39,0.15)' }}>
+          <div key={label} className="rounded-2xl p-4" style={{ background: 'rgba(14,10,5,0.8)', border: '1px solid rgba(225, 6, 19,0.15)' }}>
             <div className={`w-9 h-9 rounded-xl ${bg} flex items-center justify-center mb-3`}>
               <Icon className={`w-4 h-4 ${color}`} />
             </div>
@@ -162,7 +162,7 @@ function OverviewSection() {
 
       {/* Membership timer */}
       {user?.accountStatus === 'active' && (
-        <div className="rounded-2xl p-5" style={{ background: 'rgba(14,10,5,0.8)', border: '1px solid rgba(201,162,39,0.15)' }}>
+        <div className="rounded-2xl p-5" style={{ background: 'rgba(14,10,5,0.8)', border: '1px solid rgba(225, 6, 19,0.15)' }}>
           <p className="text-sm font-bold text-foreground mb-1">Membresía</p>
           {membership?.timerStarted && membership.membershipExpiresAt ? (
             <div>
@@ -208,15 +208,15 @@ function OverviewSection() {
 
       {/* Referral code */}
       {code?.active ? (
-        <div className="rounded-2xl p-5" style={{ background: 'linear-gradient(135deg, rgba(201,162,39,0.08) 0%, rgba(14,10,5,0.95) 100%)', border: '1px solid rgba(201,162,39,0.25)', boxShadow: '0 0 30px -10px rgba(201,162,39,0.2)' }}>
-          <p className="text-sm font-bold mb-3" style={{ color: '#E8C547' }}>Tu código de referido</p>
+        <div className="rounded-2xl p-5" style={{ background: 'linear-gradient(135deg, rgba(225, 6, 19,0.08) 0%, rgba(14,10,5,0.95) 100%)', border: '1px solid rgba(225, 6, 19,0.25)', boxShadow: '0 0 30px -10px rgba(225, 6, 19,0.2)' }}>
+          <p className="text-sm font-bold mb-3" style={{ color: '#FF4D57' }}>Tu código de referido</p>
           <div className="flex gap-2 mb-3">
-            <div className="flex-1 flex items-center px-4 h-11 rounded-xl font-mono font-bold tracking-widest text-sm" style={{ background: 'rgba(201,162,39,0.07)', border: '1px solid rgba(201,162,39,0.3)', color: '#E8C547' }}>
+            <div className="flex-1 flex items-center px-4 h-11 rounded-xl font-mono font-bold tracking-widest text-sm" style={{ background: 'rgba(225, 6, 19,0.07)', border: '1px solid rgba(225, 6, 19,0.3)', color: '#FF4D57' }}>
               {code.code}
             </div>
-            <button onClick={copyCode} className="px-4 h-11 rounded-xl font-semibold text-sm flex items-center gap-2 transition-colors" style={{ background: 'rgba(201,162,39,0.15)', border: '1px solid rgba(201,162,39,0.3)', color: '#C9A227' }}
-              onMouseEnter={e => (e.currentTarget.style.background = 'rgba(201,162,39,0.25)')}
-              onMouseLeave={e => (e.currentTarget.style.background = 'rgba(201,162,39,0.15)')}>
+            <button onClick={copyCode} className="px-4 h-11 rounded-xl font-semibold text-sm flex items-center gap-2 transition-colors" style={{ background: 'rgba(225, 6, 19,0.15)', border: '1px solid rgba(225, 6, 19,0.3)', color: '#E10613' }}
+              onMouseEnter={e => (e.currentTarget.style.background = 'rgba(225, 6, 19,0.25)')}
+              onMouseLeave={e => (e.currentTarget.style.background = 'rgba(225, 6, 19,0.15)')}>
               {copied ? <CheckCircle2 className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
               Copiar
             </button>
@@ -238,11 +238,11 @@ function OverviewSection() {
       )}
 
       {/* How commissions work */}
-      <div className="rounded-2xl p-5" style={{ background: 'rgba(14,10,5,0.8)', border: '1px solid rgba(201,162,39,0.15)' }}>
-        <p className="text-sm font-bold mb-3" style={{ color: '#E8C547' }}>¿Cuánto ganas por cada persona?</p>
+      <div className="rounded-2xl p-5" style={{ background: 'rgba(14,10,5,0.8)', border: '1px solid rgba(225, 6, 19,0.15)' }}>
+        <p className="text-sm font-bold mb-3" style={{ color: '#FF4D57' }}>¿Cuánto ganas por cada persona?</p>
         <div className="space-y-2">
           {[
-            { level: 'Nivel 1 — Referido directo tuyo', amount: '$6', color: 'text-[#C9A227]', sub: 'Ganas $6 cuando pagan o renuevan' },
+            { level: 'Nivel 1 — Referido directo tuyo', amount: '$6', color: 'text-[#E10613]', sub: 'Ganas $6 cuando pagan o renuevan' },
             { level: 'Nivel 2 — Referido de tu referido', amount: '$2', color: 'text-amber-300', sub: 'Ganas $2 cuando pagan o renuevan' },
             { level: 'Nivel 3 — Tercer nivel de profundidad', amount: '$1', color: 'text-amber-200', sub: 'Ganas $1 cuando pagan o renuevan' },
           ].map(({ level, amount, color, sub }) => (
@@ -275,19 +275,19 @@ function ReferidosSection() {
   return (
     <div className="space-y-6">
       {/* ── Stoic section banner ── */}
-      <div className="relative rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(201,162,39,0.2)' }}>
+      <div className="relative rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(225, 6, 19,0.2)' }}>
         <img src="/dash-network.jpg" alt="" className="absolute inset-0 w-full h-full object-cover object-center" style={{ opacity: 0.18, filter: 'saturate(0.5) brightness(1.1)' }} />
         <div className="absolute inset-0" style={{ background: 'linear-gradient(90deg, rgba(14,10,5,0.92) 0%, rgba(14,10,5,0.65) 100%)' }} />
         <div className="relative px-6 py-5 flex items-center justify-between">
           <div>
-            <h2 className="text-xl font-extrabold" style={{ color: '#E8C547' }}>Mis Referidos</h2>
-            <p className="text-xs mt-0.5 italic" style={{ color: 'rgba(201,162,39,0.5)' }}>{total} persona{total !== 1 ? 's' : ''} · {active} activa{active !== 1 ? 's' : ''} · "La riqueza consiste en la abundancia de amigos." — Sócrates</p>
+            <h2 className="text-xl font-extrabold" style={{ color: '#FF4D57' }}>Mis Referidos</h2>
+            <p className="text-xs mt-0.5 italic" style={{ color: 'rgba(225, 6, 19,0.5)' }}>{total} persona{total !== 1 ? 's' : ''} · {active} activa{active !== 1 ? 's' : ''} · "La riqueza consiste en la abundancia de amigos." — Sócrates</p>
           </div>
-          <div className="flex items-center gap-1 rounded-xl p-1" style={{ background: 'rgba(201,162,39,0.08)', border: '1px solid rgba(201,162,39,0.2)' }}>
-            <button onClick={() => setView('list')} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors" style={view === 'list' ? { background: 'rgba(201,162,39,0.2)', color: '#C9A227' } : { color: 'rgba(201,162,39,0.5)' }}>
+          <div className="flex items-center gap-1 rounded-xl p-1" style={{ background: 'rgba(225, 6, 19,0.08)', border: '1px solid rgba(225, 6, 19,0.2)' }}>
+            <button onClick={() => setView('list')} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors" style={view === 'list' ? { background: 'rgba(225, 6, 19,0.2)', color: '#E10613' } : { color: 'rgba(225, 6, 19,0.5)' }}>
               <List className="w-3.5 h-3.5" /> Lista
             </button>
-            <button onClick={() => setView('tree')} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors" style={view === 'tree' ? { background: 'rgba(201,162,39,0.2)', color: '#C9A227' } : { color: 'rgba(201,162,39,0.5)' }}>
+            <button onClick={() => setView('tree')} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors" style={view === 'tree' ? { background: 'rgba(225, 6, 19,0.2)', color: '#E10613' } : { color: 'rgba(225, 6, 19,0.5)' }}>
               <GitBranch className="w-3.5 h-3.5" /> Árbol
             </button>
           </div>
@@ -297,7 +297,7 @@ function ReferidosSection() {
       {/* Summary */}
       <div className="grid grid-cols-3 gap-3">
         {[
-          { label: 'Nivel 1', count: referrals?.level1?.length ?? 0, earn: (referrals?.level1?.length ?? 0) * 6, color: 'text-[#C9A227]', bg: 'bg-[#C9A227]/5 border-[#C9A227]/20' },
+          { label: 'Nivel 1', count: referrals?.level1?.length ?? 0, earn: (referrals?.level1?.length ?? 0) * 6, color: 'text-[#E10613]', bg: 'bg-[#E10613]/5 border-[#E10613]/20' },
           { label: 'Nivel 2', count: referrals?.level2?.length ?? 0, earn: (referrals?.level2?.length ?? 0) * 2, color: 'text-amber-300', bg: 'bg-amber-300/5 border-amber-300/20' },
           { label: 'Nivel 3', count: referrals?.level3?.length ?? 0, earn: (referrals?.level3?.length ?? 0) * 1, color: 'text-amber-200', bg: 'bg-amber-200/5 border-amber-200/20' },
         ].map(({ label, count, earn, color, bg }) => (
@@ -309,8 +309,8 @@ function ReferidosSection() {
         ))}
       </div>
 
-      <div className="p-3 rounded-xl" style={{ background: 'rgba(201,162,39,0.05)', border: '1px solid rgba(201,162,39,0.2)' }}>
-        <p className="text-xs font-medium" style={{ color: 'rgba(201,162,39,0.7)' }}>
+      <div className="p-3 rounded-xl" style={{ background: 'rgba(225, 6, 19,0.05)', border: '1px solid rgba(225, 6, 19,0.2)' }}>
+        <p className="text-xs font-medium" style={{ color: 'rgba(225, 6, 19,0.7)' }}>
           Toca cualquier persona para ver su información completa y acceder a su WhatsApp directo.
         </p>
       </div>
@@ -524,8 +524,8 @@ function PaymentWarningAccordion() {
                   { step: '3', text: 'El sistema detecta el pago y activa tu cuenta automáticamente.' },
                 ].map(({ step, text }) => (
                   <div key={step} className="flex items-start gap-2">
-                    <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5" style={{ background: 'rgba(201,162,39,0.1)', border: '1px solid rgba(201,162,39,0.3)' }}>
-                      <span className="text-[9px] font-extrabold" style={{ color: '#C9A227' }}>{step}</span>
+                    <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5" style={{ background: 'rgba(225, 6, 19,0.1)', border: '1px solid rgba(225, 6, 19,0.3)' }}>
+                      <span className="text-[9px] font-extrabold" style={{ color: '#E10613' }}>{step}</span>
                     </div>
                     <p className="text-xs text-muted-foreground leading-relaxed">{text}</p>
                   </div>
@@ -534,7 +534,7 @@ function PaymentWarningAccordion() {
 
               {/* Wallet recommendations */}
               <div className="space-y-3">
-                <p className="text-[11px] font-bold uppercase tracking-wide" style={{ color: '#E8C547' }}>Billeteras personales que recomendamos — son gratuitas y fáciles de usar:</p>
+                <p className="text-[11px] font-bold uppercase tracking-wide" style={{ color: '#FF4D57' }}>Billeteras personales que recomendamos — son gratuitas y fáciles de usar:</p>
                 <div className="space-y-2">
                   {RECOMMENDED_WALLETS.map((w) => (
                     <a
@@ -542,7 +542,7 @@ function PaymentWarningAccordion() {
                       href={w.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-start gap-3 p-3 rounded-xl border border-border hover:border-[rgba(201,162,39,0.3)] hover:bg-[rgba(201,162,39,0.03)] transition-all group"
+                      className="flex items-start gap-3 p-3 rounded-xl border border-border hover:border-[rgba(225, 6, 19,0.3)] hover:bg-[rgba(225, 6, 19,0.03)] transition-all group"
                     >
                       <span className="text-lg shrink-0 mt-0.5">{w.icon}</span>
                       <div className="flex-1 min-w-0">
@@ -552,14 +552,14 @@ function PaymentWarningAccordion() {
                         </div>
                         <p className="text-[11px] text-muted-foreground mt-0.5 leading-relaxed">{w.desc}</p>
                       </div>
-                      <ExternalLink className="w-3 h-3 text-muted-foreground/40 group-hover:text-[#C9A227] shrink-0 mt-1 transition-colors" />
+                      <ExternalLink className="w-3 h-3 text-muted-foreground/40 group-hover:text-[#E10613] shrink-0 mt-1 transition-colors" />
                     </a>
                   ))}
                 </div>
-                <div className="flex items-start gap-2 p-3 rounded-xl" style={{ background: 'rgba(201,162,39,0.05)', border: '1px solid rgba(201,162,39,0.15)' }}>
-                  <MessageCircle className="w-3.5 h-3.5 text-[#C9A227] shrink-0 mt-0.5" />
-                  <p className="text-xs leading-relaxed" style={{ color: 'rgba(201,162,39,0.8)' }}>
-                    ¿No puedes instalar ninguna de estas billeteras o tienes dudas sobre cómo configurarla? <strong className="text-[#E8C547]">Escríbenos al soporte antes de pagar.</strong> Estamos para ayudarte — no te quedes con la duda, un mensaje a tiempo evita perder dinero.
+                <div className="flex items-start gap-2 p-3 rounded-xl" style={{ background: 'rgba(225, 6, 19,0.05)', border: '1px solid rgba(225, 6, 19,0.15)' }}>
+                  <MessageCircle className="w-3.5 h-3.5 text-[#E10613] shrink-0 mt-0.5" />
+                  <p className="text-xs leading-relaxed" style={{ color: 'rgba(225, 6, 19,0.8)' }}>
+                    ¿No puedes instalar ninguna de estas billeteras o tienes dudas sobre cómo configurarla? <strong className="text-[#FF4D57]">Escríbenos al soporte antes de pagar.</strong> Estamos para ayudarte — no te quedes con la duda, un mensaje a tiempo evita perder dinero.
                   </p>
                 </div>
               </div>
@@ -567,8 +567,8 @@ function PaymentWarningAccordion() {
           </SubAccordion>
 
           {/* ── Regla de oro ── */}
-          <div className="rounded-xl p-4 space-y-1" style={{ background: 'linear-gradient(135deg, rgba(201,162,39,0.08), rgba(14,10,5,0.6))', border: '1px solid rgba(201,162,39,0.25)' }}>
-            <p className="text-xs font-extrabold" style={{ color: '#E8C547' }}>✅ Las 3 reglas de oro</p>
+          <div className="rounded-xl p-4 space-y-1" style={{ background: 'linear-gradient(135deg, rgba(225, 6, 19,0.08), rgba(14,10,5,0.6))', border: '1px solid rgba(225, 6, 19,0.25)' }}>
+            <p className="text-xs font-extrabold" style={{ color: '#FF4D57' }}>✅ Las 3 reglas de oro</p>
             <div className="space-y-1 mt-2">
               {[
                 'Envía exactamente $10.00 USDT BEP20 — sin centavos de más ni de menos.',
@@ -576,8 +576,8 @@ function PaymentWarningAccordion() {
                 'Nunca pagues directo desde un exchange — primero pasa los fondos a tu billetera personal.',
               ].map((rule, i) => (
                 <div key={i} className="flex items-start gap-2">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-[#C9A227] shrink-0 mt-0.5" />
-                  <p className="text-xs leading-relaxed" style={{ color: 'rgba(201,162,39,0.85)' }}>{rule}</p>
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#E10613] shrink-0 mt-0.5" />
+                  <p className="text-xs leading-relaxed" style={{ color: 'rgba(225, 6, 19,0.85)' }}>{rule}</p>
                 </div>
               ))}
             </div>
@@ -669,17 +669,17 @@ function PagosSection() {
   return (
     <div className="space-y-6">
       {/* ── Stoic section banner ── */}
-      <div className="relative rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(201,162,39,0.2)' }}>
+      <div className="relative rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(225, 6, 19,0.2)' }}>
         <img src="/dash-treasury.jpg" alt="" className="absolute inset-0 w-full h-full object-cover object-center" style={{ opacity: 0.18, filter: 'saturate(0.5) brightness(1.1)' }} />
         <div className="absolute inset-0" style={{ background: 'linear-gradient(90deg, rgba(14,10,5,0.92) 0%, rgba(14,10,5,0.65) 100%)' }} />
         <div className="relative px-6 py-5">
-          <h2 className="text-xl font-extrabold" style={{ color: '#E8C547' }}>Pagos</h2>
-          <p className="text-xs mt-0.5 italic" style={{ color: 'rgba(201,162,39,0.5)' }}>"El oro que obtienes con virtud vale más que una montaña de riqueza sin ella." — Séneca</p>
+          <h2 className="text-xl font-extrabold" style={{ color: '#FF4D57' }}>Pagos</h2>
+          <p className="text-xs mt-0.5 italic" style={{ color: 'rgba(225, 6, 19,0.5)' }}>"El oro que obtienes con virtud vale más que una montaña de riqueza sin ella." — Séneca</p>
         </div>
       </div>
 
       {/* Block 1 & 2: BSC Wallet */}
-      <div className="rounded-2xl p-5 space-y-4" style={{ background: 'rgba(14,10,5,0.85)', border: '1px solid rgba(201,162,39,0.15)' }}>
+      <div className="rounded-2xl p-5 space-y-4" style={{ background: 'rgba(14,10,5,0.85)', border: '1px solid rgba(225, 6, 19,0.15)' }}>
         <p className="text-sm font-bold text-foreground">Tu billetera BSC de origen</p>
 
         {!bscWallet || editing ? (
@@ -745,7 +745,7 @@ function PagosSection() {
       </div>
 
       {/* Block 3: Payment instructions */}
-      <div className="rounded-2xl p-5 space-y-3" style={{ background: 'rgba(14,10,5,0.85)', border: '1px solid rgba(201,162,39,0.15)' }}>
+      <div className="rounded-2xl p-5 space-y-3" style={{ background: 'rgba(14,10,5,0.85)', border: '1px solid rgba(225, 6, 19,0.15)' }}>
         <p className="text-sm font-bold text-foreground">Dirección de destino del pago</p>
         <div className="flex items-center gap-2">
           <div className="flex-1 px-3 py-2.5 rounded-xl bg-background border border-border font-mono text-xs text-foreground break-all">
@@ -767,8 +767,8 @@ function PagosSection() {
       <PaymentWarningAccordion />
 
       {/* Block 4: How it works */}
-      <div className="rounded-2xl p-5" style={{ background: 'rgba(14,10,5,0.85)', border: '1px solid rgba(201,162,39,0.15)' }}>
-        <p className="text-sm font-bold mb-3" style={{ color: '#E8C547' }}>¿Cómo funciona el pago automático?</p>
+      <div className="rounded-2xl p-5" style={{ background: 'rgba(14,10,5,0.85)', border: '1px solid rgba(225, 6, 19,0.15)' }}>
+        <p className="text-sm font-bold mb-3" style={{ color: '#FF4D57' }}>¿Cómo funciona el pago automático?</p>
         <div className="space-y-3">
           {[
             { step: '1', text: 'Envías $10 USDT BEP20 desde tu wallet registrada a la dirección de arriba.' },
@@ -777,8 +777,8 @@ function PagosSection() {
             { step: '4', text: 'Las comisiones se distribuyen automáticamente a tu cadena de referidos.' },
           ].map(({ step, text }) => (
             <div key={step} className="flex items-start gap-3">
-              <div className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 mt-0.5" style={{ background: 'rgba(201,162,39,0.1)', border: '1px solid rgba(201,162,39,0.3)' }}>
-                <span className="text-xs font-bold" style={{ color: '#C9A227' }}>{step}</span>
+              <div className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 mt-0.5" style={{ background: 'rgba(225, 6, 19,0.1)', border: '1px solid rgba(225, 6, 19,0.3)' }}>
+                <span className="text-xs font-bold" style={{ color: '#E10613' }}>{step}</span>
               </div>
               <p className="text-xs text-muted-foreground leading-relaxed">{text}</p>
             </div>
@@ -787,7 +787,7 @@ function PagosSection() {
       </div>
 
       {/* Block 5: Payment history */}
-      <div className="rounded-2xl p-5" style={{ background: 'rgba(14,10,5,0.85)', border: '1px solid rgba(201,162,39,0.15)' }}>
+      <div className="rounded-2xl p-5" style={{ background: 'rgba(14,10,5,0.85)', border: '1px solid rgba(225, 6, 19,0.15)' }}>
         <div className="flex items-center justify-between mb-4">
           <p className="text-sm font-bold text-foreground">Historial de pagos</p>
           <span className="text-xs text-muted-foreground">Auto-actualiza cada 15s</span>
@@ -849,7 +849,7 @@ function CommissionHistoryBlock() {
   const SUPPORT_WA = 'https://wa.me/5588992543996';
 
   return (
-    <div className="rounded-2xl p-5 space-y-4" style={{ background: 'rgba(14,10,5,0.85)', border: '1px solid rgba(201,162,39,0.15)' }}>
+    <div className="rounded-2xl p-5 space-y-4" style={{ background: 'rgba(14,10,5,0.85)', border: '1px solid rgba(225, 6, 19,0.15)' }}>
       <div className="flex items-center justify-between">
         <p className="text-sm font-bold text-foreground">Comisiones recibidas</p>
         {totalReceived > 0 && (
@@ -930,12 +930,12 @@ function MembresiaSectionContent() {
   return (
     <div className="space-y-6">
       {/* ── Stoic section banner ── */}
-      <div className="relative rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(201,162,39,0.2)' }}>
+      <div className="relative rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(225, 6, 19,0.2)' }}>
         <img src="/dash-membership.jpg" alt="" className="absolute inset-0 w-full h-full object-cover object-center" style={{ opacity: 0.2, filter: 'saturate(0.5) brightness(1.1)' }} />
         <div className="absolute inset-0" style={{ background: 'linear-gradient(90deg, rgba(14,10,5,0.92) 0%, rgba(14,10,5,0.65) 100%)' }} />
         <div className="relative px-6 py-5">
-          <h2 className="text-xl font-extrabold" style={{ color: '#E8C547' }}>Mi Membresía</h2>
-          <p className="text-xs mt-0.5 italic" style={{ color: 'rgba(201,162,39,0.5)' }}>"La disciplina es el puente entre las metas y los logros." — Epicteto</p>
+          <h2 className="text-xl font-extrabold" style={{ color: '#FF4D57' }}>Mi Membresía</h2>
+          <p className="text-xs mt-0.5 italic" style={{ color: 'rgba(225, 6, 19,0.5)' }}>"La disciplina es el puente entre las metas y los logros." — Epicteto</p>
         </div>
       </div>
 
@@ -966,7 +966,7 @@ function MembresiaSectionContent() {
       )}
 
       {/* Main timer card */}
-      <div className="rounded-2xl p-6" style={{ background: 'rgba(14,10,5,0.85)', border: '1px solid rgba(201,162,39,0.15)' }}>
+      <div className="rounded-2xl p-6" style={{ background: 'rgba(14,10,5,0.85)', border: '1px solid rgba(225, 6, 19,0.15)' }}>
         {membership?.timerStarted && membership.membershipExpiresAt ? (
           <div>
             <p className="text-sm font-bold text-foreground mb-4">Tiempo restante de membresía</p>
@@ -996,8 +996,8 @@ function MembresiaSectionContent() {
       </div>
 
       {/* How the cycle works — visual timeline */}
-      <div className="rounded-2xl p-5 space-y-4" style={{ background: 'rgba(14,10,5,0.85)', border: '1px solid rgba(201,162,39,0.15)' }}>
-        <p className="text-sm font-bold" style={{ color: '#E8C547' }}>Tu ciclo de 30 días — cómo funciona</p>
+      <div className="rounded-2xl p-5 space-y-4" style={{ background: 'rgba(14,10,5,0.85)', border: '1px solid rgba(225, 6, 19,0.15)' }}>
+        <p className="text-sm font-bold" style={{ color: '#FF4D57' }}>Tu ciclo de 30 días — cómo funciona</p>
         <div className="relative pl-5 border-l border-border space-y-5">
           {[
             { day: 'Días 1-28', color: 'text-emerald-400', dotColor: 'bg-emerald-400', title: 'Cuenta activa — cobra sin límite', desc: 'Tu código funciona, tus referidos generan comisiones y todo sigue en marcha.' },
@@ -1016,8 +1016,8 @@ function MembresiaSectionContent() {
       </div>
 
       {/* Rules */}
-      <div className="rounded-2xl p-5 space-y-4" style={{ background: 'rgba(14,10,5,0.85)', border: '1px solid rgba(201,162,39,0.15)' }}>
-        <p className="text-sm font-bold" style={{ color: '#E8C547' }}>Reglas de membresía</p>
+      <div className="rounded-2xl p-5 space-y-4" style={{ background: 'rgba(14,10,5,0.85)', border: '1px solid rgba(225, 6, 19,0.15)' }}>
+        <p className="text-sm font-bold" style={{ color: '#FF4D57' }}>Reglas de membresía</p>
         <div className="space-y-3">
           {[
             { icon: CheckCircle2, color: 'text-emerald-400', title: 'Membresía activa', desc: 'Puedes referir personas, tu código funciona y recibes comisiones automáticamente en el momento en que cada uno de tus referidos realiza su pago — sin esperas ni fechas de corte.' },
@@ -1059,15 +1059,15 @@ function SoporteSection() {
   return (
     <div className="space-y-6">
       {/* Banner */}
-      <div className="relative rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(201,162,39,0.2)' }}>
+      <div className="relative rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(225, 6, 19,0.2)' }}>
         <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(37,211,102,0.12) 0%, rgba(14,10,5,0.95) 60%)' }} />
         <div className="relative px-6 py-5 flex items-center gap-4">
           <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0" style={{ background: 'rgba(37,211,102,0.15)', border: '1px solid rgba(37,211,102,0.3)' }}>
             <MessageCircle className="w-6 h-6" style={{ color: '#25D366' }} />
           </div>
           <div>
-            <h2 className="text-xl font-extrabold" style={{ color: '#E8C547' }}>Atención al Cliente</h2>
-            <p className="text-xs mt-0.5 italic" style={{ color: 'rgba(201,162,39,0.5)' }}>"El que pregunta no se pierde." — Proverbio estoico</p>
+            <h2 className="text-xl font-extrabold" style={{ color: '#FF4D57' }}>Atención al Cliente</h2>
+            <p className="text-xs mt-0.5 italic" style={{ color: 'rgba(225, 6, 19,0.5)' }}>"El que pregunta no se pierde." — Proverbio estoico</p>
           </div>
         </div>
       </div>
@@ -1097,8 +1097,8 @@ function SoporteSection() {
       </div>
 
       {/* Quick topics */}
-      <div className="rounded-2xl p-5 space-y-3" style={{ background: 'rgba(14,10,5,0.85)', border: '1px solid rgba(201,162,39,0.15)' }}>
-        <p className="text-sm font-bold" style={{ color: '#E8C547' }}>Consultas frecuentes — toca para escribirnos directamente</p>
+      <div className="rounded-2xl p-5 space-y-3" style={{ background: 'rgba(14,10,5,0.85)', border: '1px solid rgba(225, 6, 19,0.15)' }}>
+        <p className="text-sm font-bold" style={{ color: '#FF4D57' }}>Consultas frecuentes — toca para escribirnos directamente</p>
         <div className="space-y-2">
           {topics.map(({ emoji, label }) => (
             <a
@@ -1117,7 +1117,7 @@ function SoporteSection() {
       </div>
 
       {/* Info note */}
-      <div className="rounded-xl p-4 flex items-start gap-3" style={{ background: 'rgba(201,162,39,0.05)', border: '1px solid rgba(201,162,39,0.12)' }}>
+      <div className="rounded-xl p-4 flex items-start gap-3" style={{ background: 'rgba(225, 6, 19,0.05)', border: '1px solid rgba(225, 6, 19,0.12)' }}>
         <Clock className="w-4 h-4 text-yellow-400 mt-0.5 shrink-0" />
         <p className="text-xs text-muted-foreground leading-relaxed">
           El soporte se atiende en horario hábil. Si escribes fuera de horario, te responderemos al siguiente día disponible. Incluye tu <strong className="text-foreground">nombre de usuario</strong> para agilizar la atención.
@@ -1142,10 +1142,10 @@ export default function Dashboard() {
 
   const topbar = (
     <div className="flex items-center gap-2">
-      <div className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm" style={{ background: 'linear-gradient(135deg, rgba(201,162,39,0.2), rgba(201,162,39,0.1))', border: '1px solid rgba(201,162,39,0.35)', color: '#C9A227' }}>
+      <div className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm" style={{ background: 'linear-gradient(135deg, rgba(225, 6, 19,0.2), rgba(225, 6, 19,0.1))', border: '1px solid rgba(225, 6, 19,0.35)', color: '#E10613' }}>
         {user?.name?.charAt(0)?.toUpperCase() ?? 'U'}
       </div>
-      <span className="text-sm font-medium hidden sm:block" style={{ color: 'rgba(201,162,39,0.8)' }}>{user?.name}</span>
+      <span className="text-sm font-medium hidden sm:block" style={{ color: 'rgba(225, 6, 19,0.8)' }}>{user?.name}</span>
     </div>
   );
 

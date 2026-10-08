@@ -51,7 +51,7 @@ function NotificationBell() {
   const iconColor: Record<string, string> = {
     commission_sent:    'text-emerald-400',
     commission_failed:  'text-red-400',
-    new_referral:       'text-[#C9A227]',
+    new_referral:       'text-[#E10613]',
     payment_confirmed:  'text-emerald-400',
   };
 
@@ -65,7 +65,7 @@ function NotificationBell() {
         <Bell className="w-5 h-5" />
         {unread > 0 && (
           <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 flex items-center justify-center rounded-full text-[10px] font-extrabold text-black"
-            style={{ background: 'linear-gradient(135deg, #E8C547, #C9A227)' }}>
+            style={{ background: 'linear-gradient(135deg, #FF4D57, #E10613)' }}>
             {unread > 99 ? '99+' : unread}
           </span>
         )}
@@ -74,14 +74,14 @@ function NotificationBell() {
       {open && (
         <div
           className="absolute right-0 top-12 w-80 max-h-[420px] overflow-y-auto rounded-2xl shadow-2xl z-[200] flex flex-col"
-          style={{ background: 'rgba(13,9,3,0.98)', border: '1px solid rgba(201,162,39,0.2)', backdropFilter: 'blur(16px)' }}
+          style={{ background: 'rgba(13,9,3,0.98)', border: '1px solid rgba(225, 6, 19,0.2)', backdropFilter: 'blur(16px)' }}
         >
           <div className="sticky top-0 flex items-center justify-between px-4 py-3 border-b"
-            style={{ borderColor: 'rgba(201,162,39,0.15)', background: 'rgba(13,9,3,0.98)' }}>
-            <p className="text-sm font-bold" style={{ color: '#E8C547' }}>Notificaciones</p>
+            style={{ borderColor: 'rgba(225, 6, 19,0.15)', background: 'rgba(13,9,3,0.98)' }}>
+            <p className="text-sm font-bold" style={{ color: '#FF4D57' }}>Notificaciones</p>
             {unread > 0 && (
               <span className="text-[10px] px-2 py-0.5 rounded-full font-semibold"
-                style={{ background: 'rgba(201,162,39,0.12)', color: '#C9A227', border: '1px solid rgba(201,162,39,0.25)' }}>
+                style={{ background: 'rgba(225, 6, 19,0.12)', color: '#E10613', border: '1px solid rgba(225, 6, 19,0.25)' }}>
                 {unread} sin leer
               </span>
             )}
@@ -94,10 +94,10 @@ function NotificationBell() {
               <p className="text-xs text-muted-foreground/60 mt-1">Te avisaremos cuando lleguen tus comisiones.</p>
             </div>
           ) : (
-            <div className="divide-y" style={{ borderColor: 'rgba(201,162,39,0.08)' }}>
+            <div className="divide-y" style={{ borderColor: 'rgba(225, 6, 19,0.08)' }}>
               {notifications.map((n: any) => (
                 <div key={n.id} className={`px-4 py-3 transition-colors ${n.read ? 'opacity-60' : ''}`}
-                  style={!n.read ? { background: 'rgba(201,162,39,0.04)' } : {}}>
+                  style={!n.read ? { background: 'rgba(225, 6, 19,0.04)' } : {}}>
                   <div className="flex items-start gap-3">
                     <span className={`text-base mt-0.5 shrink-0 ${iconColor[n.type] ?? 'text-muted-foreground'}`}>
                       {n.title.charAt(0)}
@@ -110,7 +110,7 @@ function NotificationBell() {
                       </p>
                     </div>
                     {!n.read && (
-                      <span className="w-2 h-2 rounded-full shrink-0 mt-1.5" style={{ background: '#C9A227' }} />
+                      <span className="w-2 h-2 rounded-full shrink-0 mt-1.5" style={{ background: '#E10613' }} />
                     )}
                   </div>
                 </div>
@@ -151,7 +151,7 @@ export function DashboardLayout({ children, topbar }: { children: React.ReactNod
         flex flex-col border-r
         ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
         md:translate-x-0 md:static md:flex-shrink-0
-      `} style={{ background: 'linear-gradient(180deg, #100C05 0%, #0E0A04 60%, #0C0802 100%)', borderColor: 'rgba(201,162,39,0.12)' }}>
+      `} style={{ background: 'linear-gradient(180deg, #100C05 0%, #0A0A0A 60%, #0C0802 100%)', borderColor: 'rgba(225, 6, 19,0.12)' }}>
 
         {/* Sidebar background image */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-none">
@@ -161,19 +161,19 @@ export function DashboardLayout({ children, topbar }: { children: React.ReactNod
             className="w-full h-full object-cover object-center"
             style={{ opacity: 0.06, filter: 'saturate(0.4) brightness(1.2)' }}
           />
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent 0%, #0E0A04 80%)' }} />
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent 0%, #0A0A0A 80%)' }} />
         </div>
 
         {/* Logo */}
-        <div className="relative h-16 flex items-center px-6 gap-3" style={{ borderBottom: '1px solid rgba(201,162,39,0.15)' }}>
+        <div className="relative h-16 flex items-center px-6 gap-3" style={{ borderBottom: '1px solid rgba(225, 6, 19,0.15)' }}>
           <Logo className="w-9 h-9" />
-          <span className="font-bold text-base tracking-tight" style={{ color: '#E8C547' }}>RedGain</span>
+          <span className="font-bold text-base tracking-tight" style={{ color: '#FF4D57' }}>RedGain</span>
         </div>
 
         {/* Stoic quote */}
         <div className="relative px-5 pt-4 pb-2">
-          <p className="text-[10px] leading-relaxed italic" style={{ color: 'rgba(201,162,39,0.5)' }}>{STOIC_SIDEBAR_QUOTE}</p>
-          <p className="text-[10px] mt-0.5" style={{ color: 'rgba(201,162,39,0.35)' }}>{STOIC_SIDEBAR_AUTHOR}</p>
+          <p className="text-[10px] leading-relaxed italic" style={{ color: 'rgba(225, 6, 19,0.5)' }}>{STOIC_SIDEBAR_QUOTE}</p>
+          <p className="text-[10px] mt-0.5" style={{ color: 'rgba(225, 6, 19,0.35)' }}>{STOIC_SIDEBAR_AUTHOR}</p>
         </div>
 
         {/* Nav */}
@@ -187,15 +187,15 @@ export function DashboardLayout({ children, topbar }: { children: React.ReactNod
                 onClick={() => setMobileMenuOpen(false)}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
                   active
-                    ? 'text-[#E8C547]'
+                    ? 'text-[#FF4D57]'
                     : 'text-muted-foreground hover:text-foreground'
                 }`}
                 style={active ? {
-                  background: 'linear-gradient(90deg, rgba(201,162,39,0.15), rgba(201,162,39,0.05))',
-                  border: '1px solid rgba(201,162,39,0.2)',
+                  background: 'linear-gradient(90deg, rgba(225, 6, 19,0.15), rgba(225, 6, 19,0.05))',
+                  border: '1px solid rgba(225, 6, 19,0.2)',
                 } : {}}
               >
-                <item.icon className={`w-4 h-4 shrink-0 ${active ? 'text-[#C9A227]' : ''}`} />
+                <item.icon className={`w-4 h-4 shrink-0 ${active ? 'text-[#E10613]' : ''}`} />
                 {item.label}
               </Link>
             );
@@ -203,7 +203,7 @@ export function DashboardLayout({ children, topbar }: { children: React.ReactNod
         </nav>
 
         {/* Footer */}
-        <div className="relative p-4 border-t" style={{ borderColor: 'rgba(201,162,39,0.12)' }}>
+        <div className="relative p-4 border-t" style={{ borderColor: 'rgba(225, 6, 19,0.12)' }}>
           <button
             onClick={() => logout()}
             className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground transition-colors hover:bg-muted/50"
@@ -244,16 +244,16 @@ export function DashboardLayout({ children, topbar }: { children: React.ReactNod
           </div>
 
           {/* Gold ambient glow — top right */}
-          <div className="fixed top-[-15%] right-[-8%] w-[40vw] h-[40vw] rounded-full z-0" style={{ background: 'radial-gradient(circle, rgba(201,162,39,0.07) 0%, transparent 70%)', filter: 'blur(80px)' }} />
+          <div className="fixed top-[-15%] right-[-8%] w-[40vw] h-[40vw] rounded-full z-0" style={{ background: 'radial-gradient(circle, rgba(225, 6, 19,0.07) 0%, transparent 70%)', filter: 'blur(80px)' }} />
           {/* Warm glow — bottom left */}
           <div className="fixed bottom-[-10%] left-[5%] w-[30vw] h-[30vw] rounded-full z-0" style={{ background: 'radial-gradient(circle, rgba(180,120,20,0.05) 0%, transparent 70%)', filter: 'blur(100px)' }} />
           {/* Center ambient */}
-          <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[50vw] h-[50vw] rounded-full z-0" style={{ background: 'radial-gradient(circle, rgba(201,162,39,0.025) 0%, transparent 70%)', filter: 'blur(120px)' }} />
+          <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[50vw] h-[50vw] rounded-full z-0" style={{ background: 'radial-gradient(circle, rgba(225, 6, 19,0.025) 0%, transparent 70%)', filter: 'blur(120px)' }} />
         </div>
 
         {/* ── Header ── */}
         <header className="h-16 flex items-center justify-between px-4 md:px-8 sticky top-0 z-30 backdrop-blur-md"
-          style={{ borderBottom: '1px solid rgba(201,162,39,0.1)', background: 'rgba(14,10,5,0.75)' }}>
+          style={{ borderBottom: '1px solid rgba(225, 6, 19,0.1)', background: 'rgba(14,10,5,0.75)' }}>
           <div className="flex items-center md:hidden">
             <button onClick={() => setMobileMenuOpen(true)} className="p-2 -ml-2 mr-2 text-muted-foreground hover:text-foreground rounded-md hover:bg-muted">
               <Menu className="w-5 h-5" />

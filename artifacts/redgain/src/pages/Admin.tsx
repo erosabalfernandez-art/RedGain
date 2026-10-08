@@ -79,10 +79,10 @@ function UserDetailModal({ user: u, onClose, onUpdate, onDelete }: { user: any; 
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={onClose}>
-      <div className="rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto" style={{ background: 'rgba(13,9,3,0.97)', border: '1px solid rgba(201,162,39,0.2)', boxShadow: '0 0 60px -10px rgba(0,0,0,0.9)' }} onClick={e => e.stopPropagation()}>
+      <div className="rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto" style={{ background: 'rgba(13,9,3,0.97)', border: '1px solid rgba(225, 6, 19,0.2)', boxShadow: '0 0 60px -10px rgba(0,0,0,0.9)' }} onClick={e => e.stopPropagation()}>
         <div className="flex items-start justify-between mb-5">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg" style={{ background: 'rgba(201,162,39,0.12)', border: '1px solid rgba(201,162,39,0.3)', color: '#C9A227' }}>
+            <div className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg" style={{ background: 'rgba(225, 6, 19,0.12)', border: '1px solid rgba(225, 6, 19,0.3)', color: '#E10613' }}>
               {u.name?.charAt(0)?.toUpperCase()}
             </div>
             <div>
@@ -175,7 +175,7 @@ function OverviewSection() {
   const totalRenewals        = (stats?.totalRenewalPayments  ?? 0) as number;
 
   const cards = [
-    { label: 'Usuarios totales',    value: stats?.totalUsers    ?? 0,    icon: Users,     color: 'text-[#C9A227]',  bg: 'bg-[#C9A227]/10' },
+    { label: 'Usuarios totales',    value: stats?.totalUsers    ?? 0,    icon: Users,     color: 'text-[#E10613]',  bg: 'bg-[#E10613]/10' },
     { label: 'Cuentas activas',     value: stats?.activeUsers   ?? 0,    icon: Activity,  color: 'text-emerald-400', bg: 'bg-emerald-400/10' },
     { label: 'Pagos pendientes',    value: stats?.pendingPayments ?? 0,  icon: Receipt,   color: 'text-yellow-400',  bg: 'bg-yellow-400/10' },
     { label: 'Vencen esta semana',  value: stats?.expiringThisWeek ?? 0, icon: Clock,     color: 'text-orange-400',  bg: 'bg-orange-400/10' },
@@ -186,12 +186,12 @@ function OverviewSection() {
   return (
     <div className="space-y-6">
       {/* ── Stoic admin banner ── */}
-      <div className="relative rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(201,162,39,0.2)' }}>
+      <div className="relative rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(225, 6, 19,0.2)' }}>
         <img src="/dash-admin.jpg" alt="" className="absolute inset-0 w-full h-full object-cover object-top" style={{ opacity: 0.18, filter: 'saturate(0.45) brightness(1.1)' }} />
         <div className="absolute inset-0" style={{ background: 'linear-gradient(90deg, rgba(13,9,3,0.92) 0%, rgba(13,9,3,0.65) 100%)' }} />
         <div className="relative px-6 py-5">
-          <h1 className="text-2xl font-extrabold" style={{ background: 'linear-gradient(90deg, #E8C547, #C9A227)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Panel de Administración</h1>
-          <p className="text-xs mt-0.5 italic" style={{ color: 'rgba(201,162,39,0.5)' }}>"El que gobierna a otros debe primero gobernarse a sí mismo." — Séneca</p>
+          <h1 className="text-2xl font-extrabold" style={{ background: 'linear-gradient(90deg, #FF4D57, #E10613)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Panel de Administración</h1>
+          <p className="text-xs mt-0.5 italic" style={{ color: 'rgba(225, 6, 19,0.5)' }}>"El que gobierna a otros debe primero gobernarse a sí mismo." — Séneca</p>
         </div>
       </div>
 
@@ -302,9 +302,9 @@ function OverviewSection() {
         </div>
 
         {/* Payment type mini stats */}
-        <div className="mx-6 mb-6 flex items-center gap-4 px-4 py-3 rounded-xl" style={{ background: 'rgba(201,162,39,0.04)', border: '1px solid rgba(201,162,39,0.12)' }}>
+        <div className="mx-6 mb-6 flex items-center gap-4 px-4 py-3 rounded-xl" style={{ background: 'rgba(225, 6, 19,0.04)', border: '1px solid rgba(225, 6, 19,0.12)' }}>
           <div className="flex-1 text-center">
-            <p className="text-lg font-extrabold" style={{ color: '#C9A227' }}>{totalInitial}</p>
+            <p className="text-lg font-extrabold" style={{ color: '#E10613' }}>{totalInitial}</p>
             <p className="text-[10px] text-muted-foreground">Membresías iniciales</p>
           </div>
           <div className="w-px h-8 bg-border" />
@@ -323,7 +323,7 @@ function OverviewSection() {
       {/* ── Stat cards ───────────────────────────────────────────────────────── */}
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         {cards.map(({ label, value, icon: Icon, color, bg }) => (
-          <div key={label} className="rounded-2xl p-5" style={{ background: 'rgba(14,10,5,0.85)', border: '1px solid rgba(201,162,39,0.15)' }}>
+          <div key={label} className="rounded-2xl p-5" style={{ background: 'rgba(14,10,5,0.85)', border: '1px solid rgba(225, 6, 19,0.15)' }}>
             <div className={`w-9 h-9 rounded-xl ${bg} flex items-center justify-center mb-3`}><Icon className={`w-4 h-4 ${color}`} /></div>
             <p className="text-2xl font-extrabold text-foreground">{value}</p>
             <p className="text-xs text-muted-foreground mt-0.5">{label}</p>
@@ -397,12 +397,12 @@ function UsuariosSection() {
   return (
     <div className="space-y-6">
       {/* ── Stoic section banner ── */}
-      <div className="relative rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(201,162,39,0.2)' }}>
+      <div className="relative rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(225, 6, 19,0.2)' }}>
         <img src="/dash-network.jpg" alt="" className="absolute inset-0 w-full h-full object-cover object-center" style={{ opacity: 0.16, filter: 'saturate(0.45) brightness(1.1)' }} />
         <div className="absolute inset-0" style={{ background: 'linear-gradient(90deg, rgba(13,9,3,0.93) 0%, rgba(13,9,3,0.65) 100%)' }} />
         <div className="relative px-6 py-5">
-          <h2 className="text-xl font-extrabold" style={{ color: '#E8C547' }}>Usuarios</h2>
-          <p className="text-xs mt-0.5 italic" style={{ color: 'rgba(201,162,39,0.5)' }}>{filtered.length} usuario{filtered.length !== 1 ? 's' : ''} · "Conoce a todos, confía en pocos, no le hagas daño a nadie." — Marco Aurelio</p>
+          <h2 className="text-xl font-extrabold" style={{ color: '#FF4D57' }}>Usuarios</h2>
+          <p className="text-xs mt-0.5 italic" style={{ color: 'rgba(225, 6, 19,0.5)' }}>{filtered.length} usuario{filtered.length !== 1 ? 's' : ''} · "Conoce a todos, confía en pocos, no le hagas daño a nadie." — Marco Aurelio</p>
         </div>
       </div>
 
@@ -410,9 +410,9 @@ function UsuariosSection() {
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Buscar por nombre, email, teléfono o código..." className="w-full pl-9 pr-4 h-10 rounded-xl text-sm text-foreground placeholder:text-muted-foreground focus:outline-none" style={{ background: 'rgba(14,10,5,0.8)', border: '1px solid rgba(201,162,39,0.15)' }} />
+          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Buscar por nombre, email, teléfono o código..." className="w-full pl-9 pr-4 h-10 rounded-xl text-sm text-foreground placeholder:text-muted-foreground focus:outline-none" style={{ background: 'rgba(14,10,5,0.8)', border: '1px solid rgba(225, 6, 19,0.15)' }} />
         </div>
-        <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} className="h-10 px-3 rounded-xl text-sm text-foreground focus:outline-none" style={{ background: 'rgba(14,10,5,0.8)', border: '1px solid rgba(201,162,39,0.15)' }}>
+        <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} className="h-10 px-3 rounded-xl text-sm text-foreground focus:outline-none" style={{ background: 'rgba(14,10,5,0.8)', border: '1px solid rgba(225, 6, 19,0.15)' }}>
           <option value="all">Todos los estados</option>
           <option value="pending">Pendientes</option>
           <option value="active">Activos</option>
@@ -426,11 +426,11 @@ function UsuariosSection() {
           {filtered.length === 0 ? <p className="text-center py-12 text-sm text-muted-foreground">No se encontraron usuarios.</p> : filtered.map((u: any) => {
             const st = stConfig[u.accountStatus] ?? stConfig.pending;
             return (
-              <button key={u.id} onClick={() => setSelectedUser(u)} className="w-full flex items-center gap-4 p-4 rounded-2xl transition-colors text-left" style={{ background: 'rgba(14,10,5,0.75)', border: '1px solid rgba(201,162,39,0.12)' }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.border = '1px solid rgba(201,162,39,0.25)'; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.border = '1px solid rgba(201,162,39,0.12)'; }}
+              <button key={u.id} onClick={() => setSelectedUser(u)} className="w-full flex items-center gap-4 p-4 rounded-2xl transition-colors text-left" style={{ background: 'rgba(14,10,5,0.75)', border: '1px solid rgba(225, 6, 19,0.12)' }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.border = '1px solid rgba(225, 6, 19,0.25)'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.border = '1px solid rgba(225, 6, 19,0.12)'; }}
               >
-                <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold shrink-0" style={{ background: 'rgba(201,162,39,0.12)', border: '1px solid rgba(201,162,39,0.25)', color: '#C9A227' }}>
+                <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold shrink-0" style={{ background: 'rgba(225, 6, 19,0.12)', border: '1px solid rgba(225, 6, 19,0.25)', color: '#E10613' }}>
                   {u.name?.charAt(0)?.toUpperCase()}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -455,9 +455,9 @@ function UsuariosSection() {
                     role="button"
                     onClick={e => { e.stopPropagation(); navigate(`/admin/arbol?highlight=${u.id}`); }}
                     className="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-semibold transition-colors cursor-pointer select-none"
-                    style={{ background: 'rgba(201,162,39,0.1)', border: '1px solid rgba(201,162,39,0.25)', color: '#C9A227' }}
-                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(201,162,39,0.2)'; }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(201,162,39,0.1)'; }}
+                    style={{ background: 'rgba(225, 6, 19,0.1)', border: '1px solid rgba(225, 6, 19,0.25)', color: '#E10613' }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(225, 6, 19,0.2)'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(225, 6, 19,0.1)'; }}
                   >
                     <GitBranch className="w-3 h-3" />
                     Ver en árbol
@@ -486,13 +486,13 @@ function ArbolSection() {
   return (
     <div className="space-y-6">
       {/* ── Stoic section banner ── */}
-      <div className="relative rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(201,162,39,0.2)' }}>
+      <div className="relative rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(225, 6, 19,0.2)' }}>
         <img src="/dash-network.jpg" alt="" className="absolute inset-0 w-full h-full object-cover object-center" style={{ opacity: 0.16, filter: 'saturate(0.45) brightness(1.1)' }} />
         <div className="absolute inset-0" style={{ background: 'linear-gradient(90deg, rgba(13,9,3,0.93) 0%, rgba(13,9,3,0.65) 100%)' }} />
         <div className="relative px-6 py-4 flex items-center justify-between">
           <div>
-            <h2 className="text-xl font-extrabold" style={{ color: '#E8C547' }}>Árbol Genealógico Global</h2>
-            <p className="text-xs mt-0.5 italic" style={{ color: 'rgba(201,162,39,0.5)' }}>Toda la red de RedGain — "Somos la suma de todo lo que hemos hecho."</p>
+            <h2 className="text-xl font-extrabold" style={{ color: '#FF4D57' }}>Árbol Genealógico Global</h2>
+            <p className="text-xs mt-0.5 italic" style={{ color: 'rgba(225, 6, 19,0.5)' }}>Toda la red de RedGain — "Somos la suma de todo lo que hemos hecho."</p>
           </div>
         {highlightUserId && (
           <button
@@ -504,10 +504,10 @@ function ArbolSection() {
         )}
         </div>
       </div>
-      <div className="p-3 rounded-xl" style={{ background: 'rgba(201,162,39,0.05)', border: '1px solid rgba(201,162,39,0.2)' }}>
-        <p className="text-xs font-medium" style={{ color: 'rgba(201,162,39,0.7)' }}>Los nodos raíz son usuarios sin referidor. Cada rama muestra el árbol completo hacia abajo.</p>
+      <div className="p-3 rounded-xl" style={{ background: 'rgba(225, 6, 19,0.05)', border: '1px solid rgba(225, 6, 19,0.2)' }}>
+        <p className="text-xs font-medium" style={{ color: 'rgba(225, 6, 19,0.7)' }}>Los nodos raíz son usuarios sin referidor. Cada rama muestra el árbol completo hacia abajo.</p>
       </div>
-      <div className="rounded-2xl p-4 overflow-hidden" style={{ background: 'rgba(14,10,5,0.85)', border: '1px solid rgba(201,162,39,0.15)' }}>
+      <div className="rounded-2xl p-4 overflow-hidden" style={{ background: 'rgba(14,10,5,0.85)', border: '1px solid rgba(225, 6, 19,0.15)' }}>
         <GenealogyTree nodes={(tree ?? []) as any} highlightUserId={highlightUserId} />
       </div>
     </div>
@@ -864,8 +864,8 @@ export default function Admin() {
 
   const topbar = (
     <div className="flex items-center gap-2">
-      <span className="text-xs font-bold px-2 py-1 rounded-lg" style={{ background: 'rgba(201,162,39,0.12)', border: '1px solid rgba(201,162,39,0.3)', color: '#C9A227' }}>Admin</span>
-      <span className="text-sm font-medium hidden sm:block" style={{ color: 'rgba(201,162,39,0.8)' }}>{user?.name}</span>
+      <span className="text-xs font-bold px-2 py-1 rounded-lg" style={{ background: 'rgba(225, 6, 19,0.12)', border: '1px solid rgba(225, 6, 19,0.3)', color: '#E10613' }}>Admin</span>
+      <span className="text-sm font-medium hidden sm:block" style={{ color: 'rgba(225, 6, 19,0.8)' }}>{user?.name}</span>
     </div>
   );
 

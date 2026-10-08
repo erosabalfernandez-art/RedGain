@@ -66,58 +66,58 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-/* ── Stoic Gold theme ── RedGain dark-only ── */
+/* ── RedGain: negro profundo + rojo intenso (solo oscuro) ── */
 :root {
-  --button-outline: rgba(201, 162, 39, 0.15);
-  --badge-outline: rgba(201, 162, 39, 0.08);
+  --button-outline: rgba(225, 6, 19, 0.15);
+  --badge-outline: rgba(225, 6, 19, 0.08);
   --opaque-button-border-intensity: 9;
-  --elevate-1: rgba(201, 162, 39, 0.04);
-  --elevate-2: rgba(201, 162, 39, 0.09);
+  --elevate-1: rgba(225, 6, 19, 0.04);
+  --elevate-2: rgba(225, 6, 19, 0.09);
 
   /* Warm deep brown / black — #0E0A05 */
-  --background: 36 55% 4%;
-  --foreground: 43 40% 92%;
+  --background: 0 0% 4%;
+  --foreground: 0 0% 98%;
 
-  --border: 36 25% 14%;
-  --input: 36 25% 14%;
-  --ring: 43 77% 48%;
+  --border: 0 0% 15%;
+  --input: 0 0% 15%;
+  --ring: 356 95% 45%;
 
-  --card: 36 45% 6%;
-  --card-foreground: 43 40% 92%;
-  --card-border: 36 30% 12%;
+  --card: 0 0% 8%;
+  --card-foreground: 0 0% 98%;
+  --card-border: 0 25% 14%;
 
-  --popover: 36 45% 6%;
-  --popover-foreground: 43 40% 92%;
-  --popover-border: 36 30% 12%;
+  --popover: 0 0% 8%;
+  --popover-foreground: 0 0% 98%;
+  --popover-border: 0 25% 14%;
 
   /* Sidebar — slightly lighter warm dark */
-  --sidebar: 36 50% 5%;
-  --sidebar-foreground: 43 40% 92%;
-  --sidebar-border: 36 25% 12%;
-  --sidebar-primary: 43 77% 48%;
-  --sidebar-primary-foreground: 36 55% 4%;
-  --sidebar-accent: 36 40% 8%;
-  --sidebar-accent-foreground: 43 40% 88%;
-  --sidebar-ring: 43 77% 48%;
+  --sidebar: 0 0% 6%;
+  --sidebar-foreground: 0 0% 98%;
+  --sidebar-border: 0 0% 13%;
+  --sidebar-primary: 356 95% 45%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 0 0% 10%;
+  --sidebar-accent-foreground: 0 0% 92%;
+  --sidebar-ring: 356 95% 45%;
 
   /* Stoic gold primary — #C9A227 */
-  --primary: 43 77% 48%;
-  --primary-foreground: 36 55% 4%;
+  --primary: 356 95% 45%;
+  --primary-foreground: 0 0% 100%;
 
-  --secondary: 36 40% 9%;
-  --secondary-foreground: 43 40% 88%;
+  --secondary: 0 0% 10%;
+  --secondary-foreground: 0 0% 92%;
 
-  --muted: 36 35% 8%;
-  --muted-foreground: 36 15% 50%;
+  --muted: 0 0% 9%;
+  --muted-foreground: 0 0% 66%;
 
-  --accent: 36 40% 9%;
-  --accent-foreground: 43 40% 88%;
+  --accent: 0 0% 10%;
+  --accent-foreground: 0 0% 92%;
 
   --destructive: 0 72% 51%;
   --destructive-foreground: 0 0% 100%;
 
   /* Charts — gold palette + warm tones */
-  --chart-1: 43 77% 48%;
+  --chart-1: 356 95% 45%;
   --chart-2: 142 76% 36%;
   --chart-3: 30 85% 55%;
   --chart-4: 280 65% 60%;
@@ -195,13 +195,13 @@
 
   /* Stoic gold glow utility */
   .gold-glow {
-    box-shadow: 0 0 30px -5px rgba(201, 162, 39, 0.35);
+    box-shadow: 0 0 30px -5px rgba(225, 6, 19, 0.35);
   }
   .gold-glow-sm {
-    box-shadow: 0 0 15px -5px rgba(201, 162, 39, 0.25);
+    box-shadow: 0 0 15px -5px rgba(225, 6, 19, 0.25);
   }
   .gold-border {
-    border-color: rgba(201, 162, 39, 0.3);
+    border-color: rgba(225, 6, 19, 0.3);
   }
   .gold-text {
     background: linear-gradient(90deg, #8B6914, #C9A227, #E8C547);

@@ -23,8 +23,8 @@ export function Logo({ className = "w-8 h-8", imageOnly = false }: LogoProps) {
     <div
       className={`relative flex items-center justify-center rounded-full overflow-hidden ${className}`}
       style={{
-        background: 'radial-gradient(circle at 35% 35%, #1a1206, #0E0A04)',
-        boxShadow: '0 0 0 1.5px rgba(201,162,39,0.55), inset 0 0 8px rgba(201,162,39,0.08)',
+        background: 'radial-gradient(circle at 35% 35%, #1a1206, #0A0A0A)',
+        boxShadow: '0 0 0 1.5px rgba(225, 6, 19,0.55), inset 0 0 8px rgba(225, 6, 19,0.08)',
       }}
     >
       <img

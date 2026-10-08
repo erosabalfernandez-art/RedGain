@@ -235,13 +235,13 @@ export default function Register() {
   };
 
   // Input class shared across all form fields
-  const inputCls = "w-full pl-10 pr-4 h-12 rounded-xl bg-[#C9A227]/4 border border-[#C9A227]/15 text-white placeholder:text-white/25 focus:outline-none focus:border-[#C9A227]/50 focus:bg-[#C9A227]/8 transition-all font-medium text-sm";
+  const inputCls = "w-full pl-10 pr-4 h-12 rounded-xl bg-[#E10613]/4 border border-[#E10613]/15 text-white placeholder:text-white/25 focus:outline-none focus:border-[#E10613]/50 focus:bg-[#E10613]/8 transition-all font-medium text-sm";
 
   return (
-    <div className="min-h-screen w-full flex bg-[#0E0C09] relative overflow-hidden selection:bg-[#C9A227]/30">
+    <div className="min-h-screen w-full flex bg-[#0A0A0A] relative overflow-hidden selection:bg-[#E10613]/30">
       {/* Ambient warm glows */}
-      <div className="fixed top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-[#8B6914]/15 blur-[140px] pointer-events-none" />
-      <div className="fixed bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-[#C9A227]/8 blur-[140px] pointer-events-none" />
+      <div className="fixed top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-[#7A0A12]/15 blur-[140px] pointer-events-none" />
+      <div className="fixed bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-[#E10613]/8 blur-[140px] pointer-events-none" />
 
       {/* ── Brand / Image Side ── */}
       <div className="hidden lg:block relative w-0 flex-1 overflow-hidden z-10">
@@ -252,11 +252,11 @@ export default function Register() {
           className="absolute inset-0 w-full h-full object-cover object-center"
           style={{ filter: 'brightness(0.30) saturate(0.80)' }}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#0E0C09]/10 to-[#0E0C09]" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0E0C09]/50 via-transparent to-[#0E0C09]/70" />
-        <div className="absolute inset-0 bg-[#2A1A00]/15 mix-blend-multiply" />
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#0A0A0A]/10 to-[#0A0A0A]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0A]/50 via-transparent to-[#0A0A0A]/70" />
+        <div className="absolute inset-0 bg-[#2A0A0D]/15 mix-blend-multiply" />
         {/* Gold vein right border */}
-        <div className="absolute top-0 right-0 bottom-0 w-[1px] bg-gradient-to-b from-transparent via-[#C9A227]/40 to-transparent" />
+        <div className="absolute top-0 right-0 bottom-0 w-[1px] bg-gradient-to-b from-transparent via-[#E10613]/40 to-transparent" />
 
         <div className="absolute inset-0 flex flex-col justify-center items-start p-16">
           <motion.div
@@ -266,7 +266,7 @@ export default function Register() {
             className="max-w-md space-y-8 w-full"
           >
             <Link href="/" className="inline-flex items-center gap-3 text-2xl font-black tracking-tight text-white hover:opacity-80 transition-opacity">
-              <div className="w-10 h-10 bg-[#C9A227] rounded-xl flex items-center justify-center shadow-[0_0_20px_-5px_#C9A227]">
+              <div className="w-10 h-10 bg-[#E10613] rounded-xl flex items-center justify-center shadow-[0_0_20px_-5px_#E10613]">
                 <Logo className="w-7 h-7 text-black" />
               </div>
               RedGain
@@ -274,7 +274,7 @@ export default function Register() {
 
             <h3 className="text-4xl font-black text-white leading-tight">
               Deja de vivir de{' '}
-              <span className="bg-gradient-to-r from-[#8B6914] via-[#C9A227] to-[#E8C547] bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-[#7A0A12] via-[#E10613] to-[#FF4D57] bg-clip-text text-transparent">
                 quincena en quincena.
               </span>
             </h3>
@@ -293,8 +293,8 @@ export default function Register() {
                   transition={{ delay: 0.4 + i * 0.1 }}
                   className="flex items-start gap-4 text-white/65 font-medium"
                 >
-                  <div className="mt-0.5 w-6 h-6 rounded-full bg-[#C9A227]/20 border border-[#C9A227]/30 flex items-center justify-center shrink-0">
-                    <CheckCircle2 className="w-4 h-4 text-[#E8C547]" />
+                  <div className="mt-0.5 w-6 h-6 rounded-full bg-[#E10613]/20 border border-[#E10613]/30 flex items-center justify-center shrink-0">
+                    <CheckCircle2 className="w-4 h-4 text-[#FF4D57]" />
                   </div>
                   <span className="text-lg leading-snug">{item}</span>
                 </motion.li>
@@ -302,11 +302,11 @@ export default function Register() {
             </ul>
 
             {/* Stoic quote */}
-            <div className="border-l-2 border-[#C9A227]/50 pl-5 mt-6">
+            <div className="border-l-2 border-[#E10613]/50 pl-5 mt-6">
               <p className="text-white/55 italic text-sm leading-relaxed">
                 "No desees que los eventos sean como tú quieres. Desea que sean como son, y encontrarás paz."
               </p>
-              <p className="text-[#C9A227]/60 text-xs font-bold mt-2 uppercase tracking-wider">— Epicteto</p>
+              <p className="text-[#E10613]/60 text-xs font-bold mt-2 uppercase tracking-wider">— Epicteto</p>
             </div>
           </motion.div>
         </div>
@@ -322,7 +322,7 @@ export default function Register() {
         >
           {/* Back button */}
           <div className="mb-6">
-            <Link href="/" className="inline-flex items-center gap-2 text-sm font-medium text-white/40 hover:text-[#E8C547] transition-colors group">
+            <Link href="/" className="inline-flex items-center gap-2 text-sm font-medium text-white/40 hover:text-[#FF4D57] transition-colors group">
               <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
               Volver al inicio
             </Link>
@@ -330,13 +330,13 @@ export default function Register() {
 
           {/* Mobile logo */}
           <div className="lg:hidden flex items-center gap-3 mb-6">
-            <Logo className="w-8 h-8 text-[#C9A227]" />
+            <Logo className="w-8 h-8 text-[#E10613]" />
             <span className="font-black text-2xl text-white">RedGain</span>
           </div>
 
           {/* Stoic badge */}
           <div className="mb-4">
-            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#C9A227]/30 bg-[#C9A227]/8 text-[#E8C547] text-xs font-medium">
+            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#E10613]/30 bg-[#E10613]/8 text-[#FF4D57] text-xs font-medium">
               <Quote className="w-3 h-3" />
               "La virtud es el único bien verdadero." — Marco Aurelio
             </span>
@@ -369,23 +369,23 @@ export default function Register() {
             {/* Phone */}
             <div className="space-y-2">
               <label className="text-white/70 font-bold text-sm block">
-                Número de WhatsApp <span className="text-[#E8C547]">(requerido)</span>
+                Número de WhatsApp <span className="text-[#FF4D57]">(requerido)</span>
               </label>
               <div className="flex gap-2 min-w-0">
                 <select
                   id="countryCode"
                   value={formData.countryCode}
                   onChange={handleChange}
-                  className="h-12 px-2 rounded-xl bg-[#C9A227]/4 border border-[#C9A227]/15 text-white focus:outline-none focus:border-[#C9A227]/50 text-sm font-medium shrink-0 w-[100px]"
+                  className="h-12 px-2 rounded-xl bg-[#E10613]/4 border border-[#E10613]/15 text-white focus:outline-none focus:border-[#E10613]/50 text-sm font-medium shrink-0 w-[100px]"
                 >
                   {COUNTRY_CODES.map(({ code, country }) => (
-                    <option key={`${code}-${country}`} value={code} className="bg-[#0E0C09] text-white">{code} {country}</option>
+                    <option key={`${code}-${country}`} value={code} className="bg-[#0A0A0A] text-white">{code} {country}</option>
                   ))}
                 </select>
                 <div className="relative flex-1 min-w-0">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-white/30"><Phone className="h-4 w-4" /></div>
                   <input id="phoneNumber" type="tel" placeholder="Número de teléfono" value={formData.phoneNumber} onChange={handleChange}
-                    className="w-full pl-9 pr-4 h-12 rounded-xl bg-[#C9A227]/4 border border-[#C9A227]/15 text-white placeholder:text-white/25 focus:outline-none focus:border-[#C9A227]/50 focus:bg-[#C9A227]/8 transition-all font-medium text-sm" required />
+                    className="w-full pl-9 pr-4 h-12 rounded-xl bg-[#E10613]/4 border border-[#E10613]/15 text-white placeholder:text-white/25 focus:outline-none focus:border-[#E10613]/50 focus:bg-[#E10613]/8 transition-all font-medium text-sm" required />
                 </div>
               </div>
               <p className="text-xs text-white/35 font-medium">Tu número se usará para contacto por WhatsApp.</p>
@@ -394,7 +394,7 @@ export default function Register() {
             {/* BSC Wallet */}
             <div className="space-y-2">
               <label htmlFor="bscWallet" className="text-white/70 font-bold text-sm block">
-                Billetera BSC BEP20 <span className="text-[#E8C547]">(para pagos automáticos)</span>
+                Billetera BSC BEP20 <span className="text-[#FF4D57]">(para pagos automáticos)</span>
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-white/30">
@@ -406,7 +406,7 @@ export default function Register() {
                   placeholder="0x..."
                   value={formData.bscWallet}
                   onChange={handleChange}
-                  className="w-full pl-9 pr-4 h-12 rounded-xl bg-[#C9A227]/4 border border-[#C9A227]/15 text-white placeholder:text-white/25 focus:outline-none focus:border-[#C9A227]/50 focus:bg-[#C9A227]/8 transition-all font-mono text-sm"
+                  className="w-full pl-9 pr-4 h-12 rounded-xl bg-[#E10613]/4 border border-[#E10613]/15 text-white placeholder:text-white/25 focus:outline-none focus:border-[#E10613]/50 focus:bg-[#E10613]/8 transition-all font-mono text-sm"
                 />
               </div>
               <p className="text-xs text-white/35 font-medium">
@@ -438,7 +438,7 @@ export default function Register() {
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-white/30"><Link2 className="h-5 w-5" /></div>
                 <input id="referralCode" type="text" placeholder="Ej. A1B2C3D4" value={formData.referralCode} onChange={handleChange}
-                  className="w-full pl-10 pr-4 h-12 rounded-xl bg-[#C9A227]/4 border border-[#C9A227]/15 text-[#E8C547] placeholder:text-white/25 focus:outline-none focus:border-[#C9A227]/50 focus:bg-[#C9A227]/8 transition-all font-mono font-bold uppercase tracking-wider text-sm" />
+                  className="w-full pl-10 pr-4 h-12 rounded-xl bg-[#E10613]/4 border border-[#E10613]/15 text-[#FF4D57] placeholder:text-white/25 focus:outline-none focus:border-[#E10613]/50 focus:bg-[#E10613]/8 transition-all font-mono font-bold uppercase tracking-wider text-sm" />
               </div>
               <p className="text-xs text-white/35 font-medium">Si alguien te invitó, ingresa su código aquí. El código debe pertenecer a una cuenta activa.</p>
             </div>
@@ -452,7 +452,7 @@ export default function Register() {
             <button
               type="submit"
               disabled={registerMutation.isPending}
-              className="w-full h-14 text-base font-bold text-black bg-gradient-to-r from-[#8B6914] to-[#C9A227] hover:opacity-90 shadow-[0_0_30px_-5px_#C9A227] mt-2 transition-all hover:scale-[1.02] active:scale-[0.98] rounded-xl flex items-center justify-center gap-2 disabled:opacity-60 disabled:hover:scale-100"
+              className="w-full h-14 text-base font-bold text-black bg-gradient-to-r from-[#7A0A12] to-[#E10613] hover:opacity-90 shadow-[0_0_30px_-5px_#E10613] mt-2 transition-all hover:scale-[1.02] active:scale-[0.98] rounded-xl flex items-center justify-center gap-2 disabled:opacity-60 disabled:hover:scale-100"
             >
               {registerMutation.isPending
                 ? <Loader2 className="w-5 h-5 animate-spin text-black" />
@@ -464,13 +464,13 @@ export default function Register() {
           <div className="mt-6 flex flex-col items-center gap-3">
             <div className="flex justify-center text-sm font-medium text-white/40">
               ¿Ya eres miembro?{' '}
-              <Link href="/login" className="ml-1 font-bold text-[#E8C547] hover:text-[#C9A227] transition-colors">Inicia sesión</Link>
+              <Link href="/login" className="ml-1 font-bold text-[#FF4D57] hover:text-[#E10613] transition-colors">Inicia sesión</Link>
             </div>
-            <Link href="/como-funciona" className="text-xs text-white/25 hover:text-[#E8C547]/60 transition-colors underline">
+            <Link href="/como-funciona" className="text-xs text-white/25 hover:text-[#FF4D57]/60 transition-colors underline">
               ¿Cómo funciona el sistema?
             </Link>
             <div className="flex items-center justify-center gap-2 text-xs font-semibold text-white/30 text-center">
-              <ShieldCheck className="w-4 h-4 text-[#C9A227] shrink-0" />
+              <ShieldCheck className="w-4 h-4 text-[#E10613] shrink-0" />
               <span>Al unirte, aceptas que tu tiempo y tu futuro valen más.</span>
             </div>
           </div>

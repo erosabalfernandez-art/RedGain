@@ -19,7 +19,7 @@ const stagger = {
 // Reusable step badge
 function StepBadge({ n, warm = true }: { n: number; warm?: boolean }) {
   return warm ? (
-    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#8B6914] to-[#C9A227] flex items-center justify-center text-black font-extrabold text-sm shadow-[0_0_20px_-5px_#C9A227] shrink-0">
+    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#7A0A12] to-[#E10613] flex items-center justify-center text-black font-extrabold text-sm shadow-[0_0_20px_-5px_#E10613] shrink-0">
       {n}
     </div>
   ) : (
@@ -35,13 +35,13 @@ function SectionBg({ src, brightness = 0.22, children }: { src: string; brightne
     <section className="relative overflow-hidden">
       <div className="absolute inset-0 z-0">
         <img src={src} alt="" className="w-full h-full object-cover object-center" style={{ filter: `brightness(${brightness}) saturate(0.75)` }} />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0E0C09]/70 via-[#0E0C09]/30 to-[#0E0C09]/70" />
-        <div className="absolute inset-0 bg-[#1A0E00]/30 mix-blend-multiply" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0A]/70 via-[#0A0A0A]/30 to-[#0A0A0A]/70" />
+        <div className="absolute inset-0 bg-[#1A0A0C]/30 mix-blend-multiply" />
       </div>
       {/* gold line top */}
-      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#C9A227]/35 to-transparent z-10" />
+      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#E10613]/35 to-transparent z-10" />
       {/* gold line bottom */}
-      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#C9A227]/20 to-transparent z-10" />
+      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#E10613]/20 to-transparent z-10" />
       <div className="relative z-10">{children}</div>
     </section>
   );
@@ -50,9 +50,9 @@ function SectionBg({ src, brightness = 0.22, children }: { src: string; brightne
 // Plain dark section (used between images so the sequence breathes)
 function PlainSection({ children }: { children: React.ReactNode }) {
   return (
-    <section className="relative bg-[#0E0C09] overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-[#1A1208]/60 via-[#0E0C09] to-[#0E0C09]" />
-      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#C9A227]/20 to-transparent" />
+    <section className="relative bg-[#0A0A0A] overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-[#141414]/60 via-[#0A0A0A] to-[#0A0A0A]" />
+      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#E10613]/20 to-transparent" />
       <div className="relative z-10">{children}</div>
     </section>
   );
@@ -65,27 +65,27 @@ export default function HowItWorks() {
   const backLabel = fromDashboard ? 'Volver al panel' : 'Volver al inicio';
 
   return (
-    <div className="min-h-screen bg-[#0E0C09] text-white selection:bg-[#C9A227]/30">
+    <div className="min-h-screen bg-[#0A0A0A] text-white selection:bg-[#E10613]/30">
 
       {/* Ambient warm glows (fixed, behind everything) */}
-      <div className="fixed top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-[#8B6914]/10 blur-[160px] pointer-events-none z-0" />
-      <div className="fixed bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-[#C9A227]/6 blur-[160px] pointer-events-none z-0" />
+      <div className="fixed top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-[#7A0A12]/10 blur-[160px] pointer-events-none z-0" />
+      <div className="fixed bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-[#E10613]/6 blur-[160px] pointer-events-none z-0" />
 
       {/* ── Navbar ── */}
-      <nav className="sticky top-0 z-50 border-b border-[#C9A227]/15 bg-[#0E0C09]/88 backdrop-blur-md px-6 h-16 flex items-center justify-between">
+      <nav className="sticky top-0 z-50 border-b border-[#E10613]/15 bg-[#0A0A0A]/88 backdrop-blur-md px-6 h-16 flex items-center justify-between">
         <Link href={fromDashboard ? '/dashboard' : '/'} className="flex items-center gap-2.5 font-bold text-white hover:opacity-80 transition-opacity">
-          <Logo className="w-6 h-6 text-[#C9A227]" />
+          <Logo className="w-6 h-6 text-[#E10613]" />
           <span>RedGain</span>
         </Link>
         {fromDashboard ? (
-          <Link href="/dashboard" className="inline-flex items-center gap-2 text-sm font-medium text-white/60 hover:text-[#E8C547] transition-colors group">
+          <Link href="/dashboard" className="inline-flex items-center gap-2 text-sm font-medium text-white/60 hover:text-[#FF4D57] transition-colors group">
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
             Volver al panel
           </Link>
         ) : (
           <div className="flex items-center gap-3">
-            <Link href="/login"    className="text-sm font-medium text-white/60 hover:text-[#E8C547] transition-colors">Iniciar sesión</Link>
-            <Link href="/register" className="text-sm font-semibold px-4 py-2 bg-gradient-to-r from-[#8B6914] to-[#C9A227] text-black rounded-lg hover:opacity-90 transition-all hover:scale-105">
+            <Link href="/login"    className="text-sm font-medium text-white/60 hover:text-[#FF4D57] transition-colors">Iniciar sesión</Link>
+            <Link href="/register" className="text-sm font-semibold px-4 py-2 bg-gradient-to-r from-[#7A0A12] to-[#E10613] text-black rounded-lg hover:opacity-90 transition-all hover:scale-105">
               Comenzar
             </Link>
           </div>
@@ -98,20 +98,20 @@ export default function HowItWorks() {
       <SectionBg src="/stoic-howitworks.jpg" brightness={0.30}>
         <div className="max-w-4xl mx-auto px-6 py-28 text-center">
           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="flex justify-start mb-8">
-            <Link href={backHref} className="inline-flex items-center gap-2 text-sm font-medium text-white/50 hover:text-[#E8C547] transition-colors group">
+            <Link href={backHref} className="inline-flex items-center gap-2 text-sm font-medium text-white/50 hover:text-[#FF4D57] transition-colors group">
               <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
               {backLabel}
             </Link>
           </motion.div>
 
           <motion.div initial="hidden" animate="visible" variants={fade}>
-            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#C9A227]/40 bg-[#C9A227]/10 text-[#E8C547] text-sm font-medium mb-6">
+            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#E10613]/40 bg-[#E10613]/10 text-[#FF4D57] text-sm font-medium mb-6">
               <Zap className="w-4 h-4" />
               "El conocimiento es el principio de la acción." — Epicteto
             </span>
             <h1 className="text-5xl md:text-6xl font-extrabold mb-6 tracking-tight leading-tight">
               Cómo funciona{' '}
-              <span className="bg-gradient-to-r from-[#8B6914] via-[#C9A227] to-[#E8C547] bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-[#7A0A12] via-[#E10613] to-[#FF4D57] bg-clip-text text-transparent">
                 RedGain
               </span>
             </h1>
@@ -132,44 +132,44 @@ export default function HowItWorks() {
               <StepBadge n={1} />
               <h2 className="text-2xl font-bold text-white">El precio de acceso</h2>
             </motion.div>
-            <motion.div variants={fade} className="rounded-3xl bg-[#1A1208]/80 border border-[#C9A227]/20 p-6 md:p-8 backdrop-blur-md relative overflow-hidden">
-              <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#C9A227]/50 to-transparent" />
+            <motion.div variants={fade} className="rounded-3xl bg-[#141414]/80 border border-[#E10613]/20 p-6 md:p-8 backdrop-blur-md relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#E10613]/50 to-transparent" />
               <div className="flex flex-col md:flex-row gap-8 items-start">
                 <div className="flex-1">
                   <p className="text-white/65 leading-relaxed">
                     Unirte a RedGain cuesta <strong className="text-white">$10 USD</strong>. Este es el precio fijo de la membresía mensual.
                     Una vez dentro, puedes invitar a otras personas y ganar comisiones por cada una que se una y pague.
                   </p>
-                  <div className="mt-4 p-4 rounded-2xl bg-[#C9A227]/8 border border-[#C9A227]/20">
-                    <p className="text-sm text-[#E8C547] font-semibold flex items-center gap-2">
+                  <div className="mt-4 p-4 rounded-2xl bg-[#E10613]/8 border border-[#E10613]/20">
+                    <p className="text-sm text-[#FF4D57] font-semibold flex items-center gap-2">
                       <Shield className="w-4 h-4" />
                       ¿Quieres ofrecer un precio menor a $10?
                     </p>
                     <p className="text-sm text-white/55 mt-1">
                       Debes contactar a nuestro equipo por WhatsApp{' '}
-                      <a href="https://wa.me/5588992543996" target="_blank" rel="noopener noreferrer" className="text-[#E8C547] font-semibold hover:text-[#C9A227] transition-colors">
+                      <a href="https://wa.me/5588992543996" target="_blank" rel="noopener noreferrer" className="text-[#FF4D57] font-semibold hover:text-[#E10613] transition-colors">
                         +55 8899 2543 996
                       </a>
                       . La diferencia se descuenta de tu propia comisión — los $9 del árbol y el $1 de la plataforma nunca cambian.
                     </p>
                   </div>
                 </div>
-                <div className="bg-[#0E0C09]/90 border border-[#C9A227]/25 rounded-2xl p-5 min-w-[220px]">
-                  <p className="text-xs text-[#C9A227]/70 font-bold uppercase tracking-wider mb-4">Distribución de cada $10</p>
+                <div className="bg-[#0A0A0A]/90 border border-[#E10613]/25 rounded-2xl p-5 min-w-[220px]">
+                  <p className="text-xs text-[#E10613]/70 font-bold uppercase tracking-wider mb-4">Distribución de cada $10</p>
                   {[
-                    { label: 'Tu referidor directo (Nivel 1)', amount: '$6', color: 'text-[#E8C547]' },
-                    { label: 'Referidor de nivel 2',           amount: '$2', color: 'text-[#C9A227]' },
-                    { label: 'Referidor de nivel 3',           amount: '$1', color: 'text-[#8B6914]' },
+                    { label: 'Tu referidor directo (Nivel 1)', amount: '$6', color: 'text-[#FF4D57]' },
+                    { label: 'Referidor de nivel 2',           amount: '$2', color: 'text-[#E10613]' },
+                    { label: 'Referidor de nivel 3',           amount: '$1', color: 'text-[#7A0A12]' },
                     { label: 'Plataforma (equipo)',             amount: '$1', color: 'text-white/40' },
                   ].map((row) => (
-                    <div key={row.label} className="flex justify-between items-center py-1.5 border-b border-[#C9A227]/10 last:border-0">
+                    <div key={row.label} className="flex justify-between items-center py-1.5 border-b border-[#E10613]/10 last:border-0">
                       <span className="text-xs text-white/45">{row.label}</span>
                       <span className={`text-sm font-bold ${row.color}`}>{row.amount}</span>
                     </div>
                   ))}
                   <div className="flex justify-between items-center pt-2 mt-1">
                     <span className="text-xs font-bold text-white">Total</span>
-                    <span className="text-sm font-extrabold text-[#E8C547]">$10</span>
+                    <span className="text-sm font-extrabold text-[#FF4D57]">$10</span>
                   </div>
                 </div>
               </div>
@@ -194,9 +194,9 @@ export default function HowItWorks() {
               </p>
               <div className="grid md:grid-cols-3 gap-4">
                 {[
-                  { level: 1, title: 'Nivel 1', sub: 'Tus referidos directos',  amount: '$6', border: 'border-[#C9A227]/35 bg-[#C9A227]/8',  badge: 'text-[#E8C547] bg-[#C9A227]/12 border-[#C9A227]/35', desc: 'Cada persona que tú invitas directamente y activa su cuenta.' },
-                  { level: 2, title: 'Nivel 2', sub: 'Sus referidos',            amount: '$2', border: 'border-[#8B6914]/30 bg-[#8B6914]/6',  badge: 'text-[#C9A227] bg-[#8B6914]/12 border-[#8B6914]/35', desc: 'Cada persona que es invitada por alguien de tu nivel 1.' },
-                  { level: 3, title: 'Nivel 3', sub: 'Sus referidos',            amount: '$1', border: 'border-[#C9A227]/15 bg-[#C9A227]/4',  badge: 'text-[#C9A227]/70 bg-[#C9A227]/8 border-[#C9A227]/20', desc: 'Cada persona que es invitada por alguien de tu nivel 2.' },
+                  { level: 1, title: 'Nivel 1', sub: 'Tus referidos directos',  amount: '$6', border: 'border-[#E10613]/35 bg-[#E10613]/8',  badge: 'text-[#FF4D57] bg-[#E10613]/12 border-[#E10613]/35', desc: 'Cada persona que tú invitas directamente y activa su cuenta.' },
+                  { level: 2, title: 'Nivel 2', sub: 'Sus referidos',            amount: '$2', border: 'border-[#7A0A12]/30 bg-[#7A0A12]/6',  badge: 'text-[#E10613] bg-[#7A0A12]/12 border-[#7A0A12]/35', desc: 'Cada persona que es invitada por alguien de tu nivel 1.' },
+                  { level: 3, title: 'Nivel 3', sub: 'Sus referidos',            amount: '$1', border: 'border-[#E10613]/15 bg-[#E10613]/4',  badge: 'text-[#E10613]/70 bg-[#E10613]/8 border-[#E10613]/20', desc: 'Cada persona que es invitada por alguien de tu nivel 2.' },
                 ].map(({ level, title, sub, amount, border, badge, desc }) => (
                   <div key={level} className={`border ${border} rounded-2xl p-5 backdrop-blur-sm`}>
                     <span className={`inline-flex px-2 py-0.5 rounded-full border text-xs font-bold ${badge}`}>{title}</span>
@@ -206,11 +206,11 @@ export default function HowItWorks() {
                   </div>
                 ))}
               </div>
-              <div className="rounded-2xl bg-[#1A1208]/80 border border-[#C9A227]/20 p-5 backdrop-blur-md">
-                <p className="text-sm font-semibold text-[#E8C547] mb-2">Ejemplo real:</p>
+              <div className="rounded-2xl bg-[#141414]/80 border border-[#E10613]/20 p-5 backdrop-blur-md">
+                <p className="text-sm font-semibold text-[#FF4D57] mb-2">Ejemplo real:</p>
                 <p className="text-sm text-white/60 leading-relaxed">
                   Invitas a <strong className="text-white">Ana (N1)</strong> → ganas $6. Ana invita a <strong className="text-white">Pedro (N2)</strong> → ganas $2. Pedro invita a <strong className="text-white">Luis (N3)</strong> → ganas $1.
-                  Con solo 3 personas activas en tu árbol, ganas <strong className="text-[#E8C547]">$9 por mes</strong>.
+                  Con solo 3 personas activas en tu árbol, ganas <strong className="text-[#FF4D57]">$9 por mes</strong>.
                 </p>
               </div>
             </motion.div>
@@ -229,12 +229,12 @@ export default function HowItWorks() {
               <h2 className="text-2xl font-bold text-white">Temporizador de membresía</h2>
             </motion.div>
             <motion.div variants={fade}>
-              <div className="rounded-3xl bg-[#1A1208]/80 border border-[#C9A227]/20 p-6 md:p-8 backdrop-blur-md relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#C9A227]/50 to-transparent" />
+              <div className="rounded-3xl bg-[#141414]/80 border border-[#E10613]/20 p-6 md:p-8 backdrop-blur-md relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#E10613]/50 to-transparent" />
                 <div className="space-y-6">
                   {[
-                    { icon: Wallet, title: 'Pagas los $10',             desc: 'El sistema detecta y confirma tu pago en la red BSC. Tu cuenta queda activa, pero el temporizador de 30 días aún NO empieza. Tienes tiempo para buscar a tu primera persona sin presión.',          color: 'text-[#E8C547] bg-[#C9A227]/12 border-[#C9A227]/20' },
-                    { icon: Users,  title: 'Unes a tu primera persona', desc: 'En cuanto tu primer referido activa su cuenta, TU temporizador empieza a correr. A partir de ese momento tienes exactamente 30 días de membresía activa.',              color: 'text-[#C9A227] bg-[#8B6914]/12 border-[#8B6914]/20' },
+                    { icon: Wallet, title: 'Pagas los $10',             desc: 'El sistema detecta y confirma tu pago en la red BSC. Tu cuenta queda activa, pero el temporizador de 30 días aún NO empieza. Tienes tiempo para buscar a tu primera persona sin presión.',          color: 'text-[#FF4D57] bg-[#E10613]/12 border-[#E10613]/20' },
+                    { icon: Users,  title: 'Unes a tu primera persona', desc: 'En cuanto tu primer referido activa su cuenta, TU temporizador empieza a correr. A partir de ese momento tienes exactamente 30 días de membresía activa.',              color: 'text-[#E10613] bg-[#7A0A12]/12 border-[#7A0A12]/20' },
                     { icon: Clock,  title: 'Temporizador visible',      desc: 'En tu dashboard verás una cuenta regresiva en tiempo real mostrando cuántos días te quedan antes de que venza tu membresía.',                                              color: 'text-white/60 bg-white/5 border-white/10' },
                   ].map(({ icon: Icon, title, desc, color }) => (
                     <div key={title} className="flex gap-5">
@@ -278,7 +278,7 @@ export default function HowItWorks() {
                     { phase: '2 semanas de gracia',  icon: Clock,         color: 'text-yellow-400', desc: 'Tienes 14 días para pagar la renovación y reactivar tu cuenta. Durante este tiempo NO cobras comisiones.' },
                     { phase: 'Sin renovación',       icon: XCircle,       color: 'text-red-400',    desc: 'Tu cuenta queda "Perdida". Pierdes TODO tu árbol de referidos y debes empezar desde cero.' },
                   ].map(({ phase, icon: Icon, color, desc }) => (
-                    <div key={phase} className="bg-[#0E0C09]/80 border border-[#C9A227]/10 rounded-2xl p-4">
+                    <div key={phase} className="bg-[#0A0A0A]/80 border border-[#E10613]/10 rounded-2xl p-4">
                       <Icon className={`w-5 h-5 ${color} mb-2`} />
                       <p className={`text-sm font-bold ${color}`}>{phase}</p>
                       <p className="text-xs text-white/40 mt-1.5 leading-relaxed">{desc}</p>
@@ -308,11 +308,11 @@ export default function HowItWorks() {
               <h2 className="text-2xl font-bold text-white">Cómo renovar sin perder ni un segundo</h2>
             </motion.div>
             <motion.div variants={fade} className="space-y-6">
-              <div className="rounded-3xl border border-[#C9A227]/25 p-6 md:p-8 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, rgba(201,162,39,0.08) 0%, rgba(14,10,5,0.95) 100%)' }}>
-                <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#C9A227]/50 to-transparent" />
+              <div className="rounded-3xl border border-[#E10613]/25 p-6 md:p-8 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, rgba(225, 6, 19,0.08) 0%, rgba(14,10,5,0.95) 100%)' }}>
+                <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#E10613]/50 to-transparent" />
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-[#C9A227]/15 border border-[#C9A227]/30 flex items-center justify-center shrink-0">
-                    <RefreshCw className="w-6 h-6 text-[#E8C547]" />
+                  <div className="w-12 h-12 rounded-2xl bg-[#E10613]/15 border border-[#E10613]/30 flex items-center justify-center shrink-0">
+                    <RefreshCw className="w-6 h-6 text-[#FF4D57]" />
                   </div>
                   <div>
                     <p className="text-lg font-extrabold text-white mb-2">La ventana de renovación: días 29 y 30</p>
@@ -320,15 +320,15 @@ export default function HowItWorks() {
                       En los últimos 2 días de tu ciclo (días 29 y 30 de los 30), el sistema te habilita para renovar.
                       Si el sistema confirma tu pago antes de que venza tu membresía,
                       el nuevo ciclo de 30 días comienza exactamente donde termina el actual.{' '}
-                      <strong className="text-[#E8C547]">La renovación se procesa automáticamente al confirmarse el pago.</strong>
+                      <strong className="text-[#FF4D57]">La renovación se procesa automáticamente al confirmarse el pago.</strong>
                     </p>
                   </div>
                 </div>
               </div>
-              <div className="rounded-3xl bg-[#1A1208]/80 border border-[#C9A227]/15 p-6 md:p-8 backdrop-blur-md">
+              <div className="rounded-3xl bg-[#141414]/80 border border-[#E10613]/15 p-6 md:p-8 backdrop-blur-md">
                 <p className="text-xs font-bold text-white/40 uppercase tracking-wider mb-6">Tu ciclo de 30 días</p>
                 <div className="h-3 rounded-full overflow-hidden flex mb-2">
-                  <div className="flex-[28] bg-emerald-500/40 border-r border-[#0E0C09]" />
+                  <div className="flex-[28] bg-emerald-500/40 border-r border-[#0A0A0A]" />
                   <div className="flex-[2] bg-red-500/70" />
                 </div>
                 <div className="flex justify-between text-xs text-white/40 mb-6">
@@ -351,7 +351,7 @@ export default function HowItWorks() {
                   ))}
                 </div>
               </div>
-              <div className="rounded-3xl bg-[#1A1208]/80 border border-[#C9A227]/15 p-6 md:p-8 backdrop-blur-md">
+              <div className="rounded-3xl bg-[#141414]/80 border border-[#E10613]/15 p-6 md:p-8 backdrop-blur-md">
                 <p className="text-sm font-bold text-white mb-5">Paso a paso en los días 29-30:</p>
                 <ol className="space-y-4">
                   {[
@@ -362,16 +362,16 @@ export default function HowItWorks() {
                     'Si renuevas a tiempo, tu cuenta sigue activa y tu código no se interrumpe.',
                   ].map((text, i) => (
                     <li key={i} className="flex items-start gap-3">
-                      <span className="w-6 h-6 rounded-full bg-[#C9A227]/15 border border-[#C9A227]/30 text-[#E8C547] font-extrabold text-xs flex items-center justify-center shrink-0 mt-0.5">{i + 1}</span>
+                      <span className="w-6 h-6 rounded-full bg-[#E10613]/15 border border-[#E10613]/30 text-[#FF4D57] font-extrabold text-xs flex items-center justify-center shrink-0 mt-0.5">{i + 1}</span>
                       <p className="text-sm text-white/55 leading-relaxed">{text}</p>
                     </li>
                   ))}
                 </ol>
               </div>
-              <div className="p-4 rounded-2xl bg-[#C9A227]/5 border border-[#C9A227]/25 flex items-start gap-3">
-                <Zap className="w-5 h-5 text-[#E8C547] shrink-0 mt-0.5" />
-                <p className="text-sm text-[#E8C547]/80 leading-relaxed">
-                  <strong className="text-[#E8C547]">La clave:</strong> no esperes hasta después del vencimiento.
+              <div className="p-4 rounded-2xl bg-[#E10613]/5 border border-[#E10613]/25 flex items-start gap-3">
+                <Zap className="w-5 h-5 text-[#FF4D57] shrink-0 mt-0.5" />
+                <p className="text-sm text-[#FF4D57]/80 leading-relaxed">
+                  <strong className="text-[#FF4D57]">La clave:</strong> no esperes hasta después del vencimiento.
                   Los días 29 y 30 son tu ventana segura. Actúa en esos días y tu árbol de referidos jamás se interrumpe.
                 </p>
               </div>
@@ -391,16 +391,16 @@ export default function HowItWorks() {
               <h2 className="text-2xl font-bold text-white">Cómo funciona el pago</h2>
             </motion.div>
             <motion.div variants={fade}>
-              <div className="rounded-3xl bg-[#1A1208]/80 border border-[#C9A227]/20 p-6 md:p-8 backdrop-blur-md relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#C9A227]/50 to-transparent" />
+              <div className="rounded-3xl bg-[#141414]/80 border border-[#E10613]/20 p-6 md:p-8 backdrop-blur-md relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#E10613]/50 to-transparent" />
                 <div className="space-y-6">
                   <div>
                     <p className="text-sm font-bold text-white mb-1">Solo USDT en la red BSC (BEP20)</p>
                     <p className="text-sm text-white/50 leading-relaxed">
                       Todos los pagos se realizan en USDT (Tether) en la red Binance Smart Chain (BEP20). Si deseas pagar de otra forma, contáctanos por WhatsApp.
                     </p>
-                    <div className="mt-3 flex items-center gap-3 p-3 rounded-xl bg-[#0E0C09]/80 border border-[#C9A227]/15">
-                      <Wallet className="w-5 h-5 text-[#E8C547] shrink-0" />
+                    <div className="mt-3 flex items-center gap-3 p-3 rounded-xl bg-[#0A0A0A]/80 border border-[#E10613]/15">
+                      <Wallet className="w-5 h-5 text-[#FF4D57] shrink-0" />
                       <div>
                         <p className="text-xs text-white/40">Billetera USDT BSC BEP20</p>
                         <p className="text-xs font-mono text-white/80 break-all">0xd9FAFA7af1B691638315931235858745Ce6b2f73</p>
@@ -408,7 +408,7 @@ export default function HowItWorks() {
                     </div>
                   </div>
 
-                  <div className="border-t border-[#C9A227]/12 pt-5">
+                  <div className="border-t border-[#E10613]/12 pt-5">
                     <p className="text-sm font-bold text-white mb-3">Flujo del pago</p>
                     <ol className="space-y-3">
                       {[
@@ -418,21 +418,21 @@ export default function HowItWorks() {
                         'Si hay referidores elegibles, el sistema distribuye automáticamente las comisiones correspondientes.',
                       ].map((step, i) => (
                         <li key={i} className="flex items-start gap-3 text-sm text-white/55">
-                          <span className="w-5 h-5 rounded-full bg-[#C9A227]/15 text-[#E8C547] font-bold text-xs flex items-center justify-center shrink-0 mt-0.5 border border-[#C9A227]/25">{i + 1}</span>
+                          <span className="w-5 h-5 rounded-full bg-[#E10613]/15 text-[#FF4D57] font-bold text-xs flex items-center justify-center shrink-0 mt-0.5 border border-[#E10613]/25">{i + 1}</span>
                           {step}
                         </li>
                       ))}
                     </ol>
                   </div>
 
-                  <div className="border-t border-[#C9A227]/12 pt-5 flex items-center justify-between flex-wrap gap-4">
+                  <div className="border-t border-[#E10613]/12 pt-5 flex items-center justify-between flex-wrap gap-4">
                     <div>
                       <p className="text-sm font-bold text-white flex items-center gap-2 mb-1">
-                        <Phone className="w-4 h-4 text-[#E8C547]" />
+                        <Phone className="w-4 h-4 text-[#FF4D57]" />
                         Atención al cliente
                       </p>
                       <a href="https://wa.me/5588992543996" target="_blank" rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 text-sm font-semibold text-[#E8C547] hover:text-[#C9A227] transition-colors">
+                        className="inline-flex items-center gap-2 text-sm font-semibold text-[#FF4D57] hover:text-[#E10613] transition-colors">
                         WhatsApp: +55 8899 2543 996 →
                       </a>
                     </div>
@@ -450,7 +450,7 @@ export default function HowItWorks() {
       <SectionBg src="/stoic-cta.jpg" brightness={0.20}>
         <div className="max-w-4xl mx-auto px-6 py-28 text-center">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fade}>
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#C9A227]/35 bg-[#C9A227]/10 text-[#E8C547] text-xs font-medium mb-6">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#E10613]/35 bg-[#E10613]/10 text-[#FF4D57] text-xs font-medium mb-6">
               <Quote className="w-3 h-3" />
               "Actúa como si lo que haces hiciera diferencia. Lo hace." — William James
             </div>
@@ -459,10 +459,10 @@ export default function HowItWorks() {
               Únete hoy por $10 y empieza a construir tu árbol de ingresos recurrentes.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link href="/register" className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-[#8B6914] to-[#C9A227] text-black rounded-full font-bold hover:opacity-90 hover:scale-105 transition-all shadow-[0_0_30px_-5px_#C9A227]">
+              <Link href="/register" className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-[#7A0A12] to-[#E10613] text-black rounded-full font-bold hover:opacity-90 hover:scale-105 transition-all shadow-[0_0_30px_-5px_#E10613]">
                 Comenzar ahora <ArrowRight className="w-4 h-4" />
               </Link>
-              <Link href={backHref} className="inline-flex items-center gap-2 text-sm font-medium text-white/50 hover:text-[#E8C547] transition-colors group">
+              <Link href={backHref} className="inline-flex items-center gap-2 text-sm font-medium text-white/50 hover:text-[#FF4D57] transition-colors group">
                 <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
                 {backLabel}
               </Link>
