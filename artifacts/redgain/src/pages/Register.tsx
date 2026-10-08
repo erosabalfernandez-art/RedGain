@@ -387,7 +387,7 @@ export default function Register() {
             {/* BSC Wallet */}
             <div className="space-y-2">
               <label htmlFor="bscWallet" className="text-white/70 font-bold text-sm block">
-                Billetera BSC BEP20 <span className="text-[#FF4D57]">(opcional, para retiros)</span>
+                Billetera BSC BEP20 <span className="text-[#FF4D57]">(para recibir tus retiros en USDT)</span>
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-white/30">

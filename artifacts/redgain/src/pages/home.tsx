@@ -26,7 +26,7 @@ const faqs = [
   { q: '¿Cuánto puedo ganar?', a: 'Depende de las ofertas disponibles en tu país, de que las completes correctamente y de que el anunciante las valide. No garantizamos ningún monto.' },
   { q: '¿De dónde sale el dinero de las recompensas?', a: 'De los anunciantes, que pagan por usuarios reales que prueban sus apps, juegos o servicios. No sale de pagos de otros usuarios.' },
   { q: '¿Cómo funcionan los referidos?', a: 'Invitas con tu código personal y recibes un porcentaje de lo que tus referidos directos obtengan en ofertas, también pagado por los anunciantes. Hay un solo nivel y nadie paga por registrarse.' },
-  { q: '¿Cómo retiro mi saldo?', a: 'Los retiros se habilitarán próximamente y podrán tener un monto mínimo, verificación de cuenta y un periodo de espera para cubrir posibles reversiones.' },
+  { q: '¿Cómo retiro mi saldo?', a: 'Los retiros se pagan en USDT (red BSC, BEP-20) a la billetera que registres en tu perfil. Se habilitarán próximamente y podrán tener un monto mínimo, verificación de cuenta y un periodo de espera para cubrir posibles reversiones.' },
 ];
 
 export default function Home() {

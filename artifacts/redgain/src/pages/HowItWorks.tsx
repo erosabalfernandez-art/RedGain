@@ -12,7 +12,7 @@ const sections = [
   { icon: ListChecks, title: '2. Elige y completa ofertas', body: ['Dentro de RedGain verás ofertas patrocinadas disponibles según tu país y tu dispositivo: instalar apps, jugar, responder encuestas o registrarte en servicios.', 'Antes de empezar, cada oferta muestra la recompensa y los requisitos que debes cumplir.'] },
   { icon: ShieldCheck, title: '3. Validación del anunciante', body: ['La recompensa se acredita en tu saldo solo cuando el anunciante confirma que completaste la oferta de forma válida.', 'Si el anunciante anula una conversión, la recompensa se descuenta. Todo movimiento queda registrado en tu historial.'] },
   { icon: Users, title: '4. Programa de referidos', body: ['Puedes invitar a otras personas con tu código personal. Registrarse con un código no cuesta nada.', 'Recibes un porcentaje de lo que tus referidos directos obtienen en ofertas. Lo pagan los anunciantes, no los usuarios, y hay un solo nivel.'] },
-  { icon: Wallet, title: '5. Retiros', body: ['Los retiros se habilitarán próximamente. Podrán tener un monto mínimo, verificación de cuenta y un periodo de espera para cubrir posibles reversiones.'] },
+  { icon: Wallet, title: '5. Retiros', body: ['Los retiros se pagan en USDT (red BSC, BEP-20) a la billetera que registres en tu perfil. Se habilitarán próximamente y podrán tener un monto mínimo, verificación de cuenta y un periodo de espera para cubrir posibles reversiones.'] },
 ];
 
 export default function HowItWorks() {

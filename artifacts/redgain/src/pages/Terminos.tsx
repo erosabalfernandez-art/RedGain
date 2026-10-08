@@ -82,6 +82,7 @@ export default function Terminos() {
             <Item>Las recompensas se acreditan en tu saldo interno únicamente cuando el anunciante confirma que la oferta fue completada de forma válida.</Item>
             <Item>Si el anunciante anula o revierte una conversión (por ejemplo, por fraude o incumplimiento de requisitos), la recompensa correspondiente se descuenta de tu saldo.</Item>
             <Item>La cantidad de recompensa por oferta puede variar y se muestra antes de que decidas realizarla.</Item>
+            <Item>Los retiros se pagan en <strong className="text-white/80">USDT (red BSC, BEP-20)</strong> a la billetera que registres en tu perfil. RedGain no se hace responsable por fondos enviados a una dirección incorrecta que hayas registrado.</Item>
             <Item>Los retiros, cuando estén habilitados, pueden estar sujetos a un monto mínimo, a verificación de cuenta y a un periodo de espera para cubrir posibles reversiones.</Item>
           </Section>
 
