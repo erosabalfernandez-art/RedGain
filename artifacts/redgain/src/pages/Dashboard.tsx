@@ -127,7 +127,7 @@ function GanarSection() {
           <li>Espera la confirmación: puede tardar de minutos a horas.</li>
           <li>Tu saldo se acredita solo y lo ves en el historial.</li>
         </ol>
-        <p className="text-xs text-white/45 leading-relaxed">Las ofertas las publican anunciantes de todo el mundo, por eso muchas están en inglés. <strong className="text-white/65">Coins</strong> = monedas · <strong className="text-white/65">Multi-reward</strong> = varias recompensas por pasos · <strong className="text-white/65">Complete all steps</strong> = completa todos los pasos · <strong className="text-white/65">Highest payout</strong> = mayor pago · <strong className="text-white/65">Sign-ups</strong> = registros. Puedes usar la función Traducir de tu navegador.</p>
+        <p className="text-xs text-white/45 leading-relaxed">Las ofertas las publican anunciantes de todo el mundo, por eso muchas están en inglés. <strong className="text-white/65">Coins</strong> = monedas · <strong className="text-white/65">Multi-reward</strong> = varias recompensas por pasos · <strong className="text-white/65">Complete all steps</strong> = completa todos los pasos · <strong className="text-white/65">Highest payout</strong> = mayor pago · <strong className="text-white/65">Sign-ups</strong> = registros.</p>
       </div>
       <div className="rounded-2xl overflow-hidden" style={card}>
         {err ? <p className="p-6 text-sm text-white/55">{err}</p> : !url ? <div className="p-6"><Loader2 className="w-5 h-5 animate-spin text-white/40" /></div> : (
