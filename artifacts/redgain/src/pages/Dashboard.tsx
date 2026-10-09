@@ -18,7 +18,12 @@ const typeLabel: Record<string, string> = { offer_reward: 'Oferta completada', o
 function useWallet() {
   const [data, setData] = useState<WalletData | null>(null);
   useEffect(() => {
-    fetch('/api/wallet', { credentials: 'include' }).then((r) => (r.ok ? r.json() : null)).then(setData).catch(() => setData(null));
+    const load = () => fetch('/api/wallet', { credentials: 'include' }).then((r) => (r.ok ? r.json() : null)).then((d) => { if (d) setData(d); }).catch(() => {});
+    load();
+    const timer = setInterval(load, 15000); // se actualiza solo cada 15 s
+    const onFocus = () => { if (document.visibilityState === 'visible') load(); };
+    document.addEventListener('visibilitychange', onFocus);
+    return () => { clearInterval(timer); document.removeEventListener('visibilitychange', onFocus); };
   }, []);
   return data;
 }
